@@ -31,7 +31,7 @@
 # DESCRIPTION
 #
 # This application example shows how to connect Bluetooth Low Energy (BLE)
-# devices implementing the “BlueST” protocol to a Linux gateway, and to make
+# devices implementing the "BlueST" protocol to a Linux gateway, and to make
 # them communicate to the Amazon AWS IoT Cloud through the AWS Greengrass edge
 # computing service.
 #
@@ -41,13 +41,13 @@
 # becomes available the shadow devices on the cloud get automatically
 # synchronized to the local virtual devices.
 #
-# This application example involves two BLE devices exporting the “Switch”
-# feature as specified by the “BlueST” protocol; pressing the user button on a
+# This application example involves two BLE devices exporting the "Switch"
+# feature as specified by the BlueST protocol; pressing the user button on a
 # device makes the LED of the other device toggle its status. In particular,
 # whenever the user button is pressed on a device, the sending device publishes
-# a JSON message on a “switch_device/sense” topic with its device identifier and
+# a JSON message on a "switch_device/sense" topic with its device identifier and
 # the status of the button, a simple lambda function swaps the device identifier
-# and publishes the new message on a “switch_device/act” topic, and the
+# and publishes the new message on a "switch_device/act" topic, and the
 # recipient device toggles the status of its LED.
 
 
