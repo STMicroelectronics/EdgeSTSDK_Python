@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = EdgeSTSDK
 SOURCEDIR     = source
-BUILDDIR      = ../../EdgeSTSDK
+BUILDDIR      = ../../EdgeSTSDK_Python-docs
 
 # Put it first so that "make" without argument is like "make help".
 help:
