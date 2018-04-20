@@ -2,9 +2,9 @@
 
 EdgeST SDK is an IoT edge computing abstraction library for Linux gateways. It relies on cloud platforms' edge SDKs to enable local execution of functions on a Linux gateway and synchronization to the cloud.
 
-More specifically, it enables the creation of “virtual” devices on the gateway that map to non-IP connected devices (e.g. via Bluetooth Low Energy technology), and the corresponding "shadow" devices on the cloud. Local computation can be performed directly on the gateway with the same logic written for the cloud even when Internet connection is lost, and shadow devices will be synchronized to virtual devices as soon as Internet connection become available.
+More specifically, it enables the creation of “virtual” devices on the gateway that map to non-IP connected devices (e.g. via Bluetooth Low Energy technology), and the corresponding "shadow" devices on the cloud. Local computation can be performed directly on the gateway with the same logic written for the cloud even when Internet connection is lost, and shadow devices will be synchronized to virtual devices as soon as Internet connection becomes available.
 
-Currently Amazon AWS Greengrass edge computing service is supported; in the future other cloud engines will be supported.
+Currently [Amazon AWS Greengrass](https://aws.amazon.com/it/greengrass/) edge computing service is supported, while other cloud engines will be added in the future.
 
 
 ## Compatibility
@@ -12,7 +12,7 @@ This version of the SDK is compatible with [Python](https://www.python.org/) 2.7
 
 
 ## Preconditions
-Currently Amazon AWS Greengrass edge computing service is supported, so please refer to the [Greengrass official documentation](https://docs.aws.amazon.com/greengrass/latest/developerguide/what-is-gg.html) to install the SDK. At the time of writing, this implies installing the following components:
+Please refer to the [Amazon AWS Greengrass official documentation](https://docs.aws.amazon.com/greengrass/latest/developerguide/what-is-gg.html) to install the SDK. At the time of writing, this implies installing the following components:
  1. Eclipse Paho MQTT Python client library, required to exchange messages via MQTT protocol:
     ```Shell
     $ sudo pip install paho-mqtt
@@ -21,28 +21,28 @@ Currently Amazon AWS Greengrass edge computing service is supported, so please r
     ```Shell
     $ sudo pip install AWSIoTPythonSDK
     ```
- 3. Amazon AWS IoT Greengrass SDK, that will be downloaded when creating a "Group" on the AWS web IoT Console on the cloud. Further actions are required to setup the environment, so please follow the abovementioned official instructions.
- 4. Moreover, the BlueST SDK is required to run the provided application examples (please see here below).
+ 3. Amazon AWS IoT Greengrass SDK, that will be downloaded when creating a "Group" on the AWS web IoT Console on the cloud. Further actions are required to setup the environment, so please follow the abovementioned official documentation.
+ 4. Moreover, the Python version of the [BlueST SDK](https://github.com/STMicroelectronics-CentralLabs/EdgeSTSDK_Python#bluest-sdk) is required to run the provided application examples.
 
 
 ## BlueST SDK
-BlueST SDK is a multi-platform library available for [Linux](https://github.com/STMicroelectronics-CentralLabs/BlueSTSDK_Python) (beyond [Android](https://github.com/STMicroelectronics-CentralLabs/BlueSTSDK_Android) and [iOS](https://github.com/STMicroelectronics-CentralLabs/BlueSTSDK_iOS)) that allows easy access to the data exported by a Bluetooth Low Energy (BLE) device that implements the BlueST Protocol.
+BlueST SDK is a multi-platform library available for [Linux](https://github.com/STMicroelectronics-CentralLabs/BlueSTSDK_Python) (beyond [Android](https://github.com/STMicroelectronics-CentralLabs/BlueSTSDK_Android) and [iOS](https://github.com/STMicroelectronics-CentralLabs/BlueSTSDK_iOS)) that allows easy access to the data exported by a Bluetooth Low Energy (BLE) device that implements the [BlueST Protocol](https://github.com/STMicroelectronics-CentralLabs/BlueSTSDK_Python#bluest-protocol).
 
-The Linux version of the SDK, written in Python, is needed to let BLE devices connect to a Linux gateway. This enables IoT applications where BLE connected devices stream data to a gateway through the BlueST SDK, while the EdgeST SDK abstracts edge computing operations performed locally on the gateway and synchronization to the shadow devices on the cloud.
+The Linux version of the SDK, written in Python, is needed to let BLE devices connect to a Linux gateway. This enables IoT applications where BLE connected devices stream data to a gateway through the BlueST SDK, while the EdgeST SDK abstracts edge computing operations performed locally on the gateway and the synchronization to the shadow devices on the cloud.
 
 
 ## Setting up the application examples
 Before running the application examples, please follow the steps here below.
- * The "example_ble_aws_1.py" application example shows how to handle two devices exporting a "Switch" feature in such a way that pressing the user button on a device makes the LED of the other device toggle its state; the logic on the edge/cloud simply swaps the device identifier. The application requires to set up two devices equipped with BLE connectivity, e.g.:
+ * The [example_ble_aws_1.py](https://github.com/STMicroelectronics-CentralLabs/EdgeSTSDK_Python/blob/master/edge_st_examples/aws/example_ble_aws_1.py) application example shows how to handle two BLE devices exporting a "Switch" feature in such a way that pressing the user button on a device makes the LED of the other device toggle its state, through a logic defined by the [GG_Switch_Lambda](https://github.com/STMicroelectronics-CentralLabs/EdgeSTSDK_Python/blob/master/edge_st_examples/aws/GG_Switch_Lambda.py) function that can run either on the edge or on the cloud, depending on the connection availability. The application requires to set up two devices equipped with BLE connectivity, e.g.:
    * Two [NUCLEO-F401RE](http://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-eval-tools/stm32-mcu-eval-tools/stm32-mcu-nucleo/nucleo-f401re.html) development boards
    * Two [X-NUCLEO-IDB05A1](http://www.st.com/content/st_com/en/products/ecosystems/stm32-open-development-environment/stm32-nucleo-expansion-boards/stm32-ode-connect-hw/x-nucleo-idb05a1.html) Bluetooth Low Energy expansion boards
    * Import the [Node_BLE_Switch_Device](https://os.mbed.com/teams/ST/code/Node_BLE_Switch_Device/) mbed OS application to your ARM mbed account, compile, and flash it onto the MCU board
-   * Edit the "example_ble_aws_1.py" application example and set the "SWITCH_DEVICE_1_MAC" and "SWITCH_DEVICE_2_MAC" global variables with the proper MAC address of your switch enabled BLE devices (which you can retrieve for example through a smartphone application)
+   * Edit the application example and set the "SWITCH_DEVICE_1_MAC" and "SWITCH_DEVICE_2_MAC" global variables with the proper MAC address of your switch enabled BLE devices (which you can retrieve for example through a smartphone application)
    * Put the certificates and the private keys of your devices into the folder on the Linux gateway specified by the "DEVICES_PATH" global variable
-   * Follow carefully the instructions described within the "example_ble_aws_1.pdf" application manual.
+   * Follow carefully the instructions described within the [example_ble_aws_1.pdf](https://github.com/STMicroelectronics-CentralLabs/EdgeSTSDK_Python/blob/master/edge_st_examples/aws/example_ble_aws_1.pdf) application manual.
 
 
-## How to run the application examples
+## Running the application examples
 To run the EdgeST application examples please follow the steps below:
  1. Clone the repository containing the BlueST SDK and the BlueST examples.
  2. Clone the repository containing the EdgeST SDK and the EdgeST examples.
