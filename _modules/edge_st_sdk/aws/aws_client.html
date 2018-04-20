@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>edge_st_sdk.aws.aws_client &mdash; EdgeSTSDK 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="EdgeSTSDK 1.0.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> EdgeSTSDK
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../edge_st_sdk.html">edge_st_sdk package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">EdgeSTSDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>edge_st_sdk.aws.aws_client</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for edge_st_sdk.aws.aws_client</h1><div class="highlight"><pre>
+<span></span><span class="c1">################################################################################</span>
+<span class="c1"># COPYRIGHT(c) 2018 STMicroelectronics                                         #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1"># Redistribution and use in source and binary forms, with or without           #</span>
+<span class="c1"># modification, are permitted provided that the following conditions are met:  #</span>
+<span class="c1">#   1. Redistributions of source code must retain the above copyright notice,  #</span>
+<span class="c1">#      this list of conditions and the following disclaimer.                   #</span>
+<span class="c1">#   2. Redistributions in binary form must reproduce the above copyright       #</span>
+<span class="c1">#      notice, this list of conditions and the following disclaimer in the     #</span>
+<span class="c1">#      documentation and/or other materials provided with the distribution.    #</span>
+<span class="c1">#   3. Neither the name of STMicroelectronics nor the names of its             #</span>
+<span class="c1">#      contributors may be used to endorse or promote products derived from    #</span>
+<span class="c1">#      this software without specific prior written permission.                #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;  #</span>
+<span class="c1"># AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE    #</span>
+<span class="c1"># IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE   #</span>
+<span class="c1"># ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE    #</span>
+<span class="c1"># LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR          #</span>
+<span class="c1"># CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF         #</span>
+<span class="c1"># SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS     #</span>
+<span class="c1"># INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN      #</span>
+<span class="c1"># CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)      #</span>
+<span class="c1"># ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE   #</span>
+<span class="c1"># POSSIBILITY OF SUCH DAMAGE.                                                  #</span>
+<span class="c1">################################################################################</span>
+
+
+<span class="sd">&quot;&quot;&quot;aws_client</span>
+
+<span class="sd">The aws_client module represents a client capable of connecting to the Amazon</span>
+<span class="sd">AWS IoT cloud and performing edge operations through the Greengrass SDK.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="c1"># IMPORT</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">AWSIoTPythonSDK.MQTTLib</span> <span class="k">import</span> <span class="n">AWSIoTMQTTShadowClient</span>
+
+<span class="kn">from</span> <span class="nn">edge_st_sdk.edge_client</span> <span class="k">import</span> <span class="n">EdgeClient</span>
+<span class="kn">import</span> <span class="nn">edge_st_sdk.aws.aws_greengrass</span>
+<span class="kn">from</span> <span class="nn">edge_st_sdk.utils.edge_st_exceptions</span> <span class="k">import</span> <span class="n">WrongInstantiationException</span>
+
+
+<span class="c1"># CLASSES</span>
+
+<div class="viewcode-block" id="AWSClient"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient">[docs]</a><span class="k">class</span> <span class="nc">AWSClient</span><span class="p">(</span><span class="n">EdgeClient</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class responsible for handling an Amazon AWS client used for plain MQTT</span>
+<span class="sd">    communication with AWS IoT.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AWSClient.__init__"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span> \
+        <span class="n">device_private_key_path</span><span class="p">,</span> <span class="n">group_ca_path</span><span class="p">,</span> <span class="n">core_info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            client_id (str): Name of the client, as it is on the cloud.</span>
+<span class="sd">            device_certificate_path (str): Relative path of the device&#39;s</span>
+<span class="sd">                certificate stored on the core device.</span>
+<span class="sd">            device_private_key_path (str): Relative path of the device&#39;s</span>
+<span class="sd">                private key stored on the core device.</span>
+<span class="sd">            group_ca_path (str): Relative path of the certification authority&#39;s</span>
+<span class="sd">                certificate stored on the core device.</span>
+<span class="sd">            core_info (list): Information related to the core of the group to</span>
+<span class="sd">                which the client belongs.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            :exc:`edge_st_sdk.utils.edge_st_exceptions.WrongInstantiationException`</span>
+<span class="sd">                is raised if the discovery of the core has not been completed</span>
+<span class="sd">                yet, i.e. if the AWSClient has not been instantiated through a</span>
+<span class="sd">                call to the</span>
+<span class="sd">                :meth:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client`</span>
+<span class="sd">                method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check the client is created with the right pattern (Builder).</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">edge_st_sdk</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">aws_greengrass</span><span class="o">.</span><span class="n">AWSGreengrass</span><span class="o">.</span><span class="n">discovery_completed</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">WrongInstantiationException</span><span class="p">(</span><span class="s1">&#39;Amazon AWS clients must be &#39;</span>
+                <span class="s1">&#39;obtained through a call to the </span><span class="se">\&#39;</span><span class="s1">get_client()</span><span class="se">\&#39;</span><span class="s1"> method of an &#39;</span>
+                <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">AWSGreengrass</span><span class="se">\&#39;</span><span class="s1"> object.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Saving informations.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span> <span class="o">=</span> <span class="n">client_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span> <span class="o">=</span> <span class="n">core_info</span>
+        
+        <span class="c1"># Creating a shadow client.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span> <span class="o">=</span> <span class="n">AWSIoTMQTTShadowClient</span><span class="p">(</span><span class="n">client_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureCredentials</span><span class="p">(</span><span class="n">group_ca_path</span><span class="p">,</span> <span class="n">device_private_key_path</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">)</span>
+
+        <span class="c1"># Getting the underneath client and configurint it.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">getMQTTConnection</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">configureOfflinePublishQueueing</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Infinite offline Publish queueing.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">configureDrainingFrequency</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># Draining: 2 Hz.</span>
+        
+        <span class="c1"># Creating a shadow handler with persistent subscription.</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">createShadowHandlerWithName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSClient.get_client_id"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_client_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_client_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the client identifier. </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The client identifier, i.e. the name of the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span>
+
+<div class="viewcode-block" id="AWSClient.connect"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Connect to the core.&quot;&quot;&quot;</span>
+        <span class="c1"># Iterate through the connection options for the core and use the first</span>
+        <span class="c1"># successful one.</span>
+        <span class="k">for</span> <span class="n">connectivity_info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">connectivityInfoList</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span> <span class="o">=</span> <span class="n">connectivity_info</span><span class="o">.</span><span class="n">host</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span> <span class="o">=</span> <span class="n">connectivity_info</span><span class="o">.</span><span class="n">port</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Trying to connect to core at </span><span class="si">%s</span><span class="s2">:</span><span class="si">%d</span><span class="s2">...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureEndpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureAutoReconnectBackoffTime</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureConnectDisconnectTimeout</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># 10 sec</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureMQTTOperationTimeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># 5 sec</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot connect to core </span><span class="si">%s</span><span class="s2">. Exiting...&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">coreThingArn</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shadow device </span><span class="si">%s</span><span class="s2"> successfully connected to core </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">coreThingArn</span><span class="p">))</span>
+
+<div class="viewcode-block" id="AWSClient.disconnect"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Disconnect from the core.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AWSClient.publish"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.publish">[docs]</a>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">qos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Publish a new message to the desired topic with the given quality of</span>
+<span class="sd">        service.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            topic (str): Topic name to publish to.</span>
+<span class="sd">            payload (str): Payload to publish (JSON formatted string).</span>
+<span class="sd">            qos (int): Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">qos</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSClient.subscribe"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.subscribe">[docs]</a>    <span class="k">def</span> <span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">qos</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Subscribe to the desired topic with the given quality of service and</span>
+<span class="sd">        register a callback to handle the published messages.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            topic (str): Topic name to publish to.</span>
+<span class="sd">            qos (int): Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
+<span class="sd">            callback: Function to be called when a new message for the</span>
+<span class="sd">                subscribed topic comes in.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">qos</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSClient.unsubscribe"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.unsubscribe">[docs]</a>    <span class="k">def</span> <span class="nf">unsubscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Unsubscribe to the desired topic.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            topic (str): Topic name to unsubscribe to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSClient.get_shadow_state"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_shadow_state">[docs]</a>    <span class="k">def</span> <span class="nf">get_shadow_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the state of the shadow client.</span>
+
+<span class="sd">        Retrieve the device shadow JSON document from the cloud by publishing an</span>
+<span class="sd">        empty JSON document to the corresponding shadow topics.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: Function to be called when the response for a shadow</span>
+<span class="sd">                request comes back.</span>
+<span class="sd">            timeout_s (int): Timeout in seconds to perform the request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowGet</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSClient.update_shadow_state"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.update_shadow_state">[docs]</a>    <span class="k">def</span> <span class="nf">update_shadow_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the state of the shadow client.</span>
+
+<span class="sd">        Update the device shadow JSON document string on the cloud by publishing</span>
+<span class="sd">        the provided JSON document to the corresponding shadow topics.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            payload (json): JSON document string used to update the shadow JSON</span>
+<span class="sd">                document on the cloud.</span>
+<span class="sd">            callback: Function to be called when the response for a shadow</span>
+<span class="sd">                request comes back.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowUpdate</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSClient.delete_shadow_state"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.delete_shadow_state">[docs]</a>    <span class="k">def</span> <span class="nf">delete_shadow_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete the state of the shadow client.</span>
+<span class="sd">        </span>
+<span class="sd">        Delete the device shadow from the cloud by publishing an empty JSON</span>
+<span class="sd">        document to the corresponding shadow topics.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback: Function to be called when the response for a shadow</span>
+<span class="sd">                request comes back.</span>
+<span class="sd">            timeout_s (int): Timeout in seconds to perform the request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowDelete</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Davide Aliprandi.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
