@@ -1,9 +1,9 @@
-.. BlueSTSDK documentation master file, created by
-   sphinx-quickstart on Mon Mar 19 18:29:39 2018.
+.. EdgeSTSDK documentation master file, created by
+   sphinx-quickstart on Mon Apr  2 01:04:28 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to BlueSTSDK's documentation!
+Welcome to EdgeSTSDK's documentation!
 =====================================
 
 .. include:: modules.rst
