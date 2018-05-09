@@ -13,16 +13,12 @@ This version of the SDK is compatible with [Python](https://www.python.org/) 2.7
 
 ## Preconditions
 Please refer to the [Amazon AWS Greengrass official documentation](https://docs.aws.amazon.com/greengrass/latest/developerguide/what-is-gg.html) to install the SDK. At the time of writing, this implies installing the following components:
- 1. Eclipse Paho MQTT Python client library, required to exchange messages via MQTT protocol:
-    ```Shell
-    $ sudo pip install paho-mqtt
-    ```
- 2. Amazon AWS IoT Python SDK:
+ 1. Amazon AWS IoT Python SDK:
     ```Shell
     $ sudo pip install AWSIoTPythonSDK
     ```
- 3. Amazon AWS IoT Greengrass SDK, that will be downloaded when creating a "Group" on the AWS web IoT Console on the cloud. Further actions are required to setup the environment, so please follow the abovementioned official documentation.
- 4. Moreover, the Python version of the [BlueST SDK](https://github.com/STMicroelectronics-CentralLabs/EdgeSTSDK_Python#bluest-sdk) is required to run the provided application examples.
+ 2. Amazon AWS IoT Greengrass SDK, that will be downloaded when creating a "Group" on the AWS web IoT Console on the cloud. Further actions are required to setup the environment, so please follow the abovementioned official documentation.
+ 3. Moreover, the Python version of the [BlueST SDK](https://github.com/STMicroelectronics-CentralLabs/EdgeSTSDK_Python#bluest-sdk) is required to run the provided application examples.
 
 
 ## BlueST SDK
@@ -44,13 +40,13 @@ Before running the application examples, please follow the steps here below.
 
 ## Running the application examples
 To run the EdgeST application examples please follow the steps below:
- 1. Clone the repository containing the BlueST SDK and the BlueST examples.
- 2. Clone the repository containing the EdgeST SDK and the EdgeST examples.
- 2. Add the parent folder of the "blue_st_sdk" package and the parent folder of the "edge_st_sdk" package to the "PYTHONPATH" environment variable. On Linux:
+ 1. Clone the repository containing the BlueST SDK and the BlueST examples into a "BlueSTSDK_Python" folder.
+ 2. Clone the repository containing the EdgeST SDK and the EdgeST examples into a "EdgeSTSDK_Python" folder.
+ 3. Add the "BlueSTSDK_Python" and the "EdgeSTSDK_Python" folders to the "PYTHONPATH" environment variable. On Linux:
     ```Shell
-    $ export PYTHONPATH=/home/<user>/.../<parent-of-blue_st_sdk>/:/home/<user>/.../<parent-of-edge_st_sdk>/
+    $ export PYTHONPATH=/home/<user>/BlueSTSDK_Python/:/home/<user>/EdgeSTSDK_Python/
     ```
- 3. Enter the EdgeST examples folder and run the main scripts, by providing the endpoint (i.e. IoT host) and the path of the root certification authority certificate, e.g.:
+ 4. Enter the EdgeST examples folder and run the main scripts, by providing the endpoint (i.e. IoT host) and the path of the root certification authority certificate, e.g.:
     ```Shell
     $ python example_ble_aws_x.py -e yyyyyyyyyyyyyy.iot.us-west-2.amazonaws.com -r /greengrass/certs/root.ca.pem
     ```
