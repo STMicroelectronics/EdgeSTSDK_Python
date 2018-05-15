@@ -42,11 +42,15 @@ Before running the application examples, please follow the steps here below.
 To run the EdgeST application examples please follow the steps below:
  1. Clone the repository containing the BlueST SDK and the BlueST examples into a "BlueSTSDK_Python" folder.
  2. Clone the repository containing the EdgeST SDK and the EdgeST examples into a "EdgeSTSDK_Python" folder.
- 3. Add the "BlueSTSDK_Python" and the "EdgeSTSDK_Python" folders to the "PYTHONPATH" environment variable. On Linux:
+ 3. Start the Greengrass daemon:
+    ```Shell
+    $ sudo /greengrass/ggc/core/greengrassd restart
+    ```
+ 4. Add the "BlueSTSDK_Python" and the "EdgeSTSDK_Python" folders to the "PYTHONPATH" environment variable. On Linux:
     ```Shell
     $ export PYTHONPATH=/home/<user>/BlueSTSDK_Python/:/home/<user>/EdgeSTSDK_Python/
     ```
- 4. Enter the EdgeST examples folder and run the main scripts, by providing the endpoint (i.e. IoT host) and the path of the root certification authority certificate, e.g.:
+ 5. Enter the EdgeST examples folder and run the main scripts, by providing the endpoint (i.e. IoT host) and the path of the root certification authority certificate, e.g.:
     ```Shell
     $ python example_ble_aws_x.py -e yyyyyyyyyyyyyy.iot.us-west-2.amazonaws.com -r /greengrass/certs/root.ca.pem
     ```
