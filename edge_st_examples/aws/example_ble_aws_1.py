@@ -76,11 +76,11 @@ from edge_st_sdk.utils.edge_st_exceptions import WrongInstantiationException
 
 # PRECONDITIONS
 #
-# Please remember to add to the "PYTHONPATH" environment variable the parent
-# folder of the "blue_st_sdk" and the "edge_st_sdk" packages.
+# Please remember to add to the "PYTHONPATH" environment variable the location
+# of the "BlueSTSDK_Python" and the "EdgeSTSDK_Python" SDKs.
 #
 # On Linux:
-#   export PYTHONPATH="/home/pi/BlueSTSDK_Python/:"
+# export PYTHONPATH=/home/<user>/BlueSTSDK_Python:/home/<user>/EdgeSTSDK_Python
 
 
 # CONSTANTS
@@ -374,41 +374,32 @@ def switch_device_act(switch_device, switch_device_feature, switch_device_status
 #
 # Custom shadow callback for "get()" operations.
 #
-def custom_shadow_callback_get(payload, responseStatus, token):
-    # payload is a JSON string ready to be parsed using json.loads(...)
-    # in both Py2.x and Py3.x
-    if responseStatus == "timeout":
-        print("Get request " + token + " time out!")
-    if responseStatus == "accepted":
-        state_json_str = json.loads(payload)
-        print("Get request with token: " + token + " accepted!")
-    if responseStatus == "rejected":
-        print("Get request " + token + " rejected!")
+def custom_shadow_callback_get(payload, response_status, token):
+    # "payload" is a JSON string ready to be parsed using "json.loads()" both in
+    # both Python 2.x and Python 3.x
+    print("Get request with token \"" + token + "\" " + response_status)
+    #if response_status == "accepted":
+    #    state_json_str = json.loads(payload)
 
 #
 # Custom shadow callback for "update()" operations.
 #
-def custom_shadow_callback_update(payload, responseStatus, token):
-    # payload is a JSON string ready to be parsed using json.loads(...)
-    # in both Py2.x and Py3.x
-    if responseStatus == "timeout":
-        print("Update request " + token + " time out!")
-    if responseStatus == "accepted":
-        state_json_str = json.loads(payload)
-        print("Update request with token: " + token + " accepted!")
-    if responseStatus == "rejected":
-        print("Update request " + token + " rejected!")
+def custom_shadow_callback_update(payload, response_status, token):
+    # "payload" is a JSON string ready to be parsed using "json.loads()" both in
+    # both Python 2.x and Python 3.x
+    print("Update request with token \"" + token + "\" " + response_status)
+    #if response_status == "accepted":
+    #    state_json_str = json.loads(payload)
 
 #
 # Custom shadow callback for "delete()" operations.
 #
-def custom_shadow_callback_delete(payload, responseStatus, token):
-    if responseStatus == "timeout":
-        print("Delete request " + token + " time out")
-    if responseStatus == "accepted":
-        print("Delete request with token: " + token + " accepted!")
-    if responseStatus == "rejected":
-        print("Delete request " + token + " rejected")
+def custom_shadow_callback_delete(payload, response_status, token):
+    # "payload" is a JSON string ready to be parsed using "json.loads()" both in
+    # both Python 2.x and Python 3.x
+    print("Delete request with token \"" + token + "\" " + response_status)
+    #if response_status == "accepted":
+    #    state_json_str = json.loads(payload)
 
 
 # MAIN APPLICATION
