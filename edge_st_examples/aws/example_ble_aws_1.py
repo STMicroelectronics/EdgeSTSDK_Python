@@ -534,10 +534,10 @@ def main(argv):
 
             # Handling actuation of switch devices.
             if switch_device_1_act_flag:
-                switch_device_act(switch_device_1, switch_device_1_feature, switch_device_1_status, switch_device_1_client)
+                switch_device_act(switch_device_1, switch_device_1_feature, switch_device_1_status, switch_device_2_client)
                 switch_device_1_act_flag = False
             elif switch_device_2_act_flag:
-                switch_device_act(switch_device_2, switch_device_2_feature, switch_device_2_status, switch_device_2_client)
+                switch_device_act(switch_device_2, switch_device_2_feature, switch_device_2_status, switch_device_1_client)
                 switch_device_2_act_flag = False
 
     except InvalidOperationException as e:
