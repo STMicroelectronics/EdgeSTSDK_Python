@@ -14,14 +14,14 @@ import unicodedata
 
 
 # MQTT
-MQTT_SWITCH_DEVICE_ACT_TOPIC = "switch_device/act"
-
-# Client IDs
-SWITCH_DEVICE_1_NAME = "GG_Switch_Device_1"
-SWITCH_DEVICE_2_NAME = "GG_Switch_Device_2"
+MQTT_IOT_DEVICE_ACT_TOPIC = "iot_device/switch_act"
 
 # Events
 SWITCH_EVENT = "Status"
+
+# Client IDs
+IOT_DEVICE_1_NAME = 'IoT_Device_1'
+IOT_DEVICE_2_NAME = 'IoT_Device_2'
 
 # Setup logging to stdout
 logger = logging.getLogger(__name__)
@@ -37,11 +37,11 @@ my_platform = platform.platform()
 # The 'event' parameter has to be a json object.
 # In this case the logic is simple: just a substitution of the client identifier.
 # In other more complex scenarios, the new json object to build could be more sophisticated.
-def function_handler(event, context):
+def lambda_handler(event, context):
     if SWITCH_EVENT in event:
-        if SWITCH_DEVICE_1_NAME in event[SWITCH_EVENT]:
-            new_event = json.dumps({SWITCH_EVENT: event[SWITCH_EVENT].replace(SWITCH_DEVICE_1_NAME, SWITCH_DEVICE_2_NAME)})
+        if IOT_DEVICE_1_NAME in event[SWITCH_EVENT]:
+            new_event = json.dumps({SWITCH_EVENT: event[SWITCH_EVENT].replace(IOT_DEVICE_1_NAME, IOT_DEVICE_2_NAME)})
         else:
-            new_event = json.dumps({SWITCH_EVENT: event[SWITCH_EVENT].replace(SWITCH_DEVICE_2_NAME, SWITCH_DEVICE_1_NAME)})
-        client.publish(topic = MQTT_SWITCH_DEVICE_ACT_TOPIC, payload = new_event)
+            new_event = json.dumps({SWITCH_EVENT: event[SWITCH_EVENT].replace(IOT_DEVICE_2_NAME, IOT_DEVICE_1_NAME)})
+        client.publish(topic = MQTT_IOT_DEVICE_ACT_TOPIC, payload = new_event)
         return
