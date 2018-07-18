@@ -26,9 +26,9 @@
 ################################################################################
 
 
-"""EdgeClient
+"""edge_client
 
-The EdgeClient module contains an interface for creating edge client classes.
+The edge_client module contains an interface for creating edge client classes.
 """
 
 
