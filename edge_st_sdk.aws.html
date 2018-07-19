@@ -195,14 +195,14 @@ communication with AWS IoT.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Name of the client, as it is on the cloud.</li>
-<li><strong>device_certificate_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Relative path of the device’s
+<li><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the client, as it is on the cloud.</li>
+<li><strong>device_certificate_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the device’s
 certificate stored on the core device.</li>
-<li><strong>device_private_key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Relative path of the device’s
+<li><strong>device_private_key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the device’s
 private key stored on the core device.</li>
-<li><strong>group_ca_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Relative path of the certification authority’s
+<li><strong>group_ca_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the certification authority’s
 certificate stored on the core device.</li>
-<li><strong>core_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – Information related to the core of the group to
+<li><strong>core_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – Information related to the core of the group to
 which the client belongs.</li>
 </ul>
 </td>
@@ -237,7 +237,7 @@ document to the corresponding shadow topics.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</li>
-<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
+<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
 </ul>
 </td>
 </tr>
@@ -261,7 +261,7 @@ request comes back.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The client identifier, i.e. the name of the client.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)">str</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -280,7 +280,7 @@ empty JSON document to the corresponding shadow topics.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</li>
-<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
+<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
 </ul>
 </td>
 </tr>
@@ -298,9 +298,9 @@ service.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Topic name to publish to.</li>
-<li><strong>payload</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Payload to publish (JSON formatted string).</li>
-<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
+<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</li>
+<li><strong>payload</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Payload to publish (JSON formatted string).</li>
+<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
 </ul>
 </td>
 </tr>
@@ -318,8 +318,8 @@ register a callback to handle the published messages.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Topic name to publish to.</li>
-<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
+<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</li>
+<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
 <li><strong>callback</strong> – Function to be called when a new message for the
 subscribed topic comes in.</li>
 </ul>
@@ -337,7 +337,7 @@ subscribed topic comes in.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Topic name to unsubscribe to.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to unsubscribe to.</td>
 </tr>
 </tbody>
 </table>
@@ -376,7 +376,7 @@ AWS devices and allocating the needed resources.</p>
 <dl class="class">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass">
 <em class="property">class </em><code class="descclassname">edge_st_sdk.aws.aws_greengrass.</code><code class="descname">AWSGreengrass</code><span class="sig-paren">(</span><em>endpoint</em>, <em>root_ca_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="attribute">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.MAX_DISCOVERY_ATTEMPTS">
 <code class="descname">MAX_DISCOVERY_ATTEMPTS</code><em class="property"> = 10</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.MAX_DISCOVERY_ATTEMPTS" title="Permalink to this definition">¶</a></dt>
@@ -393,8 +393,8 @@ AWS devices and allocating the needed resources.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>endpoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – AWS endpoint.</li>
-<li><strong>root_ca_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Path to the root Certification Authority file.</li>
+<li><strong>endpoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – AWS endpoint.</li>
+<li><strong>root_ca_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to the root Certification Authority file.</li>
 </ul>
 </td>
 </tr>
@@ -412,7 +412,7 @@ AWS devices and allocating the needed resources.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the discovery process has completed, Falseotherwise.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.6)">bool</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -427,10 +427,10 @@ AWS devices and allocating the needed resources.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Name of the client, as it is on the cloud.</li>
-<li><strong>device_certificate_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Relative path of the device’s
+<li><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the client, as it is on the cloud.</li>
+<li><strong>device_certificate_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the device’s
 certificate stored on the core device.</li>
-<li><strong>device_private_key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Relative path of the device’s
+<li><strong>device_private_key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the device’s
 private key stored on the core device.</li>
 </ul>
 </td>

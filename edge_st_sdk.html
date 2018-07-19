@@ -188,12 +188,12 @@
 </div>
 <div class="section" id="module-edge_st_sdk.edge_client">
 <span id="edge-st-sdk-edge-client-module"></span><h2>edge_st_sdk.edge_client module<a class="headerlink" href="#module-edge_st_sdk.edge_client" title="Permalink to this headline">¶</a></h2>
-<p>EdgeClient</p>
-<p>The EdgeClient module contains an interface for creating edge client classes.</p>
+<p>edge_client</p>
+<p>The edge_client module contains an interface for creating edge client classes.</p>
 <dl class="class">
 <dt id="edge_st_sdk.edge_client.EdgeClient">
 <em class="property">class </em><code class="descclassname">edge_st_sdk.edge_client.</code><code class="descname">EdgeClient</code><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>The EdgeClient class is an interface for creating edge client classes.</p>
 <dl class="method">
 <dt id="edge_st_sdk.edge_client.EdgeClient.connect">
@@ -214,7 +214,7 @@ document to the corresponding shadow topics.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</li>
-<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
+<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
 </ul>
 </td>
 </tr>
@@ -241,7 +241,7 @@ empty JSON document to the corresponding shadow topics.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</li>
-<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
+<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
 </ul>
 </td>
 </tr>
@@ -259,9 +259,9 @@ service.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Topic name to publish to.</li>
-<li><strong>payload</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Payload to publish (JSON formatted string).</li>
-<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
+<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</li>
+<li><strong>payload</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Payload to publish (JSON formatted string).</li>
+<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
 </ul>
 </td>
 </tr>
@@ -279,8 +279,8 @@ register a callback to handle the published messages.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Topic name to publish to.</li>
-<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
+<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</li>
+<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
 <li><strong>callback</strong> – Function to be called when a new message for the
 subscribed topic comes in.</li>
 </ul>
@@ -298,7 +298,7 @@ subscribed topic comes in.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – Topic name to unsubscribe to.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to unsubscribe to.</td>
 </tr>
 </tbody>
 </table>
@@ -319,7 +319,7 @@ the provided JSON document to the corresponding shadow topics.</p>
 document on the cloud.</li>
 <li><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</li>
-<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
+<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
 </ul>
 </td>
 </tr>
