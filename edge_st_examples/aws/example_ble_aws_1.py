@@ -140,13 +140,13 @@ MQTT_IOT_DEVICE_SWITCH_ACT_TOPIC =   "iot_device/switch_act"
 
 # Put the certificates and the private keys of your devices into the following
 # path on the Linux gateway.
-DEVICES_PATH   = "./devices_ble_aws_1/"
+DEVICES_PATH   = "./devices_ble_aws/"
 IOT_DEVICE_1_NAME = 'IoT_Device_1'
 IOT_DEVICE_2_NAME = 'IoT_Device_2'
-IOT_DEVICE_1_CERTIFICATE_PATH = DEVICES_PATH + "iot_device_1.cert.pem"
-IOT_DEVICE_2_CERTIFICATE_PATH = DEVICES_PATH + "iot_device_2.cert.pem"
-IOT_DEVICE_1_PRIVATE_KEY_PATH = DEVICES_PATH + "iot_device_1.private.key"
-IOT_DEVICE_2_PRIVATE_KEY_PATH = DEVICES_PATH + "iot_device_2.private.key"
+IOT_DEVICE_1_CERTIFICATE_PATH = DEVICES_PATH + "IoT_Device_1.pem"
+IOT_DEVICE_2_CERTIFICATE_PATH = DEVICES_PATH + "IoT_Device_2.pem"
+IOT_DEVICE_1_PRIVATE_KEY_PATH = DEVICES_PATH + "IoT_Device_1.prv"
+IOT_DEVICE_2_PRIVATE_KEY_PATH = DEVICES_PATH + "IoT_Device_2.prv"
 
 
 # SHADOW JSON SCHEMAS
@@ -408,7 +408,7 @@ def custom_shadow_callback_delete(payload, response_status, token):
 # other device by pressing the user button.
 def main(argv):
 
-    # Global variabbles.
+    # Global variables.
     global endpoint, root_ca_path
     global iot_device_1_client, iot_device_2_client
     global iot_device_1, iot_device_2
