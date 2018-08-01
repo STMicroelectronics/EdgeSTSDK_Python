@@ -95,6 +95,7 @@ from edge_st_sdk.utils.edge_st_exceptions import WrongInstantiationException
 
 # CONSTANTS
 
+# Usage message.
 USAGE = """Usage:
 
 Use certificate based mutual authentication:
@@ -102,6 +103,7 @@ python <application>.py -e <endpoint> -r <root_ca_path>
 
 """
 
+# Help message.
 HELP = """-e, --endpoint
     Your AWS IoT custom endpoint
 -r, --rootCA
@@ -111,49 +113,39 @@ HELP = """-e, --endpoint
 
 """
 
+# Presentation message.
 INTRO = """###############################################
 # Edge IoT Example with Amazon Cloud Platform #
 ###############################################"""
 
-
-# BLUETOOTH DEVICES
-
-# Put here the MAC address of your Bluetooth Low Energy and Switch enabled
-# devices.
+# Bluetooth Low Energy devices' MAC address.
 IOT_DEVICE_1_MAC = 'd1:07:fd:84:30:8c'
 IOT_DEVICE_2_MAC = 'd7:90:95:be:58:7e'
 
-
-# TIMEOUTS
-
+# Timeouts.
 SCANNING_TIME_s = 5
 SHADOW_CALLBACK_TIMEOUT_s = 5
+SENSORS_DATA_PUBLISHING_TIME_s = 5
 
-
-# MQTT QOS
-
+# MQTT QoS.
 MQTT_QOS_0 = 0
 MQTT_QOS_1 = 1
 
-
-# MQTT TOPICS
-
-MQTT_IOT_DEVICE_ENV_INE_TOPIC =      "iot_device/env_ine_sense"
+# MQTT Topics.
 MQTT_IOT_DEVICE_SWITCH_SENSE_TOPIC = "iot_device/switch_sense"
 MQTT_IOT_DEVICE_SWITCH_ACT_TOPIC =   "iot_device/switch_act"
+MQTT_IOT_DEVICE_ENV_INE_TOPIC =      "iot_device/env_ine_sense"
 
-
-# AWS
-
-# Put the certificates and the private keys of your devices into the following
-# path on the Linux gateway.
-DEVICES_PATH   = "./devices_ble_aws/"
+# Devices' certificates, private keys, and path on the Linux gateway.
+CERTIF_EXT = ".pem"
+PRIV_K_EXT = ".prv"
+DEVICES_PATH = "./devices_ble_aws/"
 IOT_DEVICE_1_NAME = 'IoT_Device_1'
 IOT_DEVICE_2_NAME = 'IoT_Device_2'
-IOT_DEVICE_1_CERTIFICATE_PATH = DEVICES_PATH + "IoT_Device_1.pem"
-IOT_DEVICE_2_CERTIFICATE_PATH = DEVICES_PATH + "IoT_Device_2.pem"
-IOT_DEVICE_1_PRIVATE_KEY_PATH = DEVICES_PATH + "IoT_Device_1.prv"
-IOT_DEVICE_2_PRIVATE_KEY_PATH = DEVICES_PATH + "IoT_Device_2.prv"
+IOT_DEVICE_1_CERTIF_PATH = DEVICES_PATH + IOT_DEVICE_1_NAME + CERTIF_EXT
+IOT_DEVICE_2_CERTIF_PATH = DEVICES_PATH + IOT_DEVICE_2_NAME + CERTIF_EXT
+IOT_DEVICE_1_PRIV_K_PATH = DEVICES_PATH + IOT_DEVICE_1_NAME + PRIV_K_EXT
+IOT_DEVICE_2_PRIV_K_PATH = DEVICES_PATH + IOT_DEVICE_2_NAME + PRIV_K_EXT
 
 
 # SHADOW JSON SCHEMAS
@@ -162,55 +154,55 @@ IOT_DEVICE_2_PRIVATE_KEY_PATH = DEVICES_PATH + "IoT_Device_2.prv"
 #"state": {
 #  "desired": {
 #    "welcome": "aws-iot",
-#    "switch_status": "0",
-#    "pressure": "0",
-#    "humidity": "0",
-#    "temperature": "0",
-#    "accelerometer_x": "0",
-#    "accelerometer_y": "0",
-#    "accelerometer_z": "0",
-#    "gyroscope_x": "0",
-#    "gyroscope_y": "0",
-#    "gyroscope_z": "0",
-#    "magnetometer_x": "0",
-#    "magnetometer_y": "0",
-#    "magnetometer_z": "0"
+#    "switch_status": 0,
+#    "pressure": 0,
+#    "humidity": 0,
+#    "temperature": 0,
+#    "accelerometer_x": 0,
+#    "accelerometer_y": 0,
+#    "accelerometer_z": 0,
+#    "gyroscope_x": 0,
+#    "gyroscope_y": 0,
+#    "gyroscope_z": 0,
+#    "magnetometer_x": 0,
+#    "magnetometer_y": 0,
+#    "magnetometer_z": 0
 #  },
 #  "reported": {
 #    "welcome": "aws-iot"
 #  },
 #  "delta": {
-#    "switch_status": "0",
-#    "pressure": "0",
-#    "humidity": "0",
-#    "temperature": "0",
-#    "accelerometer_x": "0",
-#    "accelerometer_y": "0",
-#    "accelerometer_z": "0",
-#    "gyroscope_x": "0",
-#    "gyroscope_y": "0",
-#    "gyroscope_z": "0",
-#    "magnetometer_x": "0",
-#    "magnetometer_y": "0",
-#    "magnetometer_z": "0"
+#    "switch_status": 0,
+#    "pressure": 0,
+#    "humidity": 0,
+#    "temperature": 0,
+#    "accelerometer_x": 0,
+#    "accelerometer_y": 0,
+#    "accelerometer_z": 0,
+#    "gyroscope_x": 0,
+#    "gyroscope_y": 0,
+#    "gyroscope_z": 0,
+#    "magnetometer_x": 0,
+#    "magnetometer_y": 0,
+#    "magnetometer_z": 0
 #  }
 #}
 
 
-# SWITCH STATUS
+# CLASSES
 
+# Status of the switch.
 class SwitchStatus(Enum):
     OFF = 0
     ON = 1
 
-
-# SENSORS DATA
-
+# Index of the axes.
 class AxesIndex(Enum):
     X = 0
     Y = 1
     Z = 2
 
+# Index of the features.
 class FeaturesIndex(Enum):
     PRESSURE = 0
     HUMIDITY = 1
@@ -219,10 +211,8 @@ class FeaturesIndex(Enum):
     GYROSCOPE = 4
     MAGNETOMETER = 5
 
-SENSORS_DATA_PUBLISHING_TIME_s = 5
 
-
-# UTILITY FUNCTIONS
+# FUNCTIONS
 
 #
 # Printing intro.
@@ -276,7 +266,7 @@ def configure_logging():
     logger.addHandler(streamHandler)
 
 
-# LISTENERS
+# INTERFACES
 
 #
 # Implementation of the interface used by the Manager class to notify that a new
@@ -514,6 +504,7 @@ def iot_device_send_data(iot_device_data, iot_device_client, topic):
         '"magnetometer_z":' + str(magnetometer[AxesIndex.Z.value]) + '}}}'
     iot_device_client.update_shadow_state(state_json_str, custom_shadow_callback_update, SHADOW_CALLBACK_TIMEOUT_s)
 
+
 # SHADOW DEVICES' CALLBACKS
 
 #
@@ -578,9 +569,9 @@ class MyFeatureSensorsThread(threading.Thread):
 
 # MAIN APPLICATION
 
-# This application example connects to two Bluetooth Low Energy devices and to
-# the Cloud, then allows each of the two devices to turn ON/OFF the LED of the
-# other device by pressing the user button.
+#
+# Main application.
+#
 def main(argv):
 
     # Global variables.
@@ -682,8 +673,8 @@ def main(argv):
         edge = AWSGreengrass(endpoint, root_ca_path)
 
         # Getting AWS MQTT clients.
-        iot_device_1_client = edge.get_client(IOT_DEVICE_1_NAME, IOT_DEVICE_1_CERTIFICATE_PATH, IOT_DEVICE_1_PRIVATE_KEY_PATH)
-        iot_device_2_client = edge.get_client(IOT_DEVICE_2_NAME, IOT_DEVICE_2_CERTIFICATE_PATH, IOT_DEVICE_2_PRIVATE_KEY_PATH)
+        iot_device_1_client = edge.get_client(IOT_DEVICE_1_NAME, IOT_DEVICE_1_CERTIF_PATH, IOT_DEVICE_1_PRIV_K_PATH)
+        iot_device_2_client = edge.get_client(IOT_DEVICE_2_NAME, IOT_DEVICE_2_CERTIF_PATH, IOT_DEVICE_2_PRIV_K_PATH)
 
         # Connecting clients to the cloud.
         iot_device_1_client.connect()
@@ -736,7 +727,7 @@ def main(argv):
         iot_device_2.enable_notifications(iot_device_2_feature_magnetometer)
 
         # Demo running.
-        print('\nDemo running...\n')
+        print('\nDemo running (\"CTRL+C\" to quit)...\n')
 
         # Starting threads.
         sensors_thread = MyFeatureSensorsThread(SENSORS_DATA_PUBLISHING_TIME_s)

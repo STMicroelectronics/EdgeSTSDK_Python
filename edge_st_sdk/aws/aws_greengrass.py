@@ -157,7 +157,7 @@ class AWSGreengrass(object):
         """Discovery completed.
 
         Returns:
-            bool: True if the discovery process has completed, Falseotherwise.
+            bool: True if the discovery process has completed, False otherwise.
         """ 
         return AWSGreengrass._discovery_completed
 
