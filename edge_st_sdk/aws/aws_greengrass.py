@@ -58,6 +58,9 @@ class AWSGreengrass(object):
     _GROUP_CA_PATH  = "./aws_group_ca/"
     """Group Certification Authority path.""" 
 
+    _TIMEOUT_s = 10
+    """Timeout for discovering information."""
+
     _discovery_completed = False
     """Discovery completed flag."""
 
@@ -77,7 +80,7 @@ class AWSGreengrass(object):
 
     def _discover_core(self, client_id, device_certificate_path, device_private_key_path):
         """Performing the discovery of the core belonging to the same group of
-        the given client identifier.
+        the given client name.
 
         Args:
             client_id (str): Name of a client, as it is on the cloud, belonging
@@ -96,49 +99,60 @@ class AWSGreengrass(object):
         # Discover GGCs
         discoveryInfoProvider = DiscoveryInfoProvider()
         discoveryInfoProvider.configureEndpoint(self._endpoint)
-        discoveryInfoProvider.configureCredentials(self._root_ca_path, device_certificate_path, device_private_key_path)
-        discoveryInfoProvider.configureTimeout(10)  # 10 sec
+        discoveryInfoProvider.configureCredentials(
+            self._root_ca_path,
+            device_certificate_path,
+            device_private_key_path)
+        discoveryInfoProvider.configureTimeout(self._TIMEOUT_s)
         retryCount = self.MAX_DISCOVERY_ATTEMPTS
         discovered = False
 
         while retryCount != 0:
             try:
+                # Discovering information.
                 discoveryInfo = discoveryInfoProvider.discover(client_id)
                 caList = discoveryInfo.getAllCas()
                 coreList = discoveryInfo.getAllCores()
-                # We only pick the first ca and core info
-                groupId, ca = caList[0]
-                self._core_info = coreList[0]
-                print("Discovered GGC: %s from Group: %s" % (self._core_info.coreThingArn, groupId))
 
-                print("Now we persist the connectivity/identity information...")
-                self._group_ca_path = self._GROUP_CA_PATH + groupId + "_CA_" + str(uuid.uuid4()) + ".crt"
+                # Picking only the first ca and core info.
+                group_id, ca = caList[0]
+                self._core_info = coreList[0]
+
+                # Persisting connectivity/identity information.
+                self._group_ca_path = self._GROUP_CA_PATH + group_id + \
+                    "_CA_" + str(uuid.uuid4()) + ".crt"
                 if not os.path.exists(self._GROUP_CA_PATH):
                     os.makedirs(self._GROUP_CA_PATH)
                 group_ca_path_file = open(self._group_ca_path, "w")
                 group_ca_path_file.write(ca)
                 group_ca_path_file.close()
                 discovered = True
-                print("Now proceed to the connecting flow...")
                 break
+
             except DiscoveryInvalidRequestException as e:
-                print("Invalid discovery request detected!")
+                print("Invalid discovery request detected.")
                 print("Type: %s" % str(type(e)))
                 print("Error message: %s" % e.message)
                 print("Stopping...")
                 break
+
             except BaseException as e:
-                print("Error in discovery!")
+                print("Error in discovery.")
                 print("Type: %s" % str(type(e)))
                 print("Error message: %s" % e.message)
                 retryCount -= 1
-                print("\n%d/%d retries left\n" % (retryCount, self.MAX_DISCOVERY_ATTEMPTS))
+                print("\n%d/%d retries left.\n" % \
+                    (retryCount, self.MAX_DISCOVERY_ATTEMPTS))
                 print("Backing off...\n")
                 backOffCore.backOff()
 
         if not discovered:
-            print("Discovery failed after %d retries. Exiting...\n" % (self.MAX_DISCOVERY_ATTEMPTS))
+            print("Discovery failed after %d retries. Exiting...\n" % \
+                (self.MAX_DISCOVERY_ATTEMPTS))
             sys.exit(-1)
+
+        print("Discovered Greengrass Core %s from Group %s" % \
+            (self._core_info.coreThingArn, group_id))
 
         self._configure_logging()
         AWSGreengrass._discovery_completed = True
@@ -148,7 +162,8 @@ class AWSGreengrass(object):
         self._logger = logging.getLogger("AWSIoTPythonSDK.core")
         self._logger.setLevel(logging.ERROR)
         self._streamHandler = logging.StreamHandler()
-        self._formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self._formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         self._streamHandler.setFormatter(self._formatter)
         self._logger.addHandler(self._streamHandler)
 
@@ -177,7 +192,15 @@ class AWSGreengrass(object):
         # Performing the discovery of the core belonging to the same group of
         # the client.
         if not self._discovery_completed:
-            self._discover_core(client_id, device_certificate_path, device_private_key_path)
+            self._discover_core(
+                client_id,
+                device_certificate_path,
+                device_private_key_path)
 
         # Creating the client.
-        return edge_st_sdk.aws.aws_client.AWSClient(client_id, device_certificate_path, device_private_key_path, self._group_ca_path, self._core_info)
+        return edge_st_sdk.aws.aws_client.AWSClient(
+            client_id,
+            device_certificate_path,
+            device_private_key_path,
+            self._group_ca_path,
+            self._core_info)

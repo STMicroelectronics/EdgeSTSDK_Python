@@ -309,7 +309,7 @@ class MyNodeListener(NodeListener):
     # @param old_status Old node status.
     #
     def on_status_change(self, node, new_status, old_status):
-        print('Device %s went from %s to %s.' %
+        print('Device %s from %s to %s.' %
             (node.get_name(), str(old_status), str(new_status)))
 
 
@@ -343,7 +343,7 @@ class MyFeatureSwitchListener(FeatureListener):
                 feature.get_fields_description()[0].get_name()): \
                 '({:d}) {:s} {:s}'.format(
                     sample.get_timestamp(),
-                    self._client.get_client_id(),
+                    self._client.get_name(),
                     str(switch_status)
                     )})
 
@@ -382,19 +382,19 @@ class MyFeatureSensorsListener(FeatureListener):
         elif isinstance(feature, feature_temperature.FeatureTemperature):
             self._data[FeaturesIndex.TEMPERATURE.value] = feature_temperature.FeatureTemperature.get_temperature(sample)
         elif isinstance(feature, feature_accelerometer.FeatureAccelerometer):
-            data[AxesIndex.X.value] = feature_accelerometer.FeatureAccelerometer.get_acc_x(sample)
-            data[AxesIndex.Y.value] = feature_accelerometer.FeatureAccelerometer.get_acc_y(sample)
-            data[AxesIndex.Z.value] = feature_accelerometer.FeatureAccelerometer.get_acc_z(sample)
+            data[AxesIndex.X.value] = feature_accelerometer.FeatureAccelerometer.get_accelerometer_x(sample)
+            data[AxesIndex.Y.value] = feature_accelerometer.FeatureAccelerometer.get_accelerometer_y(sample)
+            data[AxesIndex.Z.value] = feature_accelerometer.FeatureAccelerometer.get_accelerometer_z(sample)
             self._data[FeaturesIndex.ACCELEROMETER.value] = data
         elif isinstance(feature, feature_gyroscope.FeatureGyroscope):
-            data[AxesIndex.X.value] = feature_gyroscope.FeatureGyroscope.get_gyr_x(sample)
-            data[AxesIndex.Y.value] = feature_gyroscope.FeatureGyroscope.get_gyr_y(sample)
-            data[AxesIndex.Z.value] = feature_gyroscope.FeatureGyroscope.get_gyr_z(sample)
+            data[AxesIndex.X.value] = feature_gyroscope.FeatureGyroscope.get_gyroscope_x(sample)
+            data[AxesIndex.Y.value] = feature_gyroscope.FeatureGyroscope.get_gyroscope_y(sample)
+            data[AxesIndex.Z.value] = feature_gyroscope.FeatureGyroscope.get_gyroscope_z(sample)
             self._data[FeaturesIndex.GYROSCOPE.value] = data
         elif isinstance(feature, feature_magnetometer.FeatureMagnetometer):
-            data[AxesIndex.X.value] = feature_magnetometer.FeatureMagnetometer.get_mag_x(sample)
-            data[AxesIndex.Y.value] = feature_magnetometer.FeatureMagnetometer.get_mag_y(sample)
-            data[AxesIndex.Z.value] = feature_magnetometer.FeatureMagnetometer.get_mag_z(sample)
+            data[AxesIndex.X.value] = feature_magnetometer.FeatureMagnetometer.get_magnetometer_x(sample)
+            data[AxesIndex.Y.value] = feature_magnetometer.FeatureMagnetometer.get_magnetometer_y(sample)
+            data[AxesIndex.Z.value] = feature_magnetometer.FeatureMagnetometer.get_magnetometer_z(sample)
             self._data[FeaturesIndex.MAGNETOMETER.value] = data
 
 
@@ -408,7 +408,7 @@ def iot_device_1_callback(client, userdata, message):
 
     #print("Receiving: %s" % (message.payload))
 
-    # Getting the client identifier and the switch status from the message.
+    # Getting the client name and the switch status from the message.
     feature_name = feature_switch.FeatureSwitch.FEATURE_DATA_NAME
     if feature_name in message.payload:
         message_json = json.loads(message.payload)
@@ -427,7 +427,7 @@ def iot_device_2_callback(client, userdata, message):
 
     #print("Receiving: %s" % (message.payload))
 
-    # Getting the client identifier and the switch status from the message.
+    # Getting the client name and the switch status from the message.
     feature_name = feature_switch.FeatureSwitch.FEATURE_DATA_NAME
     if feature_name in message.payload:
         message_json = json.loads(message.payload)
@@ -469,7 +469,7 @@ def iot_device_send_data(iot_device_data, iot_device_client, topic):
 
     # Getting a JSON string representation of the message to publish.
     sample_json_str = json.dumps(
-        {'Board_id': '{:s}'.format(iot_device_client.get_client_id()), 
+        {'Board_id': '{:s}'.format(iot_device_client.get_name()), 
          'Temperature': str(temperature), 
          'Humidity': str(humidity), 
          'Pressure': str(pressure), 

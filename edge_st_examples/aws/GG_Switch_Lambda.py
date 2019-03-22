@@ -35,7 +35,7 @@ my_platform = platform.platform()
 
 # Function handler.
 # The 'event' parameter has to be a json object.
-# In this case the logic is simple: just a substitution of the client identifier.
+# In this case the logic is simple: just a substitution of the client name.
 # In other more complex scenarios, the new json object to build could be more sophisticated.
 def lambda_handler(event, context):
     if SWITCH_EVENT in event:

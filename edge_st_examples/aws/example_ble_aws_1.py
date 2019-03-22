@@ -262,7 +262,7 @@ class MyNodeListener(NodeListener):
     # @param old_status Old node status.
     #
     def on_status_change(self, node, new_status, old_status):
-        print('Device %s went from %s to %s.' %
+        print('Device %s from %s to %s.' %
             (node.get_name(), str(old_status), str(new_status)))
 
 
@@ -296,7 +296,7 @@ class MyFeatureSwitchListener(FeatureListener):
                 feature.get_fields_description()[0].get_name()): \
                 '({:d}) {:s} {:s}'.format(
                     sample.get_timestamp(),
-                    self._client.get_client_id(),
+                    self._client.get_name(),
                     str(switch_status)
                     )})
 
@@ -315,7 +315,7 @@ def iot_device_1_callback(client, userdata, message):
 
     #print("Receiving: %s" % (message.payload))
 
-    # Getting the client identifier and the switch status from the message.
+    # Getting the client name and the switch status from the message.
     feature_name = feature_switch.FeatureSwitch.FEATURE_DATA_NAME
     if feature_name in message.payload:
         message_json = json.loads(message.payload)
@@ -334,7 +334,7 @@ def iot_device_2_callback(client, userdata, message):
 
     #print("Receiving: %s" % (message.payload))
 
-    # Getting the client identifier and the switch status from the message.
+    # Getting the client name and the switch status from the message.
     feature_name = feature_switch.FeatureSwitch.FEATURE_DATA_NAME
     if feature_name in message.payload:
         message_json = json.loads(message.payload)

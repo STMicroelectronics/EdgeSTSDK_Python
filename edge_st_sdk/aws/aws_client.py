@@ -50,12 +50,15 @@ class AWSClient(EdgeClient):
     """Class responsible for handling an Amazon AWS client used for plain MQTT
     communication with AWS IoT."""
 
-    def __init__(self, client_id, device_certificate_path, \
+    _TIMEOUT_s = 10
+    """Timeout for discovering information."""
+
+    def __init__(self, client_name, device_certificate_path, \
         device_private_key_path, group_ca_path, core_info):
         """Constructor.
 
         Args:
-            client_id (str): Name of the client, as it is on the cloud.
+            client_name (str): Name of the client, as it is on the cloud.
             device_certificate_path (str): Relative path of the device's
                 certificate stored on the core device.
             device_private_key_path (str): Relative path of the device's
@@ -75,47 +78,60 @@ class AWSClient(EdgeClient):
         """
         # Check the client is created with the right pattern (Builder).
         if not edge_st_sdk.aws.aws_greengrass.AWSGreengrass.discovery_completed():
-            raise WrongInstantiationException('Amazon AWS clients must be '
-                'obtained through a call to the \'get_client()\' method of an '
+            raise WrongInstantiationException('Amazon AWS clients must be ' \
+                'obtained through a call to the \'get_client()\' method of an ' \
                 '\'AWSGreengrass\' object.')
 
         # Saving informations.
         self._connected = False
-        self._client_id = client_id
+        self._client_name = client_name
         self._core_info = core_info
         
         # Creating a shadow client.
-        self._shadow_client = AWSIoTMQTTShadowClient(client_id)
-        self._shadow_client.configureCredentials(group_ca_path, device_private_key_path, device_certificate_path)
+        self._shadow_client = AWSIoTMQTTShadowClient(client_name)
+        self._shadow_client.configureCredentials(
+            group_ca_path,
+            device_private_key_path,
+            device_certificate_path)
 
         # Getting the underneath client and configurint it.
         self._client = self._shadow_client.getMQTTConnection()
-        self._client.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing.
+        self._client.configureOfflinePublishQueueing(-1)  # Infinite queueing.
         self._client.configureDrainingFrequency(2)  # Draining: 2 Hz.
         
         # Creating a shadow handler with persistent subscription.
-        self._shadow_handler = self._shadow_client.createShadowHandlerWithName(self._client_id, True)
+        self._shadow_handler = self._shadow_client.createShadowHandlerWithName(
+            self._client_name, True)
 
-    def get_client_id(self):
-        """Get the client identifier. 
+    def get_name(self):
+        """Get the client name. 
 
         Returns:
-            str: The client identifier, i.e. the name of the client.
+            str: The client name, i.e. the name of the client.
         """
-        return self._client_id
+        return self._client_name
 
     def connect(self):
-        """Connect to the core."""
+        """Connect to the core.
+
+        Returns:
+            bool: True if the connection was successful, False otherwise.
+        """
         # Iterate through the connection options for the core and use the first
         # successful one.
         for connectivity_info in self._core_info.connectivityInfoList:
             self._current_host = connectivity_info.host
             self._current_port = connectivity_info.port
-            print("Trying to connect to core at %s:%d..." % (self._current_host, self._current_port))
-            self._shadow_client.configureEndpoint(self._current_host, self._current_port)
+            # print("Trying to connect to core at %s:%d..." % \
+            #     (self._current_host, self._current_port))
+            self._shadow_client.configureEndpoint(
+                self._current_host,
+                self._current_port)
             self._shadow_client.configureAutoReconnectBackoffTime(1, 32, 20)
-            self._shadow_client.configureConnectDisconnectTimeout(10)  # 10 sec
-            self._shadow_client.configureMQTTOperationTimeout(5)  # 5 sec
+            self._shadow_client.configureConnectDisconnectTimeout(
+                self._TIMEOUT_s)
+            self._shadow_client.configureMQTTOperationTimeout(
+                self._TIMEOUT_s / 2.0)
             try:
                 self._shadow_client.connect()
                 self._connected = True
@@ -123,11 +139,14 @@ class AWSClient(EdgeClient):
             except BaseException as e:
                 self._connected = False
 
-        if not self._connected:
-            print("Cannot connect to core %s. Exiting..." % self._core_info.coreThingArn)
-            sys.exit(-2)
-        else:
-            print("Shadow device %s successfully connected to core %s." % (self._client_id, self._core_info.coreThingArn))
+        # if not self._connected:
+        #     print("Cannot connect to core %s. Exiting..." % \
+        #         (self._core_info.coreThingArn))
+        #     sys.exit(-2)
+        # else:
+        #     print("Shadow device %s successfully connected to core %s." % \
+        #         (self._client_name, self._core_info.coreThingArn))
+        return self._connected
 
     def disconnect(self):
         """Disconnect from the core."""
