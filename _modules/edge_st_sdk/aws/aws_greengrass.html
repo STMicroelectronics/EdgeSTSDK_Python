@@ -211,6 +211,9 @@
     <span class="n">_GROUP_CA_PATH</span>  <span class="o">=</span> <span class="s2">&quot;./aws_group_ca/&quot;</span>
     <span class="sd">&quot;&quot;&quot;Group Certification Authority path.&quot;&quot;&quot;</span> 
 
+    <span class="n">_TIMEOUT_s</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="sd">&quot;&quot;&quot;Timeout for discovering information.&quot;&quot;&quot;</span>
+
     <span class="n">_discovery_completed</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="sd">&quot;&quot;&quot;Discovery completed flag.&quot;&quot;&quot;</span>
 
@@ -230,7 +233,7 @@
 
     <span class="k">def</span> <span class="nf">_discover_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span> <span class="n">device_private_key_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Performing the discovery of the core belonging to the same group of</span>
-<span class="sd">        the given client identifier.</span>
+<span class="sd">        the given client name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            client_id (str): Name of a client, as it is on the cloud, belonging</span>
@@ -249,49 +252,60 @@
         <span class="c1"># Discover GGCs</span>
         <span class="n">discoveryInfoProvider</span> <span class="o">=</span> <span class="n">DiscoveryInfoProvider</span><span class="p">()</span>
         <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">configureEndpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span>
-        <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">configureCredentials</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_ca_path</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span> <span class="n">device_private_key_path</span><span class="p">)</span>
-        <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">configureTimeout</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># 10 sec</span>
+        <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">configureCredentials</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root_ca_path</span><span class="p">,</span>
+            <span class="n">device_certificate_path</span><span class="p">,</span>
+            <span class="n">device_private_key_path</span><span class="p">)</span>
+        <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">configureTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_TIMEOUT_s</span><span class="p">)</span>
         <span class="n">retryCount</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_DISCOVERY_ATTEMPTS</span>
         <span class="n">discovered</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">while</span> <span class="n">retryCount</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Discovering information.</span>
                 <span class="n">discoveryInfo</span> <span class="o">=</span> <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">discover</span><span class="p">(</span><span class="n">client_id</span><span class="p">)</span>
                 <span class="n">caList</span> <span class="o">=</span> <span class="n">discoveryInfo</span><span class="o">.</span><span class="n">getAllCas</span><span class="p">()</span>
                 <span class="n">coreList</span> <span class="o">=</span> <span class="n">discoveryInfo</span><span class="o">.</span><span class="n">getAllCores</span><span class="p">()</span>
-                <span class="c1"># We only pick the first ca and core info</span>
-                <span class="n">groupId</span><span class="p">,</span> <span class="n">ca</span> <span class="o">=</span> <span class="n">caList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span> <span class="o">=</span> <span class="n">coreList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Discovered GGC: </span><span class="si">%s</span><span class="s2"> from Group: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">coreThingArn</span><span class="p">,</span> <span class="n">groupId</span><span class="p">))</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Now we persist the connectivity/identity information...&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_group_ca_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GROUP_CA_PATH</span> <span class="o">+</span> <span class="n">groupId</span> <span class="o">+</span> <span class="s2">&quot;_CA_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;.crt&quot;</span>
+                <span class="c1"># Picking only the first ca and core info.</span>
+                <span class="n">group_id</span><span class="p">,</span> <span class="n">ca</span> <span class="o">=</span> <span class="n">caList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span> <span class="o">=</span> <span class="n">coreList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># Persisting connectivity/identity information.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group_ca_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GROUP_CA_PATH</span> <span class="o">+</span> <span class="n">group_id</span> <span class="o">+</span> \
+                    <span class="s2">&quot;_CA_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;.crt&quot;</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_GROUP_CA_PATH</span><span class="p">):</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_GROUP_CA_PATH</span><span class="p">)</span>
                 <span class="n">group_ca_path_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_ca_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
                 <span class="n">group_ca_path_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span>
                 <span class="n">group_ca_path_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="n">discovered</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Now proceed to the connecting flow...&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
+
             <span class="k">except</span> <span class="n">DiscoveryInvalidRequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid discovery request detected!&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid discovery request detected.&quot;</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Type: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error message: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Stopping...&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
+
             <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error in discovery!&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error in discovery.&quot;</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Type: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error message: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
                 <span class="n">retryCount</span> <span class="o">-=</span> <span class="mi">1</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2"> retries left</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">retryCount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_DISCOVERY_ATTEMPTS</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2"> retries left.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> \
+                    <span class="p">(</span><span class="n">retryCount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_DISCOVERY_ATTEMPTS</span><span class="p">))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Backing off...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">backOffCore</span><span class="o">.</span><span class="n">backOff</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">discovered</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Discovery failed after </span><span class="si">%d</span><span class="s2"> retries. Exiting...</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MAX_DISCOVERY_ATTEMPTS</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Discovery failed after </span><span class="si">%d</span><span class="s2"> retries. Exiting...</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> \
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MAX_DISCOVERY_ATTEMPTS</span><span class="p">))</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Discovered Greengrass Core </span><span class="si">%s</span><span class="s2"> from Group </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> \
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">coreThingArn</span><span class="p">,</span> <span class="n">group_id</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_configure_logging</span><span class="p">()</span>
         <span class="n">AWSGreengrass</span><span class="o">.</span><span class="n">_discovery_completed</span> <span class="o">=</span> <span class="kc">True</span>
@@ -301,7 +315,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;AWSIoTPythonSDK.core&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_streamHandler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_streamHandler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_streamHandler</span><span class="p">)</span>
 
@@ -330,10 +345,18 @@
         <span class="c1"># Performing the discovery of the core belonging to the same group of</span>
         <span class="c1"># the client.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_discovery_completed</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_discover_core</span><span class="p">(</span><span class="n">client_id</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span> <span class="n">device_private_key_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_discover_core</span><span class="p">(</span>
+                <span class="n">client_id</span><span class="p">,</span>
+                <span class="n">device_certificate_path</span><span class="p">,</span>
+                <span class="n">device_private_key_path</span><span class="p">)</span>
 
-        <span class="c1"># Creating the client.</span></div></div>
-        <span class="k">return</span> <span class="n">edge_st_sdk</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">aws_client</span><span class="o">.</span><span class="n">AWSClient</span><span class="p">(</span><span class="n">client_id</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span> <span class="n">device_private_key_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_ca_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="p">)</span>
+        <span class="c1"># Creating the client.</span>
+        <span class="k">return</span> <span class="n">edge_st_sdk</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">aws_client</span><span class="o">.</span><span class="n">AWSClient</span><span class="p">(</span>
+            <span class="n">client_id</span><span class="p">,</span>
+            <span class="n">device_certificate_path</span><span class="p">,</span>
+            <span class="n">device_private_key_path</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_ca_path</span><span class="p">,</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="p">)</span>
 </pre></div>
 
            </div>

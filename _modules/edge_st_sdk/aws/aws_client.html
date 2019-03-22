@@ -203,12 +203,15 @@
     <span class="sd">&quot;&quot;&quot;Class responsible for handling an Amazon AWS client used for plain MQTT</span>
 <span class="sd">    communication with AWS IoT.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="AWSClient.__init__"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span> \
+    <span class="n">_TIMEOUT_s</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="sd">&quot;&quot;&quot;Timeout for discovering information.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AWSClient.__init__"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_name</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span> \
         <span class="n">device_private_key_path</span><span class="p">,</span> <span class="n">group_ca_path</span><span class="p">,</span> <span class="n">core_info</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            client_id (str): Name of the client, as it is on the cloud.</span>
+<span class="sd">            client_name (str): Name of the client, as it is on the cloud.</span>
 <span class="sd">            device_certificate_path (str): Relative path of the device&#39;s</span>
 <span class="sd">                certificate stored on the core device.</span>
 <span class="sd">            device_private_key_path (str): Relative path of the device&#39;s</span>
@@ -228,47 +231,60 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check the client is created with the right pattern (Builder).</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">edge_st_sdk</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">aws_greengrass</span><span class="o">.</span><span class="n">AWSGreengrass</span><span class="o">.</span><span class="n">discovery_completed</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">WrongInstantiationException</span><span class="p">(</span><span class="s1">&#39;Amazon AWS clients must be &#39;</span>
-                <span class="s1">&#39;obtained through a call to the </span><span class="se">\&#39;</span><span class="s1">get_client()</span><span class="se">\&#39;</span><span class="s1"> method of an &#39;</span>
+            <span class="k">raise</span> <span class="n">WrongInstantiationException</span><span class="p">(</span><span class="s1">&#39;Amazon AWS clients must be &#39;</span> \
+                <span class="s1">&#39;obtained through a call to the </span><span class="se">\&#39;</span><span class="s1">get_client()</span><span class="se">\&#39;</span><span class="s1"> method of an &#39;</span> \
                 <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">AWSGreengrass</span><span class="se">\&#39;</span><span class="s1"> object.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Saving informations.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span> <span class="o">=</span> <span class="n">client_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client_name</span> <span class="o">=</span> <span class="n">client_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span> <span class="o">=</span> <span class="n">core_info</span>
         
         <span class="c1"># Creating a shadow client.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span> <span class="o">=</span> <span class="n">AWSIoTMQTTShadowClient</span><span class="p">(</span><span class="n">client_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureCredentials</span><span class="p">(</span><span class="n">group_ca_path</span><span class="p">,</span> <span class="n">device_private_key_path</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span> <span class="o">=</span> <span class="n">AWSIoTMQTTShadowClient</span><span class="p">(</span><span class="n">client_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureCredentials</span><span class="p">(</span>
+            <span class="n">group_ca_path</span><span class="p">,</span>
+            <span class="n">device_private_key_path</span><span class="p">,</span>
+            <span class="n">device_certificate_path</span><span class="p">)</span>
 
         <span class="c1"># Getting the underneath client and configurint it.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">getMQTTConnection</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">configureOfflinePublishQueueing</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Infinite offline Publish queueing.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">configureOfflinePublishQueueing</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Infinite queueing.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">configureDrainingFrequency</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># Draining: 2 Hz.</span>
         
-        <span class="c1"># Creating a shadow handler with persistent subscription.</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">createShadowHandlerWithName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Creating a shadow handler with persistent subscription.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">createShadowHandlerWithName</span><span class="p">(</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client_name</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AWSClient.get_client_id"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_client_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_client_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the client identifier. </span>
+<div class="viewcode-block" id="AWSClient.get_name"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the client name. </span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: The client identifier, i.e. the name of the client.</span>
+<span class="sd">            str: The client name, i.e. the name of the client.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_name</span>
 
 <div class="viewcode-block" id="AWSClient.connect"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Connect to the core.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Connect to the core.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the connection was successful, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Iterate through the connection options for the core and use the first</span>
         <span class="c1"># successful one.</span>
         <span class="k">for</span> <span class="n">connectivity_info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">connectivityInfoList</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span> <span class="o">=</span> <span class="n">connectivity_info</span><span class="o">.</span><span class="n">host</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span> <span class="o">=</span> <span class="n">connectivity_info</span><span class="o">.</span><span class="n">port</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Trying to connect to core at </span><span class="si">%s</span><span class="s2">:</span><span class="si">%d</span><span class="s2">...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureEndpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span><span class="p">)</span>
+            <span class="c1"># print(&quot;Trying to connect to core at %s:%d...&quot; % \</span>
+            <span class="c1">#     (self._current_host, self._current_port))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureEndpoint</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureAutoReconnectBackoffTime</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureConnectDisconnectTimeout</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># 10 sec</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureMQTTOperationTimeout</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># 5 sec</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureConnectDisconnectTimeout</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_TIMEOUT_s</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureMQTTOperationTimeout</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_TIMEOUT_s</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">True</span>
@@ -276,11 +292,14 @@
             <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot connect to core </span><span class="si">%s</span><span class="s2">. Exiting...&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">coreThingArn</span><span class="p">)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span></div>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shadow device </span><span class="si">%s</span><span class="s2"> successfully connected to core </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">coreThingArn</span><span class="p">))</span>
+        <span class="c1"># if not self._connected:</span>
+        <span class="c1">#     print(&quot;Cannot connect to core %s. Exiting...&quot; % \</span>
+        <span class="c1">#         (self._core_info.coreThingArn))</span>
+        <span class="c1">#     sys.exit(-2)</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     print(&quot;Shadow device %s successfully connected to core %s.&quot; % \</span>
+        <span class="c1">#         (self._client_name, self._core_info.coreThingArn))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span>
 
 <div class="viewcode-block" id="AWSClient.disconnect"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Disconnect from the core.&quot;&quot;&quot;</span>

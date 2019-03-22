@@ -182,20 +182,20 @@
 AWS IoT cloud and performing edge operations through the Greengrass SDK.</p>
 <dl class="class">
 <dt id="edge_st_sdk.aws.aws_client.AWSClient">
-<em class="property">class </em><code class="descclassname">edge_st_sdk.aws.aws_client.</code><code class="descname">AWSClient</code><span class="sig-paren">(</span><em>client_id</em>, <em>device_certificate_path</em>, <em>device_private_key_path</em>, <em>group_ca_path</em>, <em>core_info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">edge_st_sdk.aws.aws_client.</code><code class="descname">AWSClient</code><span class="sig-paren">(</span><em>client_name</em>, <em>device_certificate_path</em>, <em>device_private_key_path</em>, <em>group_ca_path</em>, <em>core_info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient" title="edge_st_sdk.edge_client.EdgeClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClient</span></code></a></p>
 <p>Class responsible for handling an Amazon AWS client used for plain MQTT
 communication with AWS IoT.</p>
 <dl class="method">
 <dt id="edge_st_sdk.aws.aws_client.AWSClient.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>client_id</em>, <em>device_certificate_path</em>, <em>device_private_key_path</em>, <em>group_ca_path</em>, <em>core_info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>client_name</em>, <em>device_certificate_path</em>, <em>device_private_key_path</em>, <em>group_ca_path</em>, <em>core_info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the client, as it is on the cloud.</li>
+<li><strong>client_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the client, as it is on the cloud.</li>
 <li><strong>device_certificate_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the device’s
 certificate stored on the core device.</li>
 <li><strong>device_private_key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the device’s
@@ -222,6 +222,16 @@ method.</p>
 <dt id="edge_st_sdk.aws.aws_client.AWSClient.connect">
 <code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to the core.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the connection was successful, False otherwise.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -252,14 +262,14 @@ request comes back.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="edge_st_sdk.aws.aws_client.AWSClient.get_client_id">
-<code class="descname">get_client_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.get_client_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.get_client_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the client identifier.</p>
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the client name.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The client identifier, i.e. the name of the client.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The client name, i.e. the name of the client.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
 </tr>
