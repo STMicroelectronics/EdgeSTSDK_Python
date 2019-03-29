@@ -1,3 +1,4 @@
 pyserial==3.0.1
-edge_st_sdk
 enum34==1.1.6
+AWSIoTPythonSDK
+edge_st_sdk

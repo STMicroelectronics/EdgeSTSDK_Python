@@ -21,6 +21,13 @@ Please refer to the [Amazon AWS Greengrass official documentation](https://docs.
  3. Moreover, the Python version of the [BlueST SDK](https://github.com/STMicroelectronics/EdgeSTSDK_Python#bluest-sdk) is required to run the provided application examples.
 
 
+## Installation
+The EdgeST SDK can be installed through the Python pip package manager.
+  ```Shell
+  $ sudo pip install edge-st-sdk
+  ```
+
+
 ## BlueST SDK
 BlueST SDK is a multi-platform library available for [Linux](https://github.com/STMicroelectronics/BlueSTSDK_Python) (beyond [Android](https://github.com/STMicroelectronics/BlueSTSDK_Android) and [iOS](https://github.com/STMicroelectronics/BlueSTSDK_iOS)) that allows easy access to the data exported by a Bluetooth Low Energy (BLE) device that implements the [BlueST Protocol](https://github.com/STMicroelectronics/BlueSTSDK_Python#bluest-protocol).
 
