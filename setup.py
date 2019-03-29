@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="edge_st_sdk",
-    version="1.0.0",
+    version="1.0.1",
     author="Davide Aliprandi",
     author_email="davide.aliprandi@gmail.com",
     description="IoT edge computing abstraction library package.",
@@ -13,8 +13,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/STMicroelectronics/EdgeSTSDK_Python",
     packages=setuptools.find_packages(),
+    license='BSD 3-clause',
     classifiers=[
-        "License :: Other/Proprietary License",
+        "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 2.7",
         "Topic :: Software Development :: Embedded Systems"
