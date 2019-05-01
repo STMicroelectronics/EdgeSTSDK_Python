@@ -106,10 +106,8 @@ class MyFeatureListenerBLE1(FeatureListener):
         # print('\n>>FeatureListenerBLE1 update: feature: ')
         print(feature)
         sample_str = sample.__str__()
-        print('sample data BLE1:' + sample_str)
-
-        event = IoTHubMessage(bytearray(sample_str, 'utf8'))
-        self.module_client.publish(BLE1_APPMOD_OUTPUT, event, send_confirmation_callback, 0)
+        print('sample data BLE1:' + sample_str)        
+        self.module_client.publish(BLE1_APPMOD_OUTPUT, sample_str, send_confirmation_callback, 0)
         self.num += 1
 
 
@@ -124,9 +122,7 @@ class MyFeatureListenerBLE2(FeatureListener):
         print(feature)
         sample_str = sample.__str__()
         print('sample data BLE2 :' + sample_str)
-
-        event = IoTHubMessage(bytearray(sample_str, 'utf8'))
-        self.module_client.publish(BLE2_APPMOD_OUTPUT, event, send_confirmation_callback, 0)
+        self.module_client.publish(BLE2_APPMOD_OUTPUT, sample_str, send_confirmation_callback, 0)
         self.num += 1
 
 # Bluetooth Scanning time in seconds.

@@ -76,8 +76,9 @@ class AzureClient(EdgeClient):
         # not supported
         return
 
-    def publish(self, outputQueueName, event, send_confirmation_callback, send_context):
+    def publish(self, outputQueueName, msg, send_confirmation_callback, send_context):
         if self._connected:
+            event = IoTHubMessage(bytearray(msg, 'utf8'))
             self.client.send_event_async(
             outputQueueName, event, send_confirmation_callback, send_context)
 

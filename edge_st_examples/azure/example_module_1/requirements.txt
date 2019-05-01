@@ -4,6 +4,6 @@ bluepy==1.1.4
 futures
 enum34==1.1.6
 blue-st-sdk-package==1.0.1
-edge-st-sdk-package==1.0.2
+edge-st-sdk-package==1.0.3
 requests
 pytz
