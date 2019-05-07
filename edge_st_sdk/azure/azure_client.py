@@ -44,7 +44,7 @@ from iothub_client import IoTHubMessage, IoTHubMessageDispositionResult, IoTHubE
 
 from edge_st_sdk.edge_client import EdgeClient
 from edge_st_sdk.utils.edge_st_exceptions import WrongInstantiationException
-
+from edge_st_sdk.azure.azure_utils import ReceiveContext
 
 # CLASSES
 
@@ -54,6 +54,7 @@ class AzureClient(EdgeClient):
 
     _TIMEOUT_s = 10000
     """Timeout for messages"""
+    _subscribe_callback = None
 
     def __init__(self, module_name, protocol):
         self.module_name = module_name
@@ -84,7 +85,8 @@ class AzureClient(EdgeClient):
 
     def subscribe(self, topic, callback, user_context):
         if self._connected:
-            self.client.set_message_callback(topic, callback, user_context)
+            rcvContext = ReceiveContext(callback, user_context)
+            self.client.set_message_callback(topic, self._subscribe_callback, rcvContext)
         return
 
     def unsubscribe(self, topic):
@@ -92,16 +94,7 @@ class AzureClient(EdgeClient):
         # set topic subsciption to null?
         return
 
-    # Sets the callback when a module twin's desired properties are updated.
-    def set_module_twin_callback(self, twin_callback, user_context):
-        if self._connected:
-            self.client.set_module_twin_callback(twin_callback, user_context)
-
-    # Register the callback with the client
-    def set_module_method_callback(self, method_callback, user_context):
-        if self._connected:        
-            self.client.set_module_method_callback(method_callback, user_context)
-
+    # Send Twin reported properties
     def update_shadow_state(self, payload, callback, context):
         if self._connected:    
             self.client.send_reported_state(payload, len(payload), callback, context)
@@ -109,8 +102,25 @@ class AzureClient(EdgeClient):
 
     def get_shadow_state(self, callback, timeout_s):
         # not supported
+        # get twin desired properties is however supported from the device services side (backend application)
         return
 
     def delete_shadow_state(self, callback, timeout_s):
         # not supported
         return
+
+    # Sets the callback when a module twin's desired properties are updated.
+    def set_module_twin_callback(self, twin_callback, user_context):
+        if self._connected:
+            self.client.set_module_twin_callback(twin_callback, user_context)
+
+    # Register a callback for module method
+    def set_module_method_callback(self, method_callback, user_context):
+        if self._connected:        
+            self.client.set_module_method_callback(method_callback, user_context)
+
+    def _subscribe_callback(self, message, context):
+        callback = context._get_callback()
+        callback(message, context._get_context())
+        return IoTHubMessageDispositionResult.ACCEPTED
+
