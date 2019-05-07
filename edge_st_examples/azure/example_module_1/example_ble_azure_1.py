@@ -7,8 +7,8 @@ import time
 import sys
 import os
 import json
-from iothub_client import IoTHubModuleClient, IoTHubClientError, IoTHubTransportProvider
-from iothub_client import IoTHubMessage, IoTHubMessageDispositionResult, IoTHubError, DeviceMethodReturnValue
+from iothub_client import IoTHubTransportProvider
+from iothub_client import IoTHubMessageDispositionResult, IoTHubError
 
 import blue_st_sdk
 from blue_st_sdk.manager import Manager, ManagerListener
@@ -25,10 +25,6 @@ BLE1_APPMOD_INPUT   = 'BLE1_App_Input'
 BLE2_APPMOD_INPUT   = 'BLE2_App_Input'
 BLE1_APPMOD_OUTPUT  = 'BLE1_App_Output'
 BLE2_APPMOD_OUTPUT  = 'BLE2_App_Output'
-BLE1_DEVMOD_INPUT   = 'BLE1_Input'
-BLE2_DEVMOD_INPUT   = 'BLE2_Input'
-BLE1_DEVMOD_OUTPUT  = 'BLE1_Output'
-BLE2_DEVMOD_OUTPUT  = 'BLE2_Output'
 
 MODULE_NAME = 'EdgeModule'
 
@@ -173,14 +169,16 @@ def receive_ble2_message_callback(message, hubManager):
     # Toggle switch status.
     iot_device_1_status = SwitchStatus.ON if data != '[0]' else SwitchStatus.OFF
     
-    print('\n>> sending toggle switch to BLE1: \n')
+    print('\n>> NEW func >> sending toggle switch to BLE1: \n')
     # Writing switch status.
     iot_device_1.disable_notifications(iot_device_1_feature_switch)
     iot_device_1_feature_switch.write_switch_status(iot_device_1_status.value)
     iot_device_1.enable_notifications(iot_device_1_feature_switch)
 
     # hubManager.forward_event_to_output("randomoutput1", message, 0)
-    return IoTHubMessageDispositionResult.ACCEPTED
+    # return IoTHubMessageDispositionResult.ACCEPTED
+
+    return
 
 
 def receive_ble1_message_callback(message, hubManager):
@@ -202,7 +200,8 @@ def receive_ble1_message_callback(message, hubManager):
     iot_device_2_feature_switch.write_switch_status(iot_device_2_status.value)
     iot_device_2.enable_notifications(iot_device_2_feature_switch)
 
-    return IoTHubMessageDispositionResult.ACCEPTED
+    # return IoTHubMessageDispositionResult.ACCEPTED
+    return
 
 
 # module_twin_callback is invoked when the module twin's desired properties are updated.
@@ -249,7 +248,7 @@ def main(protocol):
                 print('\nNo Bluetooth devices found.')
                 continue
             else:
-                if len(discovered_devices) != 2:
+                if len(discovered_devices) < 2:
                     print('\2 devices not found yet...going back to scan')
                     continue
 
