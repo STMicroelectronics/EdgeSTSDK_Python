@@ -7,18 +7,26 @@ More specifically, it enables the creation of “virtual” devices on the gatew
 Currently [Amazon AWS Greengrass](https://aws.amazon.com/it/greengrass/) edge computing service is supported, while other cloud engines will be added in the future.
 
 
+## Documentation
+Documentation can be found [here](https://stmicroelectronics.github.io/EdgeSTSDK_Python/index.html).
+
+
 ## Compatibility
 This version of the SDK is compatible with [Python](https://www.python.org/) 2.7 and runs on a Linux system.
 
 
 ## Preconditions
-Please refer to the [Amazon AWS Greengrass official documentation](https://docs.aws.amazon.com/greengrass/latest/developerguide/what-is-gg.html) to install the SDK. At the time of writing, this implies installing the following components:
+The SDK relies on the Amazon AWS Greengrass SDK, so please refer to the [Amazon AWS Greengrass official documentation](https://docs.aws.amazon.com/greengrass/latest/developerguide/what-is-gg.html) to install it. At the time of writing, this implies installing the following components:
  1. Amazon AWS IoT Python SDK:
     ```Shell
     $ sudo pip install AWSIoTPythonSDK
     ```
  2. Amazon AWS IoT Greengrass SDK, that will be downloaded when creating a "Group" on the AWS web IoT Console on the cloud. Further actions are required to setup the environment, so please follow the abovementioned official documentation.
- 3. Moreover, the Python version of the [BlueST SDK](https://github.com/STMicroelectronics/EdgeSTSDK_Python#bluest-sdk) is required to run the provided application examples.
+Moreover, please install the [concurrent.futures](https://docs.python.org/3/library/concurrent.futures.html) module to run pools of threads in background, that serve listeners' callbacks.
+  ```Shell
+  $ sudo pip install futures
+  ```
+Last but not least, the Python version of the [BlueST SDK](https://github.com/STMicroelectronics/EdgeSTSDK_Python#bluest-sdk) is required to run the provided application examples.
 
 
 ## Installation
@@ -35,36 +43,36 @@ The Linux version of the SDK, written in Python, is needed to let BLE devices co
 
 
 ## Setting up the application examples
-Before running the application examples, please follow the steps here below.
+Before running the application examples, please prepare your devices as described here below:
  * The [example_ble_aws_1.py](https://github.com/STMicroelectronics/EdgeSTSDK_Python/blob/master/edge_st_examples/aws/example_ble_aws_1.py) and the [example_ble_aws_2.py](https://github.com/STMicroelectronics/EdgeSTSDK_Python/blob/master/edge_st_examples/aws/example_ble_aws_2.py) application examples show how to handle two BLE devices implementing the [BlueST Protocol](https://github.com/STMicroelectronics/BlueSTSDK_Python#bluest-protocol) that connect to a Linux gateway, and to make them communicate to the Amazon AWS IoT Cloud through the AWS Greengrass edge computing service. The former shows a usage of the "Switch" feature in such a way that pressing the user button on a device makes the LED of the other device toggle its status through a logic defined by the [GG_Switch_Lambda.py](https://github.com/STMicroelectronics/EdgeSTSDK_Python/blob/master/edge_st_examples/aws/GG_Switch_Lambda.py) lambda function. The latter adds the handling of environmental and inertial features so that data from Pressure, Humidity, Temperature, Accelerometer, Gyroscope, and Magnetometer sensors are sent to the IoT Cloud. The applications require to set up two devices equipped with BLE connectivity, e.g.:
    * Two [NUCLEO-F401RE](http://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-eval-tools/stm32-mcu-eval-tools/stm32-mcu-nucleo/nucleo-f401re.html) development boards
    * Two [X-NUCLEO-IDB05A1](http://www.st.com/content/st_com/en/products/ecosystems/stm32-open-development-environment/stm32-nucleo-expansion-boards/stm32-ode-connect-hw/x-nucleo-idb05a1.html) Bluetooth Low Energy expansion boards
    * Import the [Node_BLE_Switch_Device](https://os.mbed.com/teams/ST/code/Node_BLE_Switch_Device/) or the [Node_BLE_Sensors_Device](https://os.mbed.com/teams/ST/code/Node_BLE_Sensors_Device/) mbed OS application to your ARM mbed account respectively for the first or the second application example, compile, and flash it onto the MCU board
    * Edit the application example and set the "IOT_DEVICE_X_NAME" and "IOT_DEVICE_X_MAC" global variables properly (you can use a smartphone application to retrieve the MAC address)
    * Put the certificates and the private keys of your devices into the folder on the Linux gateway specified by the "DEVICES_PATH" global variable
-   * Follow carefully the instructions described within the [Examples_ble_aws.pdf](https://github.com/STMicroelectronics/EdgeSTSDK_Python/blob/master/edge_st_examples/aws/Examples_ble_aws.pdf) application manual.
+   * Follow carefully the instructions described within the [Examples_ble_aws.pdf](https://github.com/STMicroelectronics/EdgeSTSDK_Python/blob/master/edge_st_examples/aws/Examples_ble_aws.pdf) application manual to configure the application on the cloud.
 
 
 ## Running the application examples
-To run the EdgeST application examples please follow the steps below:
- 1. Clone the repository containing the BlueST SDK and the BlueST examples into a "BlueSTSDK_Python" folder.
- 2. Clone the repository containing the EdgeST SDK and the EdgeST examples into a "EdgeSTSDK_Python" folder.
- 3. Start the Greengrass daemon:
+To run the application examples please follow the steps below:
+ 1. Install the EdgeST SDK as described by the [Installation](https://github.com/STMicroelectronics/EdgeSTSDK_Python#installation) chapter.
+ 2. Install the BlueST SDK as described by the [Installation](https://github.com/STMicroelectronics/BlueSTSDK_Python#installation) chapter.
+ 3. Clone the EdgeST SDK git repository to download the application examples:
+    ```Shell
+    $ git clone https://github.com/STMicroelectronics/EdgeSTSDK_Python.git
+    ```
+ 4. Start the Greengrass daemon:
     ```Shell
     $ sudo /greengrass/ggc/core/greengrassd restart
     ```
- 4. Add the "BlueSTSDK_Python" and the "EdgeSTSDK_Python" folders to the "PYTHONPATH" environment variable. On Linux:
+ 5. Enter the "edge_st_examples" folder and run the desired script by providing the endpoint (i.e. IoT host) and the path of the root Certification Authority certificate, e.g.:
     ```Shell
-    $ export PYTHONPATH=/home/<user>/BlueSTSDK_Python/:/home/<user>/EdgeSTSDK_Python/
-    ```
- 5. Enter the EdgeST examples folder and run the main scripts, by providing the endpoint (i.e. IoT host) and the path of the root Certification Authority certificate, e.g.:
-    ```Shell
-    $ python example_ble_aws_x.py -e <iot_host_prefix>.iot.<region>.amazonaws.com -r /greengrass/certs/root.ca.pem
+    $ sudo python example_ble_aws_x.py -e <iot_host_prefix>.iot.<region>.amazonaws.com -r /greengrass/certs/root.ca.pem
     ```
 
 
 ## License
-COPYRIGHT(c) 2018 STMicroelectronics
+COPYRIGHT(c) 2019 STMicroelectronics
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
