@@ -36,6 +36,7 @@ The edge_client module contains an interface for creating edge client classes.
 
 from abc import ABCMeta
 from abc import abstractmethod
+from enum import Enum
 
 
 # INTERFACE
@@ -47,12 +48,14 @@ class EdgeClient(object):
     @abstractmethod
     def connect(self):
         """Connect to the core."""
-        raise NotImplementedError('You must define "connect()" to use the "EdgeClient" class.')
+        raise NotImplementedError('You must define "connect()" to use the '
+            '"EdgeClient" class.')
 
     @abstractmethod
     def disconnect(self):
         """Disconnect from the core."""
-        raise NotImplementedError('You must define "disconnect()" to use the "EdgeClient" class.')
+        raise NotImplementedError('You must define "disconnect()" to use the '
+            '"EdgeClient" class.')
 
     @abstractmethod
     def publish(self, topic, payload, qos):
@@ -64,7 +67,8 @@ class EdgeClient(object):
             payload (str): Payload to publish (JSON formatted string).
             qos (int): Quality of Service. Could be "0" or "1".
         """
-        raise NotImplementedError('You must define "publish()" to use the "EdgeClient" class.')
+        raise NotImplementedError('You must define "publish()" to use the '
+            '"EdgeClient" class.')
 
     @abstractmethod
     def subscribe(self, topic, qos, callback):
@@ -77,7 +81,8 @@ class EdgeClient(object):
             callback: Function to be called when a new message for the
                 subscribed topic comes in.
         """
-        raise NotImplementedError('You must define "subscribe()" to use the "EdgeClient" class.')
+        raise NotImplementedError('You must define "subscribe()" to use the '
+            '"EdgeClient" class.')
 
     @abstractmethod
     def unsubscribe(self, topic):
@@ -86,7 +91,8 @@ class EdgeClient(object):
         Args:
             topic (str): Topic name to unsubscribe to.
         """
-        raise NotImplementedError('You must define "unsubscribe()" to use the "EdgeClient" class.')
+        raise NotImplementedError('You must define "unsubscribe()" to use the '
+            '"EdgeClient" class.')
 
     @abstractmethod
     def get_shadow_state(self, callback, timeout_s):
@@ -100,7 +106,8 @@ class EdgeClient(object):
                 request comes back.
             timeout_s (int): Timeout in seconds to perform the request.
         """
-        raise NotImplementedError('You must define "get_shadow()" to use the "EdgeClient" class.')
+        raise NotImplementedError('You must define "get_shadow()" to use the '
+            '"EdgeClient" class.')
 
     @abstractmethod
     def update_shadow_state(self, payload, callback, timeout_s):
@@ -116,7 +123,8 @@ class EdgeClient(object):
                 request comes back.
             timeout_s (int): Timeout in seconds to perform the request.
         """
-        raise NotImplementedError('You must define "update_shadow()" to use the "EdgeClient" class.')
+        raise NotImplementedError('You must define "update_shadow()" to use the '
+            '"EdgeClient" class.')
 
     @abstractmethod
     def delete_shadow_state(self, callback, timeout_s):
@@ -130,4 +138,87 @@ class EdgeClient(object):
                 request comes back.
             timeout_s (int): Timeout in seconds to perform the request.
         """
-        raise NotImplementedError('You must define "delete_shadow()" to use the "EdgeClient" class.')
+        raise NotImplementedError('You must define "delete_shadow()" to use the '
+            '"EdgeClient" class.')
+
+    @abstractmethod
+    def add_listener(self, listener):
+        """Add a listener.
+        
+        Args:
+            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):
+                Listener to be added.
+        """
+        raise NotImplementedError('You must define "add_listener()" to use the '
+            '"EdgeClient" class.')
+
+    @abstractmethod
+    def remove_listener(self, listener):
+        """Remove a listener.
+
+        Args:
+            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):
+                Listener to be removed.
+        """
+        raise NotImplementedError('You must define "remove_listener()" to use '
+            'the "EdgeClient" class.')
+
+    @abstractmethod
+    def _update_status(self, new_status):
+        """Update the status of the client.
+
+        Args:
+            new_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): New
+                status.
+        """
+        raise NotImplementedError('You must define "_update_client_status()" to '
+            'use the "EdgeClient" class.')
+
+
+class EdgeClientStatus(Enum):
+    """Status of the client."""
+
+    INIT = 'INIT'
+    """Dummy initial status."""
+
+    IDLE = 'IDLE'
+    """Waiting for a connection and sending advertising data."""
+
+    CONNECTING = 'CONNECTING'
+    """Opening a connection with the client."""
+
+    CONNECTED = 'CONNECTED'
+    """Connected to the client."""
+
+    DISCONNECTING = 'DISCONNECTING'
+    """Closing the connection to the client."""
+
+    UNREACHABLE = 'UNREACHABLE'
+    """The client disappeared without first disconnecting."""
+
+
+# INTERFACES
+
+class EdgeClientListener(object):
+    """Interface used by the :class:`edge_st_sdk.edge_client.EdgeClient` class
+    to notify changes of a client's status.
+    """
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def on_status_change(self, client, new_status, old_status):
+        """To be called whenever a client changes its status.
+
+        Args:
+            client (:class:`edge_st_sdk.edge_client.EdgeClient): Client that has
+                changed its status.
+            new_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): New
+                status.
+            old_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): Old
+                status.
+
+        Raises:
+            :exc:`NotImplementedError` if the method has not been implemented.
+        """
+        raise NotImplementedError('You must implement "on_status_change()" to '
+                                  'use the "EdgeClientListener" class.')
