@@ -189,12 +189,15 @@
 <span class="c1"># IMPORT</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="k">import</span> <span class="n">ThreadPoolExecutor</span>
 
 <span class="kn">from</span> <span class="nn">AWSIoTPythonSDK.MQTTLib</span> <span class="k">import</span> <span class="n">AWSIoTMQTTShadowClient</span>
 
+<span class="kn">from</span> <span class="nn">edge_st_sdk.python_utils</span> <span class="k">import</span> <span class="n">lock</span>
 <span class="kn">from</span> <span class="nn">edge_st_sdk.edge_client</span> <span class="k">import</span> <span class="n">EdgeClient</span>
+<span class="kn">from</span> <span class="nn">edge_st_sdk.edge_client</span> <span class="k">import</span> <span class="n">EdgeClientStatus</span>
 <span class="kn">import</span> <span class="nn">edge_st_sdk.aws.aws_greengrass</span>
-<span class="kn">from</span> <span class="nn">edge_st_sdk.utils.edge_st_exceptions</span> <span class="k">import</span> <span class="n">WrongInstantiationException</span>
+<span class="kn">from</span> <span class="nn">edge_st_sdk.utils.edge_st_exceptions</span> <span class="k">import</span> <span class="n">EdgeInvalidOperationException</span>
 
 
 <span class="c1"># CLASSES</span>
@@ -206,9 +209,15 @@
     <span class="n">_TIMEOUT_s</span> <span class="o">=</span> <span class="mi">10</span>
     <span class="sd">&quot;&quot;&quot;Timeout for discovering information.&quot;&quot;&quot;</span>
 
+    <span class="n">_NUMBER_OF_THREADS</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="sd">&quot;&quot;&quot;Number of threads to be used to notify the listeners.&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="AWSClient.__init__"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_name</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span> \
         <span class="n">device_private_key_path</span><span class="p">,</span> <span class="n">group_ca_path</span><span class="p">,</span> <span class="n">core_info</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor.</span>
+
+<span class="sd">        AWSClient has to be instantiated through a call to the</span>
+<span class="sd">        :meth:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client` method.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            client_name (str): Name of the client, as it is on the cloud.</span>
@@ -222,16 +231,27 @@
 <span class="sd">                which the client belongs.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            :exc:`edge_st_sdk.utils.edge_st_exceptions.WrongInstantiationException`</span>
+<span class="sd">            :exc:`edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException`</span>
 <span class="sd">                is raised if the discovery of the core has not been completed</span>
 <span class="sd">                yet, i.e. if the AWSClient has not been instantiated through a</span>
 <span class="sd">                call to the</span>
 <span class="sd">                :meth:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client`</span>
 <span class="sd">                method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">INIT</span>
+        <span class="sd">&quot;&quot;&quot;Status.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thread_pool</span> <span class="o">=</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">AWSClient</span><span class="o">.</span><span class="n">_NUMBER_OF_THREADS</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Pool of thread used to notify the listeners.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="sd">&quot;&quot;&quot;List of listeners to the feature changes.</span>
+<span class="sd">        It is a thread safe list, so a listener can subscribe itself through a</span>
+<span class="sd">        callback.&quot;&quot;&quot;</span>
+
         <span class="c1"># Check the client is created with the right pattern (Builder).</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">edge_st_sdk</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">aws_greengrass</span><span class="o">.</span><span class="n">AWSGreengrass</span><span class="o">.</span><span class="n">discovery_completed</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">WrongInstantiationException</span><span class="p">(</span><span class="s1">&#39;Amazon AWS clients must be &#39;</span> \
+            <span class="k">raise</span> <span class="n">EdgeInvalidOperationException</span><span class="p">(</span><span class="s1">&#39;Amazon AWS clients must be &#39;</span> \
                 <span class="s1">&#39;obtained through a call to the </span><span class="se">\&#39;</span><span class="s1">get_client()</span><span class="se">\&#39;</span><span class="s1"> method of an &#39;</span> \
                 <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">AWSGreengrass</span><span class="se">\&#39;</span><span class="s1"> object.&#39;</span><span class="p">)</span>
 
@@ -253,8 +273,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">configureDrainingFrequency</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># Draining: 2 Hz.</span>
         
         <span class="c1"># Creating a shadow handler with persistent subscription.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">createShadowHandlerWithName</span><span class="p">(</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">createShadowHandlerWithName</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_client_name</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Updating client.</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">IDLE</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AWSClient.get_name"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the client name. </span>
@@ -270,41 +293,49 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the connection was successful, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Iterate through the connection options for the core and use the first</span>
-        <span class="c1"># successful one.</span>
-        <span class="k">for</span> <span class="n">connectivity_info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">connectivityInfoList</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span> <span class="o">=</span> <span class="n">connectivity_info</span><span class="o">.</span><span class="n">host</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span> <span class="o">=</span> <span class="n">connectivity_info</span><span class="o">.</span><span class="n">port</span>
-            <span class="c1"># print(&quot;Trying to connect to core at %s:%d...&quot; % \</span>
-            <span class="c1">#     (self._current_host, self._current_port))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureEndpoint</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureAutoReconnectBackoffTime</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureConnectDisconnectTimeout</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_TIMEOUT_s</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureMQTTOperationTimeout</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_TIMEOUT_s</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">break</span>
-            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># Updating client.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">CONNECTING</span><span class="p">)</span>
 
-        <span class="c1"># if not self._connected:</span>
-        <span class="c1">#     print(&quot;Cannot connect to core %s. Exiting...&quot; % \</span>
-        <span class="c1">#         (self._core_info.coreThingArn))</span>
-        <span class="c1">#     sys.exit(-2)</span>
-        <span class="c1"># else:</span>
-        <span class="c1">#     print(&quot;Shadow device %s successfully connected to core %s.&quot; % \</span>
-        <span class="c1">#         (self._client_name, self._core_info.coreThingArn))</span></div>
+        <span class="c1"># Connecting.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="c1"># Iterate through the connection options for the core and use the</span>
+            <span class="c1"># first successful one.</span>
+            <span class="k">for</span> <span class="n">connectivity_info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">connectivityInfoList</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span> <span class="o">=</span> <span class="n">connectivity_info</span><span class="o">.</span><span class="n">host</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span> <span class="o">=</span> <span class="n">connectivity_info</span><span class="o">.</span><span class="n">port</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureEndpoint</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_current_host</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_current_port</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureAutoReconnectBackoffTime</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureConnectDisconnectTimeout</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_TIMEOUT_s</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">configureMQTTOperationTimeout</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_TIMEOUT_s</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">CONNECTED</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">UNREACHABLE</span><span class="p">)</span>
+</div>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span>
 
 <div class="viewcode-block" id="AWSClient.disconnect"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Disconnect from the core.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
+        <span class="c1"># Updating client.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">DISCONNECTING</span><span class="p">)</span>
+
+        <span class="c1"># Disconnecting.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Updating client.</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">DISCONNECTED</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AWSClient.publish"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.publish">[docs]</a>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">qos</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Publish a new message to the desired topic with the given quality of</span>
@@ -380,8 +411,47 @@
 <span class="sd">                request comes back.</span>
 <span class="sd">            timeout_s (int): Timeout in seconds to perform the request.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowDelete</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSClient.add_listener"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.add_listener">[docs]</a>    <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a listener.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):</span>
+<span class="sd">                Listener to be added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span></div>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSClient.remove_listener"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.remove_listener">[docs]</a>    <span class="k">def</span> <span class="nf">remove_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove a listener.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):</span>
+<span class="sd">                Listener to be removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span></div>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the status of the client.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): New</span>
+<span class="sd">                status.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">old_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">new_status</span>
+        <span class="k">for</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span>
+            <span class="c1"># Calling user-defined callback.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thread_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+                <span class="n">listener</span><span class="o">.</span><span class="n">on_status_change</span><span class="p">(</span></div>
+                    <span class="bp">self</span><span class="p">,</span> <span class="n">new_status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">old_status</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
 </pre></div>
 
            </div>

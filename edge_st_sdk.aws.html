@@ -190,6 +190,8 @@ communication with AWS IoT.</p>
 <dt id="edge_st_sdk.aws.aws_client.AWSClient.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>client_name</em>, <em>device_certificate_path</em>, <em>device_private_key_path</em>, <em>group_ca_path</em>, <em>core_info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor.</p>
+<p>AWSClient has to be instantiated through a call to the
+<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client()</span></code></a> method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -207,12 +209,26 @@ which the client belongs.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.WrongInstantiationException" title="edge_st_sdk.utils.edge_st_exceptions.WrongInstantiationException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">edge_st_sdk.utils.edge_st_exceptions.WrongInstantiationException</span></code></a> – is raised if the discovery of the core has not been completed
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException" title="edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException</span></code></a> – is raised if the discovery of the core has not been completed
 yet, i.e. if the AWSClient has not been instantiated through a
 call to the
 <a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client()</span></code></a>
 method.</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.add_listener">
+<code class="descname">add_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.add_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.add_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a listener.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>listener</strong> (<a class="reference internal" href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientListener" title="edge_st_sdk.edge_client.EdgeClientListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientListener</span></code></a>) – Listener to be added.</td>
 </tr>
 </tbody>
 </table>
@@ -319,6 +335,20 @@ service.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.remove_listener">
+<code class="descname">remove_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.remove_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.remove_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a listener.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>listener</strong> (<a class="reference internal" href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientListener" title="edge_st_sdk.edge_client.EdgeClientListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientListener</span></code></a>) – Listener to be removed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="edge_st_sdk.aws.aws_client.AWSClient.subscribe">
 <code class="descname">subscribe</code><span class="sig-paren">(</span><em>topic</em>, <em>qos</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.subscribe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.subscribe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscribe to the desired topic with the given quality of service and
@@ -389,7 +419,7 @@ AWS devices and allocating the needed resources.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="attribute">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.MAX_DISCOVERY_ATTEMPTS">
-<code class="descname">MAX_DISCOVERY_ATTEMPTS</code><em class="property"> = 10</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.MAX_DISCOVERY_ATTEMPTS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">MAX_DISCOVERY_ATTEMPTS</code><em class="property"> = 3</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.MAX_DISCOVERY_ATTEMPTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximum number of attempts when trying to discover the core.</p>
 </dd></dl>
 
@@ -412,10 +442,24 @@ AWS devices and allocating the needed resources.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.add_listener">
+<code class="descname">add_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.add_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.add_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a listener.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>listener</strong> (<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener</span></code></a>) – Listener to be added.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="classmethod">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.discovery_completed">
 <em class="property">classmethod </em><code class="descname">discovery_completed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.discovery_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.discovery_completed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Discovery completed.</p>
+<dd><p>Checking whether the discovery has completed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -431,7 +475,7 @@ AWS devices and allocating the needed resources.</p>
 <dl class="method">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client">
 <code class="descname">get_client</code><span class="sig-paren">(</span><em>client_id</em>, <em>device_certificate_path</em>, <em>device_private_key_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.get_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get an Amazon AWS client.</p>
+<dd><p>Getting an Amazon AWS client.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -448,11 +492,97 @@ private key stored on the core device.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Amazon AWS client.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#edge_st_sdk.aws.aws_client.AWSClient" title="edge_st_sdk.aws.aws_client.AWSClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_client.AWSClient</span></code></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#edge_st_sdk.aws.aws_client.AWSClient" title="edge_st_sdk.aws.aws_client.AWSClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_client.AWSClient</span></code></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException" title="edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException</span></code></a> – is raised if the discovery of the core fails.</p>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_endpoint">
+<code class="descname">get_endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.get_endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getting the AWS endpoint.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.remove_listener">
+<code class="descname">remove_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.remove_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.remove_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a listener.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>listener</strong> (<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener</span></code></a>) – Listener to be removed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.aws.aws_greengrass.</code><code class="descname">AWSGreengrassListener</code><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrassListener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Interface used by the
+<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrass"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrass</span></code></a> class to notify
+changes of an AWS Greengrass service’s status.</p>
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener.on_status_change">
+<code class="descname">on_status_change</code><span class="sig-paren">(</span><em>aws_greengrass</em>, <em>new_status</em>, <em>old_status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrassListener.on_status_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener.on_status_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>To be called whenever the AWS Greengrass service changes its status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>(</strong> (<em>aws_greengrass</em>) – class:<a href="#id1"><span class="problematic" id="id2">`</span></a>edge_st_sdk.aws.aws_greengrass.AWSGreengrass):
+AWS Greengrass service that has changed its status.</li>
+<li><strong>new_status</strong> (<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus</span></code></a>) – New status.</li>
+<li><strong>old_status</strong> (<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus</span></code></a>) – Old status.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> if the method has not been implemented.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.aws.aws_greengrass.</code><code class="descname">AWSGreengrassStatus</code><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrassStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>Status of the AWS Greengrass service.</p>
+<dl class="attribute">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.CORE_DISCOVERED">
+<code class="descname">CORE_DISCOVERED</code><em class="property"> = 'CORE_DISCOVERED'</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.CORE_DISCOVERED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core discovered.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.DISCOVERING_CORE">
+<code class="descname">DISCOVERING_CORE</code><em class="property"> = 'DISCOVERING_CORE'</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.DISCOVERING_CORE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discovering the Core.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.IDLE">
+<code class="descname">IDLE</code><em class="property"> = 'IDLE'</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.IDLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waiting for a connection and sending advertising data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.INIT">
+<code class="descname">INIT</code><em class="property"> = 'INIT'</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.INIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy initial status.</p>
 </dd></dl>
 
 </dd></dl>

@@ -196,6 +196,20 @@
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>The EdgeClient class is an interface for creating edge client classes.</p>
 <dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.add_listener">
+<code class="descname">add_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.add_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.add_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a listener.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>listener</strong> (<a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClientListener" title="edge_st_sdk.edge_client.EdgeClientListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientListener</span></code></a>) – Listener to be added.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="edge_st_sdk.edge_client.EdgeClient.connect">
 <code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connect to the core.</p>
@@ -270,6 +284,20 @@ service.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.remove_listener">
+<code class="descname">remove_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.remove_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.remove_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a listener.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>listener</strong> (<a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClientListener" title="edge_st_sdk.edge_client.EdgeClientListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientListener</span></code></a>) – Listener to be removed.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="edge_st_sdk.edge_client.EdgeClient.subscribe">
 <code class="descname">subscribe</code><span class="sig-paren">(</span><em>topic</em>, <em>qos</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.subscribe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.subscribe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Subscribe to the desired topic with the given quality of service and
@@ -325,6 +353,82 @@ request comes back.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="edge_st_sdk.edge_client.EdgeClientListener">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.edge_client.</code><code class="descname">EdgeClientListener</code><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClientListener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientListener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Interface used by the <a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClient" title="edge_st_sdk.edge_client.EdgeClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClient</span></code></a> class
+to notify changes of a client’s status.</p>
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClientListener.on_status_change">
+<code class="descname">on_status_change</code><span class="sig-paren">(</span><em>client</em>, <em>new_status</em>, <em>old_status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClientListener.on_status_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientListener.on_status_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>To be called whenever a client changes its status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>(</strong> (<em>client</em>) – class:<a href="#id1"><span class="problematic" id="id2">`</span></a>edge_st_sdk.edge_client.EdgeClient): Client that has
+changed its status.</li>
+<li><strong>new_status</strong> (<a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClientStatus" title="edge_st_sdk.edge_client.EdgeClientStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientStatus</span></code></a>) – New
+status.</li>
+<li><strong>old_status</strong> (<a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClientStatus" title="edge_st_sdk.edge_client.EdgeClientStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientStatus</span></code></a>) – Old
+status.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> if the method has not been implemented.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.edge_client.</code><code class="descname">EdgeClientStatus</code><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClientStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>Status of the client.</p>
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.CONNECTED">
+<code class="descname">CONNECTED</code><em class="property"> = 'CONNECTED'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.CONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connected to the client.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.CONNECTING">
+<code class="descname">CONNECTING</code><em class="property"> = 'CONNECTING'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.CONNECTING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opening a connection with the client.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.DISCONNECTING">
+<code class="descname">DISCONNECTING</code><em class="property"> = 'DISCONNECTING'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.DISCONNECTING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closing the connection to the client.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.IDLE">
+<code class="descname">IDLE</code><em class="property"> = 'IDLE'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.IDLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waiting for a connection and sending advertising data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.INIT">
+<code class="descname">INIT</code><em class="property"> = 'INIT'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.INIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy initial status.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.UNREACHABLE">
+<code class="descname">UNREACHABLE</code><em class="property"> = 'UNREACHABLE'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.UNREACHABLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The client disappeared without first disconnecting.</p>
 </dd></dl>
 
 </dd></dl>

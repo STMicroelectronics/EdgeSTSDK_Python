@@ -158,11 +158,13 @@
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#U"><strong>U</strong></a>
- | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="_">_</h2>
@@ -173,7 +175,7 @@
       <ul>
         <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.__init__">(edge_st_sdk.aws.aws_greengrass.AWSGreengrass method)</a>
 </li>
-        <li><a href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.WrongInstantiationException.__init__">(edge_st_sdk.utils.edge_st_exceptions.WrongInstantiationException method)</a>
+        <li><a href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException.__init__">(edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -182,11 +184,23 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient">AWSClient (class in edge_st_sdk.aws.aws_client)</a>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.add_listener">add_listener() (edge_st_sdk.aws.aws_client.AWSClient method)</a>
+
+      <ul>
+        <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.add_listener">(edge_st_sdk.aws.aws_greengrass.AWSGreengrass method)</a>
 </li>
+        <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.add_listener">(edge_st_sdk.edge_client.EdgeClient method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient">AWSClient (class in edge_st_sdk.aws.aws_client)</a>
+</li>
       <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass">AWSGreengrass (class in edge_st_sdk.aws.aws_greengrass)</a>
+</li>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener">AWSGreengrassListener (class in edge_st_sdk.aws.aws_greengrass)</a>
+</li>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus">AWSGreengrassStatus (class in edge_st_sdk.aws.aws_greengrass)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -201,6 +215,14 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientStatus.CONNECTED">CONNECTED (edge_st_sdk.edge_client.EdgeClientStatus attribute)</a>
+</li>
+      <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientStatus.CONNECTING">CONNECTING (edge_st_sdk.edge_client.EdgeClientStatus attribute)</a>
+</li>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.CORE_DISCOVERED">CORE_DISCOVERED (edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus attribute)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="D">D</h2>
@@ -212,14 +234,18 @@
         <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.delete_shadow_state">(edge_st_sdk.edge_client.EdgeClient method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.disconnect">disconnect() (edge_st_sdk.aws.aws_client.AWSClient method)</a>
 
       <ul>
         <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.disconnect">(edge_st_sdk.edge_client.EdgeClient method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientStatus.DISCONNECTING">DISCONNECTING (edge_st_sdk.edge_client.EdgeClientStatus attribute)</a>
+</li>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.DISCOVERING_CORE">DISCOVERING_CORE (edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus attribute)</a>
+</li>
       <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.discovery_completed">discovery_completed() (edge_st_sdk.aws.aws_greengrass.AWSGreengrass class method)</a>
 </li>
   </ul></td>
@@ -236,15 +262,21 @@
 </li>
       <li><a href="edge_st_sdk.aws.html#module-edge_st_sdk.aws.aws_greengrass">edge_st_sdk.aws.aws_greengrass (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="edge_st_sdk.html#module-edge_st_sdk.edge_client">edge_st_sdk.edge_client (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="edge_st_sdk.utils.html#module-edge_st_sdk.utils">edge_st_sdk.utils (module)</a>
 </li>
       <li><a href="edge_st_sdk.utils.html#module-edge_st_sdk.utils.edge_st_exceptions">edge_st_sdk.utils.edge_st_exceptions (module)</a>
 </li>
       <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient">EdgeClient (class in edge_st_sdk.edge_client)</a>
+</li>
+      <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientListener">EdgeClientListener (class in edge_st_sdk.edge_client)</a>
+</li>
+      <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientStatus">EdgeClientStatus (class in edge_st_sdk.edge_client)</a>
+</li>
+      <li><a href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException">EdgeInvalidOperationException</a>
 </li>
   </ul></td>
 </tr></table>
@@ -254,14 +286,36 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client">get_client() (edge_st_sdk.aws.aws_greengrass.AWSGreengrass method)</a>
 </li>
-      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_name">get_name() (edge_st_sdk.aws.aws_client.AWSClient method)</a>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_endpoint">get_endpoint() (edge_st_sdk.aws.aws_greengrass.AWSGreengrass method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_name">get_name() (edge_st_sdk.aws.aws_client.AWSClient method)</a>
+</li>
       <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_shadow_state">get_shadow_state() (edge_st_sdk.aws.aws_client.AWSClient method)</a>
 
       <ul>
         <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.get_shadow_state">(edge_st_sdk.edge_client.EdgeClient method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.IDLE">IDLE (edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus attribute)</a>
+
+      <ul>
+        <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientStatus.IDLE">(edge_st_sdk.edge_client.EdgeClientStatus attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.INIT">INIT (edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus attribute)</a>
+
+      <ul>
+        <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientStatus.INIT">(edge_st_sdk.edge_client.EdgeClientStatus attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -275,6 +329,18 @@
   </ul></td>
 </tr></table>
 
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener.on_status_change">on_status_change() (edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener method)</a>
+
+      <ul>
+        <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientListener.on_status_change">(edge_st_sdk.edge_client.EdgeClientListener method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -282,6 +348,20 @@
 
       <ul>
         <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.publish">(edge_st_sdk.edge_client.EdgeClient method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.remove_listener">remove_listener() (edge_st_sdk.aws.aws_client.AWSClient method)</a>
+
+      <ul>
+        <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.remove_listener">(edge_st_sdk.aws.aws_greengrass.AWSGreengrass method)</a>
+</li>
+        <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.remove_listener">(edge_st_sdk.edge_client.EdgeClient method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -302,6 +382,8 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientStatus.UNREACHABLE">UNREACHABLE (edge_st_sdk.edge_client.EdgeClientStatus attribute)</a>
+</li>
       <li><a href="edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.unsubscribe">unsubscribe() (edge_st_sdk.aws.aws_client.AWSClient method)</a>
 
       <ul>
@@ -316,14 +398,6 @@
         <li><a href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.update_shadow_state">(edge_st_sdk.edge_client.EdgeClient method)</a>
 </li>
       </ul></li>
-  </ul></td>
-</tr></table>
-
-<h2 id="W">W</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.WrongInstantiationException">WrongInstantiationException</a>
-</li>
   </ul></td>
 </tr></table>
 
