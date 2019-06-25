@@ -168,7 +168,7 @@ def receive_ble2_message_callback(message, hubManager):
     # Toggle switch status.
     iot_device_1_status = SwitchStatus.ON if data != '[0]' else SwitchStatus.OFF
     
-    print('\n>> NEW func >> sending toggle switch to BLE1: \n')
+    print('\n>> sending toggle switch to BLE1: \n')
     # Writing switch status.
     iot_device_1.disable_notifications(iot_device_1_feature_switch)
     iot_device_1_feature_switch.write_switch_status(iot_device_1_status.value)
@@ -279,7 +279,7 @@ def main(protocol):
         # Initializing Edge Computing.
         print('\nInitializing Edge Computing...\n')       
 
-        # Getting AWS MQTT clients.
+        # Init Azure client.
         module_client = AzureModuleClient(MODULE_NAME, PROTOCOL)
         # module_client.set_module_twin_callback()
 
