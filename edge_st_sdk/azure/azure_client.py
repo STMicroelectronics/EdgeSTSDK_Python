@@ -44,7 +44,7 @@ from iothub_client import IoTHubMessage, IoTHubMessageDispositionResult, IoTHubE
 
 from edge_st_sdk.edge_client import EdgeClient
 from edge_st_sdk.utils.edge_st_exceptions import WrongInstantiationException
-from edge_st_sdk.azure.azure_utils import ReceiveContext
+from edge_st_sdk.azure.azure_utils import CallbackContext
 
 # CLASSES
 
@@ -75,19 +75,18 @@ class AzureClient(EdgeClient):
 
     def disconnect(self):
         # not supported
-        return
+        self._connected = False
 
-    def publish(self, outputQueueName, msg, send_confirmation_callback, send_context):
+    def publish(self, topic, msg, send_confirmation_callback, send_context):
         if self._connected:
             event = IoTHubMessage(bytearray(msg, 'utf8'))
             self.client.send_event_async(
-            outputQueueName, event, send_confirmation_callback, send_context)
+            topic, event, send_confirmation_callback, send_context)
 
     def subscribe(self, topic, callback, user_context):
         if self._connected:
-            rcvContext = ReceiveContext(callback, user_context)
-            self.client.set_message_callback(topic, self._subscribe_callback, rcvContext)
-        return
+            cbContext = CallbackContext(callback, user_context)
+            self.client.set_message_callback(topic, self._subscribe_callback, cbContext)
 
     def unsubscribe(self, topic):
         # not supported
@@ -98,7 +97,6 @@ class AzureClient(EdgeClient):
     def update_shadow_state(self, payload, callback, context):
         if self._connected:    
             self.client.send_reported_state(payload, len(payload), callback, context)
-        return
 
     def get_shadow_state(self, callback, timeout_s):
         # not supported
@@ -117,10 +115,21 @@ class AzureClient(EdgeClient):
     # Register a callback for module method
     def set_module_method_callback(self, method_callback, user_context):
         if self._connected:        
-            self.client.set_module_method_callback(method_callback, user_context)
+            cbContext = CallbackContext(method_callback, user_context)
+            self.client.set_module_method_callback(self._method_callback, cbContext)
 
+    # Internal callback for message which calls user callback
     def _subscribe_callback(self, message, context):
         callback = context._get_callback()
         callback(message, context._get_context())
         return IoTHubMessageDispositionResult.ACCEPTED
+    
+    # Internal callback for method which calls user callback
+    def _method_callback(self, method_name, message, context):
+        callback = context._get_callback()
+        callback(method_name, message, context._get_context())
+        retval = DeviceMethodReturnValue()
+        retval.status = 200
+        retval.response = "{\"result\":\"okay\"}"
+        return retval
 

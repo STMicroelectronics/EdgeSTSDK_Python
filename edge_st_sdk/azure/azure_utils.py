@@ -33,7 +33,7 @@
 # IMPORT
 import sys
 
-class ReceiveContext:
+class CallbackContext:
     def __init__(self, callback, context):
         self.message_callback = callback
         self.user_context = context

@@ -7,8 +7,7 @@ import time
 import sys
 import os
 import json
-from iothub_client import IoTHubTransportProvider
-from iothub_client import IoTHubMessageDispositionResult, IoTHubError
+from iothub_client import IoTHubTransportProvider, IoTHubError
 
 import blue_st_sdk
 from blue_st_sdk.manager import Manager, ManagerListener
@@ -174,10 +173,6 @@ def receive_ble2_message_callback(message, hubManager):
     iot_device_1.disable_notifications(iot_device_1_feature_switch)
     iot_device_1_feature_switch.write_switch_status(iot_device_1_status.value)
     iot_device_1.enable_notifications(iot_device_1_feature_switch)
-
-    # hubManager.forward_event_to_output("randomoutput1", message, 0)
-    # return IoTHubMessageDispositionResult.ACCEPTED
-
     return
 
 
@@ -199,8 +194,6 @@ def receive_ble1_message_callback(message, hubManager):
     iot_device_2.disable_notifications(iot_device_2_feature_switch)
     iot_device_2_feature_switch.write_switch_status(iot_device_2_status.value)
     iot_device_2.enable_notifications(iot_device_2_feature_switch)
-
-    # return IoTHubMessageDispositionResult.ACCEPTED
     return
 
 
@@ -328,7 +321,7 @@ def main(protocol):
         # Infinite loop.
         while True:
             # Getting notifications.
-            if iot_device_1.wait_for_notifications(0.05): # or iot_device_2.wait_for_notifications(0.05):
+            if iot_device_1.wait_for_notifications(0.05):
                 # time.sleep(2) # workaround for Unexpected Response Issue
                 print("rcvd notification!")
                 continue
@@ -345,20 +338,3 @@ def main(protocol):
 
 if __name__ == '__main__':
     main(PROTOCOL)
-
-
-# for discovered in discovered_devices:
-#                     device_name = discovered.get_name()
-#                     print('%d) %s: [%s]' % (i, discovered.get_name(), discovered.get_tag()))
-#                     if discovered.get_tag() == IOT_DEVICE_1_MAC:
-#                         iot_device_1 = discovered
-#                         devices.append(iot_device_1)
-#                         print("IOT_DEVICE device 1 found!")
-#                     elif discovered.get_tag() == IOT_DEVICE_2_MAC:
-#                         iot_device_2 = discovered
-#                         devices.append(iot_device_2)
-#                         print("IOT_DEVICE device 2 found!")
-#                     if len(devices) == 2:
-#                         break
-#                     i += 1
-#                 break

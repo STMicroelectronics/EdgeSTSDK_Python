@@ -1,5 +1,5 @@
 pyserial==3.0.1
 enum34==1.1.6
-AWSIoTPythonSDK
 azure-iothub-device-client==1.4.0
+AWSIoTPythonSDK
 edge_st_sdk
