@@ -48,7 +48,7 @@ from edge_st_sdk.azure.azure_utils import CallbackContext
 
 # CLASSES
 
-class AzureClient(EdgeClient):
+class AzureModuleClient(EdgeClient):
     """Class responsible for handling an Azure Edge Module client used for MQTT/AMQP
     communication (Protocol Translation) with Azure IoT Hub"""
 
@@ -130,6 +130,6 @@ class AzureClient(EdgeClient):
         callback(method_name, message, context._get_context())
         retval = DeviceMethodReturnValue()
         retval.status = 200
-        retval.response = "{\"result\":\"okay\"}"
+        retval.response = "{\"result\":\"success\"}"
         return retval
 

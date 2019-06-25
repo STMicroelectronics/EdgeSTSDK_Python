@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="edge_st_sdk_package",
-    version="1.0.7",
+    version="1.0.8",
     author="Davide Aliprandi",
     author_email="davide.aliprandi@gmail.com",
     description="IoT edge computing abstraction library package.",
