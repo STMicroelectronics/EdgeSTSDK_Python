@@ -17,7 +17,7 @@ from blue_st_sdk.features import *
 from bluepy.btle import BTLEException
 from enum import Enum
 
-from edge_st_sdk.azure.azure_client import AzureClient
+from edge_st_sdk.azure.azure_client import AzureModuleClient
 from edge_st_sdk.utils.edge_st_exceptions import WrongInstantiationException
 
 BLE1_APPMOD_INPUT   = 'BLE1_App_Input'
@@ -124,8 +124,8 @@ class MyFeatureListenerBLE2(FeatureListener):
 SCANNING_TIME_s = 5
 
 # Bluetooth Low Energy devices' MAC address.
-IOT_DEVICE_1_MAC = 'd8:9a:e3:f0:12:d7'
-IOT_DEVICE_2_MAC = 'd9:f5:d6:66:34:9e'
+IOT_DEVICE_1_MAC = os.getenv('MAC_ADDR_1','d8:9a:e3:f0:12:d7')
+IOT_DEVICE_2_MAC = os.getenv('MAC_ADDR_2','d9:f5:d6:66:34:9e')
 
 # Number of notifications to get before disabling them.
 NOTIFICATIONS = 3
@@ -280,7 +280,7 @@ def main(protocol):
         print('\nInitializing Edge Computing...\n')       
 
         # Getting AWS MQTT clients.
-        module_client = AzureClient(MODULE_NAME, PROTOCOL)        
+        module_client = AzureModuleClient(MODULE_NAME, PROTOCOL)
         # module_client.set_module_twin_callback()
 
         # Connecting clients to the runtime.
