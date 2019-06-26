@@ -161,7 +161,7 @@ class AzureDeviceClient(EdgeClient):
 
     def connect(self):
         # not really a "connect"
-        if self.protocol == IoTHubTransportProvider.HTTP:
+        if self.client_protocol == IoTHubTransportProvider.HTTP:
             self.client.set_option("timeout", self._TIMEOUT_s)
             self.client.set_option("MinimumPollingTime", self._MINIMUM_POLLING_TIME_s)
         # set the time until a message times out
