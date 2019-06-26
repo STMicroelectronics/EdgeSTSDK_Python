@@ -81,16 +81,19 @@ from blue_st_sdk.features import *
 from blue_st_sdk.utils.blue_st_exceptions import InvalidOperationException
 
 from edge_st_sdk.aws.aws_greengrass import AWSGreengrass
-from edge_st_sdk.utils.edge_st_exceptions import WrongInstantiationException
+from edge_st_sdk.aws.aws_greengrass import AWSGreengrassListener
+from edge_st_sdk.aws.aws_client import AWSClient
+from edge_st_sdk.edge_client import EdgeClientListener
+from edge_st_sdk.utils.edge_st_exceptions import EdgeInvalidOperationException
 
 
 # PRECONDITIONS
 #
-# Please remember to add to the "PYTHONPATH" environment variable the location
-# of the "BlueSTSDK_Python" and the "EdgeSTSDK_Python" SDKs.
+# In case you want to modify the SDK, clone the repository and add the location
+# of the "EdgeSTSDK_Python" folder to the "PYTHONPATH" environment variable.
 #
 # On Linux:
-# export PYTHONPATH=/home/<user>/BlueSTSDK_Python:/home/<user>/EdgeSTSDK_Python
+#   export PYTHONPATH=/home/<user>/EdgeSTSDK_Python
 
 
 # CONSTANTS
@@ -137,8 +140,8 @@ MQTT_IOT_DEVICE_SWITCH_ACT_TOPIC =   "iot_device/switch_act"
 MQTT_IOT_DEVICE_ENV_INE_TOPIC =      "iot_device/env_ine_sense"
 
 # Devices' certificates, private keys, and path on the Linux gateway.
-CERTIF_EXT = ".pem"
-PRIV_K_EXT = ".prv"
+CERTIF_EXT = ".cert.pem"
+PRIV_K_EXT = ".private.key"
 DEVICES_PATH = "./devices_ble_aws/"
 IOT_DEVICE_1_NAME = 'IoT_Device_1'
 IOT_DEVICE_2_NAME = 'IoT_Device_2'
@@ -398,6 +401,42 @@ class MyFeatureSensorsListener(FeatureListener):
             self._data[FeaturesIndex.MAGNETOMETER.value] = data
 
 
+#
+# Implementation of the interface used by the EdgeClient class to notify that a
+# client has updated its status.
+#
+class MyAWSGreengrassListener(AWSGreengrassListener):
+
+    #
+    # To be called whenever the AWS Greengrass service changes its status.
+    #
+    # @param aws_greengrass AWS Greengrass service that has changed its status.
+    # @param new_status     New status.
+    # @param old_status     Old status.
+    #
+    def on_status_change(self, aws_greengrass, new_status, old_status):
+        print('AWS Greengrass service with endpoint "%s" from %s to %s.' %
+            (aws_greengrass.get_endpoint(), str(old_status), str(new_status)))
+
+
+#
+# Implementation of the interface used by the EdgeClient class to notify that a
+# client has updated its status.
+#
+class MyClientListener(EdgeClientListener):
+
+    #
+    # To be called whenever a client changes its status.
+    #
+    # @param client     Client that has changed its status.
+    # @param new_status New status.
+    # @param old_status Old status.
+    #
+    def on_status_change(self, client, new_status, old_status):
+        print('Client %s from %s to %s.' %
+            (client.get_name(), str(old_status), str(new_status)))
+
+
 # DEVICES' CALLBACKS
 
 #
@@ -608,12 +647,7 @@ def main(argv):
 
         # Synchronous discovery of Bluetooth devices.
         print('Scanning Bluetooth devices...\n')
-        # Synchronous discovery.
-        #manager.discover(False, SCANNING_TIME_s)
-        # Asynchronous discovery.
-        manager.start_discovery(False, SCANNING_TIME_s)
-        time.sleep(SCANNING_TIME_s)
-        manager.stop_discovery()
+        manager.discover(SCANNING_TIME_s)
 
         # Getting discovered devices.
         discovered_devices = manager.get_nodes()
@@ -671,12 +705,15 @@ def main(argv):
         # Initializing Edge Computing.
         print('\nInitializing Edge Computing...\n')
         edge = AWSGreengrass(endpoint, root_ca_path)
+        edge.add_listener(MyAWSGreengrassListener())
 
         # Getting AWS MQTT clients.
         iot_device_1_client = edge.get_client(IOT_DEVICE_1_NAME, IOT_DEVICE_1_CERTIF_PATH, IOT_DEVICE_1_PRIV_K_PATH)
         iot_device_2_client = edge.get_client(IOT_DEVICE_2_NAME, IOT_DEVICE_2_CERTIF_PATH, IOT_DEVICE_2_PRIV_K_PATH)
 
         # Connecting clients to the cloud.
+        iot_device_1_client.add_listener(MyClientListener())
+        iot_device_2_client.add_listener(MyClientListener())
         iot_device_1_client.connect()
         iot_device_2_client.connect()
 
@@ -748,13 +785,7 @@ def main(argv):
                 iot_device_act(iot_device_2, iot_device_2_feature_switch, iot_device_2_status, iot_device_2_client)
                 iot_device_2_act_flag = False
 
-    except InvalidOperationException as e:
-        print(e)
-    except BTLEException as e:
-        print(e)
-        print('Exiting...\n')
-        sys.exit(0)
-    except WrongInstantiationException as e:
+    except (BTLEException, EdgeInvalidOperationException) as e:
         print(e)
         print('Exiting...\n')
         sys.exit(0)
