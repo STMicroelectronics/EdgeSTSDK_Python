@@ -1,5 +1,4 @@
 #Make sure we have azure-iothub-device-client with version 1.4.0 for libboost-python1.55.0
-#azure-iothub-device-client==1.4.0
 azure-iothub-device-client==1.4.0
 bluepy==1.1.4
 futures
