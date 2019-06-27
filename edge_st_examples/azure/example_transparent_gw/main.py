@@ -71,6 +71,8 @@ SCANNING_TIME_s = 5
 IOT_DEVICE_1_MAC = os.getenv('MAC_ADDR','e3:60:e4:79:91:94')
 
 MODULE_NAME = os.getenv('MODULE_NAME','modaievtapp')
+DEVICEID = os.environ["IOTEDGE_DEVICEID"]
+MODULEID = os.environ["IOTEDGE_MODULEID"]
 
 # messageTimeout - the maximum time in milliseconds until a message times out.
 # The timeout period starts at IoTHubModuleClient.send_event_async.
@@ -258,8 +260,8 @@ class MyFeatureListener(FeatureListener):
         print("event timestamp: " + event_timestamp.replace(tzinfo=simple_utc()).isoformat().replace('+00:00', 'Z'))
 
         event_json = {
-            "deviceId": "iotedge-0",
-            "moduleId": "modaievtapp",
+            "deviceId": DEVICEID,
+            "moduleId": MODULEID,
             "aiEventType": aiEventType,
             "aiEvent": aiEvent,
             "ts": event_timestamp.replace(tzinfo=simple_utc()).isoformat().replace('+00:00', 'Z')
@@ -366,7 +368,7 @@ def main(protocol):
             while True:
                 # Synchronous discovery of Bluetooth devices.
                 print('Scanning Bluetooth devices...\n')
-                manager.discover(False, float(SCANNING_TIME_s))
+                manager.discover(float(SCANNING_TIME_s))
 
                 # Getting discovered devices.
                 print('Getting node device...\n')
@@ -375,6 +377,7 @@ def main(protocol):
                 # Listing discovered devices.
                 if not discovered_devices:
                     print('\nNo Bluetooth devices found.')
+                    time.sleep(2)
                     continue
                 else:
                     print('\nAvailable Bluetooth devices:')

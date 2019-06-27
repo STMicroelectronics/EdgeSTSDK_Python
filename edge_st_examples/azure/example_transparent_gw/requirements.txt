@@ -3,7 +3,7 @@ azure-iothub-device-client==1.4.0
 bluepy==1.1.4
 futures
 enum34==1.1.6
-blue-st-sdk-package==1.0.1
+blue-st-sdk==1.3.0
 edge-st-sdk-package==1.0.10
 requests
 pytz
