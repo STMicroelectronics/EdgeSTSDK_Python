@@ -317,8 +317,7 @@ def receive_ble1_message_callback(message, context):
     # Getting value.
     message_buffer = message.get_bytearray()
     size = len(message_buffer)
-    message_text = message_buffer[:size].decode('utf-8')
-    data = message_text.split()[3]
+    message_text = message_buffer[:size].decode('utf-8')    
     print('\nble1 receive msg cb << message: \n')
 
 
@@ -333,6 +332,16 @@ def send_reported_state_callback(status_code, context):
     print ( "\nSend reported state callback >> call confirmed\n")
     print ('status code: ', status_code)
     pass
+
+
+def receive_bledev_message_callback(message, context):
+    global RECEIVE_CALLBACKS    
+    # Getting value.
+    message_buffer = message.get_bytearray()
+    size = len(message_buffer)
+    message_text = message_buffer[:size].decode('utf-8')    
+    print('\ndevice receive msg << message: \n')
+    print(message_text)
 
 
 def main(protocol):   
@@ -365,6 +374,7 @@ def main(protocol):
         device_client = AzureDeviceClient(DEVICE_NAME, CONNECTION_STRING, PROTOCOL)
         device_client.connect()
         # publish, subscribe in case of a device does not involve a specific topic but goes-to/comes-from IoTHub
+        device_client.subscribe(receive_bledev_message_callback, device_client)
 
         # Initial state.
         firmware_upgrade_completed = False
