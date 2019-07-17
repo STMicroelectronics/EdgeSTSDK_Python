@@ -6,5 +6,5 @@ This example is a Azure IoTEdge module and this module can be used to do the fol
 
 Please build the docker container using the script docker-build.sh
 Please make sure to change the container image name from the default.
-The default image stmedge.azurecr.io/modaievtapp:0.0.3-arm32v7 access needs appropriate access keys for login and pushing.
+The default image stmedge.azurecr.io/modaievt_tpgw:0.0.1-arm32v7 access needs appropriate access keys for login and pushing.
  
