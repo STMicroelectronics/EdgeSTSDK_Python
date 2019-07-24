@@ -17,41 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="EdgeSTSDK 1.3.0 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -98,7 +91,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">EdgeSTSDK</a>
@@ -106,9 +99,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -137,8 +131,6 @@
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -201,51 +193,58 @@
 <div class="viewcode-block" id="EdgeClient.connect"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.connect">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Connect to the core.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;connect()&quot; to use the &#39;</span></div>
-            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;connect()&quot; to use the &#39;</span>
+            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EdgeClient.disconnect"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.disconnect">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Disconnect from the core.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;disconnect()&quot; to use the &#39;</span></div>
-            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;disconnect()&quot; to use the &#39;</span>
+            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EdgeClient.publish"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.publish">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">qos</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Publish a new message to the desired topic with the given quality of</span>
 <span class="sd">        service.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            topic (str): Topic name to publish to.</span>
-<span class="sd">            payload (str): Payload to publish (JSON formatted string).</span>
-<span class="sd">            qos (int): Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
+<span class="sd">        :param topic: Topic name to publish to.</span>
+<span class="sd">        :type topic: str</span>
+
+<span class="sd">        :param payload: Payload to publish (JSON formatted string).</span>
+<span class="sd">        :type payload: str</span>
+
+<span class="sd">        :param qos: Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
+<span class="sd">        :type qos: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;publish()&quot; to use the &#39;</span></div>
-            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;publish()&quot; to use the &#39;</span>
+            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EdgeClient.subscribe"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.subscribe">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">qos</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Subscribe to the desired topic with the given quality of service and</span>
 <span class="sd">        register a callback to handle the published messages.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            topic (str): Topic name to publish to.</span>
-<span class="sd">            qos (int): Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
-<span class="sd">            callback: Function to be called when a new message for the</span>
+<span class="sd">        :param topic: Topic name to publish to.</span>
+<span class="sd">        :type topic: str</span>
+
+<span class="sd">        :param qos: Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
+<span class="sd">        :type qos: int</span>
+
+<span class="sd">        :param callback: Function to be called when a new message for the</span>
 <span class="sd">            subscribed topic comes in.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;subscribe()&quot; to use the &#39;</span></div>
-            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;subscribe()&quot; to use the &#39;</span>
+            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EdgeClient.unsubscribe"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.unsubscribe">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">unsubscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unsubscribe to the desired topic.</span>
+        <span class="sd">&quot;&quot;&quot;Unsubscribe from the desired topic.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            topic (str): Topic name to unsubscribe to.</span>
+<span class="sd">        :param topic: Topic name to unsubscribe from.</span>
+<span class="sd">        :type topic: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;unsubscribe()&quot; to use the &#39;</span></div>
-            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;unsubscribe()&quot; to use the &#39;</span>
+            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EdgeClient.get_shadow_state"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.get_shadow_state">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_shadow_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">):</span>
@@ -254,13 +253,14 @@
 <span class="sd">        Retrieve the device shadow JSON document from the cloud by publishing an</span>
 <span class="sd">        empty JSON document to the corresponding shadow topics.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            callback: Function to be called when the response for a shadow</span>
+<span class="sd">        :param callback: Function to be called when the response for a shadow</span>
 <span class="sd">            request comes back.</span>
-<span class="sd">            timeout_s (int): Timeout in seconds to perform the request.</span>
+
+<span class="sd">        :param timeout_s: Timeout in seconds to perform the request.</span>
+<span class="sd">        :type timeout_s: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;get_shadow()&quot; to use the &#39;</span></div>
-            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;get_shadow()&quot; to use the &#39;</span>
+            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EdgeClient.update_shadow_state"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.update_shadow_state">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">update_shadow_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">):</span>
@@ -269,15 +269,18 @@
 <span class="sd">        Update the device shadow JSON document string on the cloud by publishing</span>
 <span class="sd">        the provided JSON document to the corresponding shadow topics.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            payload (json): JSON document string used to update the shadow JSON</span>
+<span class="sd">        :param payload: JSON document string used to update the shadow JSON</span>
 <span class="sd">            document on the cloud.</span>
-<span class="sd">            callback: Function to be called when the response for a shadow</span>
+<span class="sd">        :type payload: json</span>
+
+<span class="sd">        :param callback: Function to be called when the response for a shadow</span>
 <span class="sd">            request comes back.</span>
-<span class="sd">            timeout_s (int): Timeout in seconds to perform the request.</span>
+
+<span class="sd">        :param timeout_s: Timeout in seconds to perform the request.</span>
+<span class="sd">        :type timeout_s: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;update_shadow()&quot; to use the &#39;</span></div>
-            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;update_shadow()&quot; to use the &#39;</span>
+            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EdgeClient.delete_shadow_state"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.delete_shadow_state">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">delete_shadow_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">):</span>
@@ -286,46 +289,44 @@
 <span class="sd">        Delete the device shadow from the cloud by publishing an empty JSON</span>
 <span class="sd">        document to the corresponding shadow topics.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            callback: Function to be called when the response for a shadow</span>
+<span class="sd">        :param callback: Function to be called when the response for a shadow</span>
 <span class="sd">            request comes back.</span>
-<span class="sd">            timeout_s (int): Timeout in seconds to perform the request.</span>
+
+<span class="sd">        :param timeout_s: Timeout in seconds to perform the request.</span>
+<span class="sd">        :type timeout_s: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;delete_shadow()&quot; to use the &#39;</span></div>
-            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;delete_shadow()&quot; to use the &#39;</span>
+            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EdgeClient.add_listener"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.add_listener">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a listener.</span>
 <span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):</span>
-<span class="sd">            Listener to be added.</span>
+<span class="sd">        :param listener: Listener to be added.</span>
+<span class="sd">        :type listener: :class:`edge_st_sdk.edge_client.EdgeClientListener`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;add_listener()&quot; to use the &#39;</span></div>
-            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;add_listener()&quot; to use the &#39;</span>
+            <span class="s1">&#39;&quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EdgeClient.remove_listener"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient.remove_listener">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">remove_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove a listener.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):</span>
-<span class="sd">            Listener to be removed.</span>
+<span class="sd">        :param listener: Listener to be removed.</span>
+<span class="sd">        :type listener: :class:`edge_st_sdk.edge_client.EdgeClientListener`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;remove_listener()&quot; to use &#39;</span></div>
-            <span class="s1">&#39;the &quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;remove_listener()&quot; to use &#39;</span>
+            <span class="s1">&#39;the &quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_status</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the status of the client.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            new_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): New</span>
-<span class="sd">            status.</span>
+<span class="sd">            :param new_status: New status.</span>
+<span class="sd">            :type new_status: :class:`edge_st_sdk.edge_client.EdgeClientStatus`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;_update_client_status()&quot; to &#39;</span></div>
-            <span class="s1">&#39;use the &quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must define &quot;_update_client_status()&quot; to &#39;</span>
+            <span class="s1">&#39;use the &quot;EdgeClient&quot; class.&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="EdgeClientStatus"><a class="viewcode-back" href="../../edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientStatus">[docs]</a><span class="k">class</span> <span class="nc">EdgeClientStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -346,8 +347,8 @@
     <span class="n">DISCONNECTING</span> <span class="o">=</span> <span class="s1">&#39;DISCONNECTING&#39;</span>
     <span class="sd">&quot;&quot;&quot;Closing the connection to the client.&quot;&quot;&quot;</span>
 
-    <span class="n">UNREACHABLE</span> <span class="o">=</span> <span class="s1">&#39;UNREACHABLE&#39;</span></div>
-    <span class="sd">&quot;&quot;&quot;The client disappeared without first disconnecting.&quot;&quot;&quot;</span>
+    <span class="n">UNREACHABLE</span> <span class="o">=</span> <span class="s1">&#39;UNREACHABLE&#39;</span>
+    <span class="sd">&quot;&quot;&quot;The client disappeared without first disconnecting.&quot;&quot;&quot;</span></div>
 
 
 <span class="c1"># INTERFACES</span>
@@ -362,25 +363,23 @@
     <span class="k">def</span> <span class="nf">on_status_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">new_status</span><span class="p">,</span> <span class="n">old_status</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;To be called whenever a client changes its status.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            client (:class:`edge_st_sdk.edge_client.EdgeClient`): Client that</span>
-<span class="sd">            has changed its status.</span>
-<span class="sd">            new_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): New</span>
-<span class="sd">            status.</span>
-<span class="sd">            old_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): Old</span>
-<span class="sd">            status.</span>
+<span class="sd">        :param client: Client that has changed its status.</span>
+<span class="sd">        :type client: :class:`edge_st_sdk.edge_client.EdgeClient`</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            :exc:`NotImplementedError` if the method has not been implemented.</span>
+<span class="sd">        :param new_status: New status.</span>
+<span class="sd">        :type new_status: :class:`edge_st_sdk.edge_client.EdgeClientStatus`</span>
+
+<span class="sd">        :param old_status: Old status.</span>
+<span class="sd">        :type old_status: :class:`edge_st_sdk.edge_client.EdgeClientStatus`</span>
+
+<span class="sd">        :raises NotImplementedError`: if the method has not been implemented.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must implement &quot;on_status_change()&quot; to &#39;</span></div></div>
-                                  <span class="s1">&#39;use the &quot;EdgeClientListener&quot; class.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must implement &quot;on_status_change()&quot; to &#39;</span>
+                                  <span class="s1">&#39;use the &quot;EdgeClientListener&quot; class.&#39;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -389,11 +388,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Davide Aliprandi.
+        &copy; Copyright 2019, Davide Aliprandi
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -406,36 +405,15 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'1.3.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

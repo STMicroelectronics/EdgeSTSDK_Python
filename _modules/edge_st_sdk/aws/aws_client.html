@@ -17,41 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="EdgeSTSDK 1.3.0 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -98,7 +91,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">EdgeSTSDK</a>
@@ -106,9 +99,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -137,8 +131,6 @@
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -219,22 +211,28 @@
 <span class="sd">        AWSClient has to be instantiated through a call to the</span>
 <span class="sd">        :meth:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client` method.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            client_name (str): Name of the client, as it is on the cloud.</span>
-<span class="sd">            device_certificate_path (str): Relative path of the device&#39;s</span>
-<span class="sd">            certificate stored on the core device.</span>
-<span class="sd">            device_private_key_path (str): Relative path of the device&#39;s</span>
-<span class="sd">            private key stored on the core device.</span>
-<span class="sd">            group_ca_path (str): Relative path of the certification authority&#39;s</span>
-<span class="sd">            certificate stored on the core device.</span>
-<span class="sd">            core_info (list): Information related to the core of the group to</span>
-<span class="sd">            which the client belongs.</span>
+<span class="sd">        :param client_name: Name of the client, as it is on the cloud.</span>
+<span class="sd">        :type client_name: str</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            :exc:`edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidOperationException`</span>
-<span class="sd">            is raised if the discovery of the core has not been completed</span>
-<span class="sd">            yet, i.e. if the AWSClient has not been instantiated through a</span>
-<span class="sd">            call to the</span>
+<span class="sd">        :param device_certificate_path: Relative path of the device&#39;s</span>
+<span class="sd">            certificate stored on the core device.</span>
+<span class="sd">        :type device_certificate_path: str</span>
+
+<span class="sd">        :param device_private_key_path: Relative path of the device&#39;s private</span>
+<span class="sd">            key stored on the core device.</span>
+<span class="sd">        :type device_private_key_path: str</span>
+
+<span class="sd">        :param group_ca_path: Relative path of the certification authority&#39;s</span>
+<span class="sd">            certificate stored on the core device.</span>
+<span class="sd">        :type group_ca_path: str</span>
+
+<span class="sd">        :param core_info: Information related to the core of the group to which</span>
+<span class="sd">            the client belongs.</span>
+<span class="sd">        :type core_info: list</span>
+
+<span class="sd">        :raises EdgeSTInvalidOperationException: is raised if the discovery of</span>
+<span class="sd">            the core has not been completed yet, i.e. if the AWSClient has not</span>
+<span class="sd">            been instantiated through a call to the</span>
 <span class="sd">            :meth:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client`</span>
 <span class="sd">            method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -276,22 +274,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">createShadowHandlerWithName</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_client_name</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1"># Updating client.</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">IDLE</span><span class="p">)</span>
+        <span class="c1"># Updating client.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">IDLE</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AWSClient.get_name"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the client name. </span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            str: The client name, i.e. the name of the client.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_name</span>
+<span class="sd">        :returns: The client name, i.e. the name of the client.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client_name</span></div>
 
 <div class="viewcode-block" id="AWSClient.connect"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Connect to the core.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: True if the connection was successful, False otherwise.</span>
+<span class="sd">        :returns: True if the connection was successful, False otherwise.</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Updating client.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">CONNECTING</span><span class="p">)</span>
@@ -321,8 +319,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">CONNECTED</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">UNREACHABLE</span><span class="p">)</span>
-</div>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span></div>
 
 <div class="viewcode-block" id="AWSClient.disconnect"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.disconnect">[docs]</a>    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Disconnect from the core.&quot;&quot;&quot;</span>
@@ -334,42 +332,49 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_client</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Updating client.</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">DISCONNECTED</span><span class="p">)</span>
+        <span class="c1"># Updating client.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">EdgeClientStatus</span><span class="o">.</span><span class="n">DISCONNECTED</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AWSClient.publish"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.publish">[docs]</a>    <span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">qos</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Publish a new message to the desired topic with the given quality of</span>
 <span class="sd">        service.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            topic (str): Topic name to publish to.</span>
-<span class="sd">            payload (str): Payload to publish (JSON formatted string).</span>
-<span class="sd">            qos (int): Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
+<span class="sd">        :param topic: Topic name to publish to.</span>
+<span class="sd">        :type topic: str</span>
+
+<span class="sd">        :param payload: Payload to publish (JSON formatted string).</span>
+<span class="sd">        :type payload: str</span>
+
+<span class="sd">        :param qos: Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
+<span class="sd">        :type qos: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">qos</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">qos</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AWSClient.subscribe"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.subscribe">[docs]</a>    <span class="k">def</span> <span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">qos</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Subscribe to the desired topic with the given quality of service and</span>
 <span class="sd">        register a callback to handle the published messages.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            topic (str): Topic name to publish to.</span>
-<span class="sd">            qos (int): Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
-<span class="sd">            callback: Function to be called when a new message for the</span>
+<span class="sd">        :param topic: Topic name to publish to.</span>
+<span class="sd">        :type topic: str</span>
+
+<span class="sd">        :param qos: Quality of Service. Could be &quot;0&quot; or &quot;1&quot;.</span>
+<span class="sd">        :type qos: int</span>
+
+<span class="sd">        :param callback: Function to be called when a new message for the</span>
 <span class="sd">            subscribed topic comes in.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">qos</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">qos</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AWSClient.unsubscribe"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.unsubscribe">[docs]</a>    <span class="k">def</span> <span class="nf">unsubscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unsubscribe to the desired topic.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            topic (str): Topic name to unsubscribe to.</span>
+<span class="sd">        :param topic: Topic name to unsubscribe to.</span>
+<span class="sd">        :type topic: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">topic</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AWSClient.get_shadow_state"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.get_shadow_state">[docs]</a>    <span class="k">def</span> <span class="nf">get_shadow_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the state of the shadow client.</span>
@@ -377,13 +382,14 @@
 <span class="sd">        Retrieve the device shadow JSON document from the cloud by publishing an</span>
 <span class="sd">        empty JSON document to the corresponding shadow topics.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            callback: Function to be called when the response for a shadow</span>
+<span class="sd">        :param callback: Function to be called when the response for a shadow</span>
 <span class="sd">            request comes back.</span>
-<span class="sd">            timeout_s (int): Timeout in seconds to perform the request.</span>
+
+<span class="sd">        :param timeout_s: Timeout in seconds to perform the request.</span>
+<span class="sd">        :type timeout_s: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowGet</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowGet</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AWSClient.update_shadow_state"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.update_shadow_state">[docs]</a>    <span class="k">def</span> <span class="nf">update_shadow_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the state of the shadow client.</span>
@@ -391,14 +397,18 @@
 <span class="sd">        Update the device shadow JSON document string on the cloud by publishing</span>
 <span class="sd">        the provided JSON document to the corresponding shadow topics.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            payload (json): JSON document string used to update the shadow JSON</span>
+<span class="sd">        :param payload: JSON document string used to update the shadow JSON</span>
 <span class="sd">            document on the cloud.</span>
-<span class="sd">            callback: Function to be called when the response for a shadow</span>
+<span class="sd">        :type payload: json</span>
+
+<span class="sd">        :param callback: Function to be called when the response for a shadow</span>
 <span class="sd">            request comes back.</span>
+
+<span class="sd">        :param timeout_s: Timeout in seconds to perform the request.</span>
+<span class="sd">        :type timeout_s: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowUpdate</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowUpdate</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AWSClient.delete_shadow_state"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.delete_shadow_state">[docs]</a>    <span class="k">def</span> <span class="nf">delete_shadow_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete the state of the shadow client.</span>
@@ -406,58 +416,54 @@
 <span class="sd">        Delete the device shadow from the cloud by publishing an empty JSON</span>
 <span class="sd">        document to the corresponding shadow topics.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            callback: Function to be called when the response for a shadow</span>
+<span class="sd">        :param callback: Function to be called when the response for a shadow</span>
 <span class="sd">            request comes back.</span>
-<span class="sd">            timeout_s (int): Timeout in seconds to perform the request.</span>
+
+<span class="sd">        :param timeout_s: Timeout in seconds to perform the request.</span>
+<span class="sd">        :type timeout_s: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span></div>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowDelete</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shadow_handler</span><span class="o">.</span><span class="n">shadowDelete</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AWSClient.add_listener"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.add_listener">[docs]</a>    <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a listener.</span>
 <span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):</span>
-<span class="sd">            Listener to be added.</span>
+<span class="sd">        :param listener: Listener to be added.</span>
+<span class="sd">        :type listener: :class:`edge_st_sdk.edge_client.EdgeClientListener`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span></div>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AWSClient.remove_listener"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_client.AWSClient.remove_listener">[docs]</a>    <span class="k">def</span> <span class="nf">remove_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove a listener.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):</span>
-<span class="sd">            Listener to be removed.</span>
+<span class="sd">        :param listener: Listener to be removed.</span>
+<span class="sd">        :type listener: :class:`edge_st_sdk.edge_client.EdgeClientListener`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span></div>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_status</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the status of the client.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            new_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): New</span>
-<span class="sd">            status.</span>
+<span class="sd">        :param new_status: New status.</span>
+<span class="sd">        :type new_status: :class:`edge_st_sdk.edge_client.EdgeClientStatus`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">old_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">new_status</span>
         <span class="k">for</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span>
             <span class="c1"># Calling user-defined callback.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_thread_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
-                <span class="n">listener</span><span class="o">.</span><span class="n">on_status_change</span><span class="p">(</span></div>
-                    <span class="bp">self</span><span class="p">,</span> <span class="n">new_status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">old_status</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+                <span class="n">listener</span><span class="o">.</span><span class="n">on_status_change</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="n">new_status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">old_status</span><span class="o">.</span><span class="n">value</span><span class="p">))</span></div>
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -466,11 +472,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Davide Aliprandi.
+        &copy; Copyright 2019, Davide Aliprandi
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -483,36 +489,15 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'1.3.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>
