@@ -1,0 +1,570 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>edge_st_sdk.aws package &mdash; EdgeSTSDK 1.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="EdgeSTSDK 1.3.0 documentation" href="index.html"/>
+        <link rel="up" title="edge_st_sdk package" href="edge_st_sdk.html"/>
+        <link rel="next" title="edge_st_sdk.utils package" href="edge_st_sdk.utils.html"/>
+        <link rel="prev" title="edge_st_sdk package" href="edge_st_sdk.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> EdgeSTSDK
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="edge_st_sdk.html">edge_st_sdk package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="edge_st_sdk.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">edge_st_sdk.aws package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-edge_st_sdk.aws.aws_client">edge_st_sdk.aws.aws_client module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-edge_st_sdk.aws.aws_greengrass">edge_st_sdk.aws.aws_greengrass module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-edge_st_sdk.aws">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="edge_st_sdk.utils.html">edge_st_sdk.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.html#module-edge_st_sdk.edge_client">edge_st_sdk.edge_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.html#module-edge_st_sdk">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EdgeSTSDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="edge_st_sdk.html">edge_st_sdk package</a> &raquo;</li>
+        
+      <li>edge_st_sdk.aws package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/edge_st_sdk.aws.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="edge-st-sdk-aws-package">
+<h1>edge_st_sdk.aws package<a class="headerlink" href="#edge-st-sdk-aws-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-edge_st_sdk.aws.aws_client">
+<span id="edge-st-sdk-aws-aws-client-module"></span><h2>edge_st_sdk.aws.aws_client module<a class="headerlink" href="#module-edge_st_sdk.aws.aws_client" title="Permalink to this headline">¶</a></h2>
+<p>aws_client</p>
+<p>The aws_client module represents a client capable of connecting to the Amazon
+AWS IoT cloud and performing edge operations through the Greengrass SDK.</p>
+<dl class="class">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.aws.aws_client.</code><code class="descname">AWSClient</code><span class="sig-paren">(</span><em>client_name</em>, <em>device_certificate_path</em>, <em>device_private_key_path</em>, <em>group_ca_path</em>, <em>core_info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClient" title="edge_st_sdk.edge_client.EdgeClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClient</span></code></a></p>
+<p>Class responsible for handling an Amazon AWS client used for plain MQTT
+communication with AWS IoT.</p>
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>client_name</em>, <em>device_certificate_path</em>, <em>device_private_key_path</em>, <em>group_ca_path</em>, <em>core_info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor.</p>
+<p>AWSClient has to be instantiated through a call to the
+<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client()</span></code></a> method.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>client_name (str): Name of the client, as it is on the cloud.
+device_certificate_path (str): Relative path of the device’s
+certificate stored on the core device.
+device_private_key_path (str): Relative path of the device’s
+private key stored on the core device.
+group_ca_path (str): Relative path of the certification authority’s
+certificate stored on the core device.
+core_info (list): Information related to the core of the group to
+which the client belongs.</dd>
+<dt>Raises:</dt>
+<dd><a class="reference internal" href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidOperationException" title="edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidOperationException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidOperationException</span></code></a>
+is raised if the discovery of the core has not been completed
+yet, i.e. if the AWSClient has not been instantiated through a
+call to the
+<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client"><code class="xref py py-meth docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client()</span></code></a>
+method.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.add_listener">
+<code class="descname">add_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.add_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.add_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a listener.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>listener (<a class="reference internal" href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientListener" title="edge_st_sdk.edge_client.EdgeClientListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientListener</span></code></a>):
+Listener to be added.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the core.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>bool: True if the connection was successful, False otherwise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.delete_shadow_state">
+<code class="descname">delete_shadow_state</code><span class="sig-paren">(</span><em>callback</em>, <em>timeout_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.delete_shadow_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.delete_shadow_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the state of the shadow client.</p>
+<p>Delete the device shadow from the cloud by publishing an empty JSON
+document to the corresponding shadow topics.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>callback: Function to be called when the response for a shadow
+request comes back.
+timeout_s (int): Timeout in seconds to perform the request.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect from the core.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the client name.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>str: The client name, i.e. the name of the client.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.get_shadow_state">
+<code class="descname">get_shadow_state</code><span class="sig-paren">(</span><em>callback</em>, <em>timeout_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.get_shadow_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.get_shadow_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the state of the shadow client.</p>
+<p>Retrieve the device shadow JSON document from the cloud by publishing an
+empty JSON document to the corresponding shadow topics.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>callback: Function to be called when the response for a shadow
+request comes back.
+timeout_s (int): Timeout in seconds to perform the request.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.publish">
+<code class="descname">publish</code><span class="sig-paren">(</span><em>topic</em>, <em>payload</em>, <em>qos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.publish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.publish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish a new message to the desired topic with the given quality of
+service.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>topic (str): Topic name to publish to.
+payload (str): Payload to publish (JSON formatted string).
+qos (int): Quality of Service. Could be “0” or “1”.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.remove_listener">
+<code class="descname">remove_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.remove_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.remove_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a listener.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>listener (<a class="reference internal" href="edge_st_sdk.html#edge_st_sdk.edge_client.EdgeClientListener" title="edge_st_sdk.edge_client.EdgeClientListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientListener</span></code></a>):
+Listener to be removed.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.subscribe">
+<code class="descname">subscribe</code><span class="sig-paren">(</span><em>topic</em>, <em>qos</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.subscribe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.subscribe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subscribe to the desired topic with the given quality of service and
+register a callback to handle the published messages.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>topic (str): Topic name to publish to.
+qos (int): Quality of Service. Could be “0” or “1”.
+callback: Function to be called when a new message for the
+subscribed topic comes in.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.unsubscribe">
+<code class="descname">unsubscribe</code><span class="sig-paren">(</span><em>topic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.unsubscribe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.unsubscribe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unsubscribe to the desired topic.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>topic (str): Topic name to unsubscribe to.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_client.AWSClient.update_shadow_state">
+<code class="descname">update_shadow_state</code><span class="sig-paren">(</span><em>payload</em>, <em>callback</em>, <em>timeout_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_client.html#AWSClient.update_shadow_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_client.AWSClient.update_shadow_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the state of the shadow client.</p>
+<p>Update the device shadow JSON document string on the cloud by publishing
+the provided JSON document to the corresponding shadow topics.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>payload (json): JSON document string used to update the shadow JSON
+document on the cloud.
+callback: Function to be called when the response for a shadow
+request comes back.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-edge_st_sdk.aws.aws_greengrass">
+<span id="edge-st-sdk-aws-aws-greengrass-module"></span><h2>edge_st_sdk.aws.aws_greengrass module<a class="headerlink" href="#module-edge_st_sdk.aws.aws_greengrass" title="Permalink to this headline">¶</a></h2>
+<p>aws_greengrass</p>
+<p>The aws_greengrass module is responsible for managing the discovery process of
+AWS devices and allocating the needed resources.</p>
+<dl class="class">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.aws.aws_greengrass.</code><code class="descname">AWSGreengrass</code><span class="sig-paren">(</span><em>endpoint</em>, <em>root_ca_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.MAX_DISCOVERY_ATTEMPTS">
+<code class="descname">MAX_DISCOVERY_ATTEMPTS</code><em class="property"> = 3</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.MAX_DISCOVERY_ATTEMPTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum number of attempts when trying to discover the core.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>endpoint</em>, <em>root_ca_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor.</p>
+<p>Initializing AWS Discovery.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>endpoint (str): AWS endpoint.
+root_ca_path (str): Path to the root Certification Authority file.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.add_listener">
+<code class="descname">add_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.add_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.add_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a listener.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>listener (<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener</span></code></a>):
+Listener to be added.</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.discovery_completed">
+<em class="property">classmethod </em><code class="descname">discovery_completed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.discovery_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.discovery_completed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking whether the discovery has completed.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>bool: True if the discovery process has completed, False otherwise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client">
+<code class="descname">get_client</code><span class="sig-paren">(</span><em>client_id</em>, <em>device_certificate_path</em>, <em>device_private_key_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.get_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getting an Amazon AWS client.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>client_id (str): Name of the client, as it is on the cloud.
+device_certificate_path (str): Relative path of the device’s
+certificate stored on the core device.
+device_private_key_path (str): Relative path of the device’s
+private key stored on the core device.</dd>
+<dt>Returns:</dt>
+<dd><a class="reference internal" href="#edge_st_sdk.aws.aws_client.AWSClient" title="edge_st_sdk.aws.aws_client.AWSClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_client.AWSClient</span></code></a>: Amazon AWS client.</dd>
+<dt>Raises:</dt>
+<dd><a class="reference internal" href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidOperationException" title="edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidOperationException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidOperationException</span></code></a>
+is raised if the discovery of the core fails.
+<a class="reference internal" href="edge_st_sdk.utils.html#edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidDataException" title="edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidDataException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidDataException</span></code></a>
+is raised a wrong configuration data is provided.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_endpoint">
+<code class="descname">get_endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.get_endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getting the AWS endpoint.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.remove_listener">
+<code class="descname">remove_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass.remove_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.remove_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a listener.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>listener (<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener</span></code></a>):
+Listener to be removed.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.aws.aws_greengrass.</code><code class="descname">AWSGreengrassListener</code><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrassListener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Interface used by the
+<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrass"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrass</span></code></a> class to notify
+changes of an AWS Greengrass service’s status.</p>
+<dl class="method">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener.on_status_change">
+<code class="descname">on_status_change</code><span class="sig-paren">(</span><em>aws_greengrass</em>, <em>new_status</em>, <em>old_status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrassListener.on_status_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener.on_status_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>To be called whenever the AWS Greengrass service changes its status.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>aws_greengrass (<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrass"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrass</span></code></a>):
+AWS Greengrass service that has changed its status.
+new_status (<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus</span></code></a>):
+New status.
+old_status (<a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus</span></code></a>):
+Old status.</dd>
+<dt>Raises:</dt>
+<dd><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> if the method has not been implemented.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.aws.aws_greengrass.</code><code class="descname">AWSGreengrassStatus</code><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrassStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>Status of the AWS Greengrass service.</p>
+<dl class="attribute">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.CORE_DISCOVERED">
+<code class="descname">CORE_DISCOVERED</code><em class="property"> = 'CORE_DISCOVERED'</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.CORE_DISCOVERED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core discovered.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.DISCOVERING_CORE">
+<code class="descname">DISCOVERING_CORE</code><em class="property"> = 'DISCOVERING_CORE'</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.DISCOVERING_CORE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discovering the Core.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.IDLE">
+<code class="descname">IDLE</code><em class="property"> = 'IDLE'</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.IDLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waiting for a connection and sending advertising data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.INIT">
+<code class="descname">INIT</code><em class="property"> = 'INIT'</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.INIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy initial status.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-edge_st_sdk.aws">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-edge_st_sdk.aws" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="edge_st_sdk.utils.html" class="btn btn-neutral float-right" title="edge_st_sdk.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="edge_st_sdk.html" class="btn btn-neutral" title="edge_st_sdk package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Davide Aliprandi.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

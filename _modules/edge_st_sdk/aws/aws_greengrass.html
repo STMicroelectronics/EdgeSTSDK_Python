@@ -1,0 +1,577 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>edge_st_sdk.aws.aws_greengrass &mdash; EdgeSTSDK 1.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="EdgeSTSDK 1.3.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> EdgeSTSDK
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../edge_st_sdk.html">edge_st_sdk package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">EdgeSTSDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>edge_st_sdk.aws.aws_greengrass</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for edge_st_sdk.aws.aws_greengrass</h1><div class="highlight"><pre>
+<span></span><span class="c1">################################################################################</span>
+<span class="c1"># COPYRIGHT(c) 2018 STMicroelectronics                                         #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1"># Redistribution and use in source and binary forms, with or without           #</span>
+<span class="c1"># modification, are permitted provided that the following conditions are met:  #</span>
+<span class="c1">#   1. Redistributions of source code must retain the above copyright notice,  #</span>
+<span class="c1">#      this list of conditions and the following disclaimer.                   #</span>
+<span class="c1">#   2. Redistributions in binary form must reproduce the above copyright       #</span>
+<span class="c1">#      notice, this list of conditions and the following disclaimer in the     #</span>
+<span class="c1">#      documentation and/or other materials provided with the distribution.    #</span>
+<span class="c1">#   3. Neither the name of STMicroelectronics nor the names of its             #</span>
+<span class="c1">#      contributors may be used to endorse or promote products derived from    #</span>
+<span class="c1">#      this software without specific prior written permission.                #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;  #</span>
+<span class="c1"># AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE    #</span>
+<span class="c1"># IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE   #</span>
+<span class="c1"># ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE    #</span>
+<span class="c1"># LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR          #</span>
+<span class="c1"># CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF         #</span>
+<span class="c1"># SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS     #</span>
+<span class="c1"># INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN      #</span>
+<span class="c1"># CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)      #</span>
+<span class="c1"># ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE   #</span>
+<span class="c1"># POSSIBILITY OF SUCH DAMAGE.                                                  #</span>
+<span class="c1">################################################################################</span>
+
+
+<span class="sd">&quot;&quot;&quot;aws_greengrass</span>
+
+<span class="sd">The aws_greengrass module is responsible for managing the discovery process of</span>
+<span class="sd">AWS devices and allocating the needed resources.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="c1"># IMPORT</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="k">import</span> <span class="n">ThreadPoolExecutor</span>
+
+<span class="kn">from</span> <span class="nn">AWSIoTPythonSDK.core.greengrass.discovery.providers</span> <span class="k">import</span> <span class="n">DiscoveryInfoProvider</span>
+<span class="kn">from</span> <span class="nn">AWSIoTPythonSDK.core.protocol.connection.cores</span> <span class="k">import</span> <span class="n">ProgressiveBackOffCore</span>
+<span class="kn">from</span> <span class="nn">AWSIoTPythonSDK.exception.AWSIoTExceptions</span> <span class="k">import</span> <span class="n">DiscoveryInvalidRequestException</span>
+
+<span class="kn">from</span> <span class="nn">edge_st_sdk.utils.python_utils</span> <span class="k">import</span> <span class="n">lock</span>
+<span class="kn">import</span> <span class="nn">edge_st_sdk.aws.aws_client</span>
+<span class="kn">from</span> <span class="nn">edge_st_sdk.utils.edge_st_exceptions</span> <span class="k">import</span> <span class="n">EdgeSTInvalidOperationException</span>
+<span class="kn">from</span> <span class="nn">edge_st_sdk.utils.edge_st_exceptions</span> <span class="k">import</span> <span class="n">EdgeSTInvalidDataException</span>
+
+
+<span class="c1"># CLASSES</span>
+
+<div class="viewcode-block" id="AWSGreengrass"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass">[docs]</a><span class="k">class</span> <span class="nc">AWSGreengrass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">MAX_DISCOVERY_ATTEMPTS</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="sd">&quot;&quot;&quot;Maximum number of attempts when trying to discover the core.&quot;&quot;&quot;</span>
+
+    <span class="n">_GROUP_CA_PATH</span>  <span class="o">=</span> <span class="s1">&#39;./aws_group_ca/&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Group Certification Authority path.&quot;&quot;&quot;</span> 
+
+    <span class="n">_TIMEOUT_s</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="sd">&quot;&quot;&quot;Timeout for discovering information.&quot;&quot;&quot;</span>
+
+    <span class="n">_NUMBER_OF_THREADS</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="sd">&quot;&quot;&quot;Number of threads to be used to notify the listeners.&quot;&quot;&quot;</span>
+
+    <span class="n">_discovery_completed</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;Discovery completed flag.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AWSGreengrass.__init__"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">root_ca_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor.</span>
+
+<span class="sd">        Initializing AWS Discovery.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            endpoint (str): AWS endpoint.</span>
+<span class="sd">            root_ca_path (str): Path to the root Certification Authority file. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">AWSGreengrassStatus</span><span class="o">.</span><span class="n">INIT</span>
+        <span class="sd">&quot;&quot;&quot;Status.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thread_pool</span> <span class="o">=</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">AWSGreengrass</span><span class="o">.</span><span class="n">_NUMBER_OF_THREADS</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Pool of thread used to notify the listeners.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="sd">&quot;&quot;&quot;List of listeners to the feature changes.</span>
+<span class="sd">        It is a thread safe list, so a listener can subscribe itself through a</span>
+<span class="sd">        callback.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span> <span class="o">=</span> <span class="n">endpoint</span>
+        <span class="sd">&quot;&quot;&quot;AWS endpoint.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_ca_path</span> <span class="o">=</span> <span class="n">root_ca_path</span>
+        <span class="sd">&quot;&quot;&quot;Path to the root Certification Authority file.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_ca_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Path to the group Certification Authority file.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Core information.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Updating service.</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">AWSGreengrassStatus</span><span class="o">.</span><span class="n">IDLE</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_discover_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span>
+        <span class="n">device_private_key_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Performing the discovery of the core belonging to the same group of</span>
+<span class="sd">        the given client name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            client_id (str): Name of a client, as it is on the cloud, belonging</span>
+<span class="sd">                to the same group of the core.</span>
+<span class="sd">            device_certificate_path (str): Relative path of a device&#39;s</span>
+<span class="sd">                certificate stored on the core device, belonging to the same</span>
+<span class="sd">                group of the core.</span>
+<span class="sd">            device_private_key_path (str): Relative path of a device&#39;s</span>
+<span class="sd">                private key stored on the core device, belonging to the same</span>
+<span class="sd">                group of the core.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The name of the core.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            :exc:`edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidOperationException`</span>
+<span class="sd">            is raised if the discovery of the core fails.</span>
+<span class="sd">            :exc:`edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidDataException`</span>
+<span class="sd">            is raised a wrong configuration data is provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Checking configuration parameters.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_ca_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Root Certification Authority certificate path &quot;</span><span class="si">%s</span><span class="s1">&quot; is not &#39;</span> \
+                <span class="s1">&#39;accessible.</span><span class="se">\r\n</span><span class="s1">&#39;</span> \
+                <span class="s1">&#39;Please run the application with </span><span class="se">\&quot;</span><span class="s1">sudo</span><span class="se">\&quot;</span><span class="s1">.&#39;</span> \
+                <span class="o">%</span> <span class="p">(</span><span class="n">device_certificate_path</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">EdgeSTInvalidDataException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">device_certificate_path</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Invalid device certificate path: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> \
+            <span class="o">%</span> <span class="p">(</span><span class="n">device_certificate_path</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">EdgeSTInvalidDataException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">device_private_key_path</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Invalid device private key path: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> \
+            <span class="o">%</span> <span class="p">(</span><span class="n">device_private_key_path</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">EdgeSTInvalidDataException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># Updating service.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">AWSGreengrassStatus</span><span class="o">.</span><span class="n">DISCOVERING_CORE</span><span class="p">)</span>
+
+        <span class="c1"># Progressive back off core.</span>
+        <span class="n">backOffCore</span> <span class="o">=</span> <span class="n">ProgressiveBackOffCore</span><span class="p">()</span>
+
+        <span class="c1"># Discover GGCs.</span>
+        <span class="n">discoveryInfoProvider</span> <span class="o">=</span> <span class="n">DiscoveryInfoProvider</span><span class="p">()</span>
+        <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">configureEndpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">)</span>
+        <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">configureCredentials</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root_ca_path</span><span class="p">,</span>
+            <span class="n">device_certificate_path</span><span class="p">,</span>
+            <span class="n">device_private_key_path</span><span class="p">)</span>
+        <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">configureTimeout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_TIMEOUT_s</span><span class="p">)</span>
+        <span class="n">attempts</span> <span class="o">=</span> <span class="n">AWSGreengrass</span><span class="o">.</span><span class="n">MAX_DISCOVERY_ATTEMPTS</span>
+
+        <span class="k">while</span> <span class="n">attempts</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Discovering information.</span>
+                <span class="n">discoveryInfo</span> <span class="o">=</span> <span class="n">discoveryInfoProvider</span><span class="o">.</span><span class="n">discover</span><span class="p">(</span><span class="n">client_id</span><span class="p">)</span>
+                <span class="n">caList</span> <span class="o">=</span> <span class="n">discoveryInfo</span><span class="o">.</span><span class="n">getAllCas</span><span class="p">()</span>
+                <span class="n">coreList</span> <span class="o">=</span> <span class="n">discoveryInfo</span><span class="o">.</span><span class="n">getAllCores</span><span class="p">()</span>
+
+                <span class="c1"># Picking only the first ca and core info.</span>
+                <span class="n">group_id</span><span class="p">,</span> <span class="n">ca</span> <span class="o">=</span> <span class="n">caList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span> <span class="o">=</span> <span class="n">coreList</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># Persisting connectivity/identity information.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group_ca_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_GROUP_CA_PATH</span> <span class="o">+</span> <span class="n">group_id</span> <span class="o">+</span> \
+                    <span class="s1">&#39;_CA_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;.crt&#39;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_GROUP_CA_PATH</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_GROUP_CA_PATH</span><span class="p">)</span>
+                <span class="n">group_ca_path_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_group_ca_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+                <span class="n">group_ca_path_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span>
+                <span class="n">group_ca_path_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">break</span>
+
+            <span class="k">except</span> <span class="n">DiscoveryInvalidRequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">EdgeSTInvalidOperationException</span><span class="p">(</span>
+                    <span class="s1">&#39;Invalid discovery request detected: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
+
+            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">attempts</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">backOffCore</span><span class="o">.</span><span class="n">backOff</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">attempts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">EdgeSTInvalidOperationException</span><span class="p">(</span>
+                        <span class="s1">&#39;Discovery of the core related to the client &quot;</span><span class="si">%s</span><span class="s1">&quot;, with &#39;</span> \
+                        <span class="s1">&#39;certificate &quot;</span><span class="si">%s</span><span class="s1">&quot; and key &quot;</span><span class="si">%s</span><span class="s1">&quot;, failed after </span><span class="si">%d</span><span class="s1"> retries.&#39;</span> <span class="o">%</span> \
+                        <span class="p">(</span><span class="n">client_id</span><span class="p">,</span>
+                         <span class="n">device_certificate_path</span><span class="p">,</span>
+                         <span class="n">device_private_key_path</span><span class="p">,</span>
+                         <span class="n">AWSGreengrass</span><span class="o">.</span><span class="n">MAX_DISCOVERY_ATTEMPTS</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configure_logging</span><span class="p">()</span>
+        <span class="n">AWSGreengrass</span><span class="o">.</span><span class="n">_discovery_completed</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Updating service.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_status</span><span class="p">(</span><span class="n">AWSGreengrassStatus</span><span class="o">.</span><span class="n">CORE_DISCOVERED</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="o">.</span><span class="n">coreThingArn</span>
+
+    <span class="k">def</span> <span class="nf">_configure_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Configuring logging, required for using shadow devices.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;AWSIoTPythonSDK.core&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_streamHandler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_streamHandler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_streamHandler</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSGreengrass.discovery_completed"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.discovery_completed">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">discovery_completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checking whether the discovery has completed.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the discovery process has completed, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span> </div>
+        <span class="k">return</span> <span class="n">AWSGreengrass</span><span class="o">.</span><span class="n">_discovery_completed</span>
+
+<div class="viewcode-block" id="AWSGreengrass.get_client"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client">[docs]</a>    <span class="k">def</span> <span class="nf">get_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">device_certificate_path</span><span class="p">,</span>
+        <span class="n">device_private_key_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Getting an Amazon AWS client.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            client_id (str): Name of the client, as it is on the cloud.</span>
+<span class="sd">            device_certificate_path (str): Relative path of the device&#39;s</span>
+<span class="sd">            certificate stored on the core device.</span>
+<span class="sd">            device_private_key_path (str): Relative path of the device&#39;s</span>
+<span class="sd">            private key stored on the core device.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`edge_st_sdk.aws.aws_client.AWSClient`: Amazon AWS client.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            :exc:`edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidOperationException`</span>
+<span class="sd">            is raised if the discovery of the core fails.</span>
+<span class="sd">            :exc:`edge_st_sdk.utils.edge_st_exceptions.EdgeSTInvalidDataException`</span>
+<span class="sd">            is raised a wrong configuration data is provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Performing the discovery of the core belonging to the same group of</span>
+        <span class="c1"># the client.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">discovery_completed</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_discover_core</span><span class="p">(</span>
+                    <span class="n">client_id</span><span class="p">,</span>
+                    <span class="n">device_certificate_path</span><span class="p">,</span>
+                    <span class="n">device_private_key_path</span><span class="p">)</span>
+
+            <span class="c1"># Creating the client.</span>
+            <span class="k">return</span> <span class="n">edge_st_sdk</span><span class="o">.</span><span class="n">aws</span><span class="o">.</span><span class="n">aws_client</span><span class="o">.</span><span class="n">AWSClient</span><span class="p">(</span>
+                <span class="n">client_id</span><span class="p">,</span>
+                <span class="n">device_certificate_path</span><span class="p">,</span>
+                <span class="n">device_private_key_path</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_group_ca_path</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_core_info</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">EdgeSTInvalidDataException</span><span class="p">,</span> <span class="n">EdgeSTInvalidOperationException</span><span class="p">)</span> \
+            <span class="k">as</span> <span class="n">e</span><span class="p">:</span></div>
+            <span class="k">raise</span> <span class="n">e</span>
+
+<div class="viewcode-block" id="AWSGreengrass.get_endpoint"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_endpoint">[docs]</a>    <span class="k">def</span> <span class="nf">get_endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Getting the AWS endpoint.&quot;&quot;&quot;</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span>
+
+<div class="viewcode-block" id="AWSGreengrass.add_listener"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.add_listener">[docs]</a>    <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a listener.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            listener (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener`):</span>
+<span class="sd">            Listener to be added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span></div>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AWSGreengrass.remove_listener"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.remove_listener">[docs]</a>    <span class="k">def</span> <span class="nf">remove_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove a listener.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            listener (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener`):</span>
+<span class="sd">            Listener to be removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span></div>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the status of the client.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_status (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus`):</span>
+<span class="sd">            New status.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">old_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">new_status</span>
+        <span class="k">for</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span><span class="p">:</span>
+            <span class="c1"># Calling user-defined callback.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thread_pool</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+                <span class="n">listener</span><span class="o">.</span><span class="n">on_status_change</span><span class="p">(</span></div>
+                    <span class="bp">self</span><span class="p">,</span> <span class="n">new_status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">old_status</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="AWSGreengrassStatus"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus">[docs]</a><span class="k">class</span> <span class="nc">AWSGreengrassStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Status of the AWS Greengrass service.&quot;&quot;&quot;</span>
+
+    <span class="n">INIT</span> <span class="o">=</span> <span class="s1">&#39;INIT&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Dummy initial status.&quot;&quot;&quot;</span>
+
+    <span class="n">IDLE</span> <span class="o">=</span> <span class="s1">&#39;IDLE&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Waiting for a connection and sending advertising data.&quot;&quot;&quot;</span>
+
+    <span class="n">DISCOVERING_CORE</span> <span class="o">=</span> <span class="s1">&#39;DISCOVERING_CORE&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Discovering the Core.&quot;&quot;&quot;</span>
+
+    <span class="n">CORE_DISCOVERED</span> <span class="o">=</span> <span class="s1">&#39;CORE_DISCOVERED&#39;</span></div>
+    <span class="sd">&quot;&quot;&quot;Core discovered.&quot;&quot;&quot;</span>
+
+
+<span class="c1"># INTERFACES</span>
+
+<div class="viewcode-block" id="AWSGreengrassListener"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener">[docs]</a><span class="k">class</span> <span class="nc">AWSGreengrassListener</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Interface used by the</span>
+<span class="sd">    :class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass` class to notify</span>
+<span class="sd">    changes of an AWS Greengrass service&#39;s status.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+<div class="viewcode-block" id="AWSGreengrassListener.on_status_change"><a class="viewcode-back" href="../../../edge_st_sdk.aws.html#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener.on_status_change">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">on_status_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aws_greengrass</span><span class="p">,</span> <span class="n">new_status</span><span class="p">,</span> <span class="n">old_status</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;To be called whenever the AWS Greengrass service changes its status.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            aws_greengrass (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass`):</span>
+<span class="sd">            AWS Greengrass service that has changed its status.</span>
+<span class="sd">            new_status (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus`):</span>
+<span class="sd">            New status.</span>
+<span class="sd">            old_status (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus`):</span>
+<span class="sd">            Old status.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            :exc:`NotImplementedError` if the method has not been implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;You must implement &quot;on_status_change()&quot; to &#39;</span></div></div>
+                                  <span class="s1">&#39;use the &quot;AWSGreengrassListener&quot; class.&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Davide Aliprandi.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
