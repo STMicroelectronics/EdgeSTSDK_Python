@@ -1,0 +1,522 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>edge_st_sdk package &mdash; EdgeSTSDK 1.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="EdgeSTSDK 1.3.0 documentation" href="index.html"/>
+        <link rel="next" title="edge_st_sdk.aws package" href="edge_st_sdk.aws.html"/>
+        <link rel="prev" title="Welcome to EdgeSTSDK’s documentation!" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> EdgeSTSDK
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">edge_st_sdk package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="edge_st_sdk.aws.html">edge_st_sdk.aws package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="edge_st_sdk.utils.html">edge_st_sdk.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-edge_st_sdk.edge_client">edge_st_sdk.edge_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-edge_st_sdk">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EdgeSTSDK</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>edge_st_sdk package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/edge_st_sdk.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="edge-st-sdk-package">
+<h1>edge_st_sdk package<a class="headerlink" href="#edge-st-sdk-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="edge_st_sdk.aws.html">edge_st_sdk.aws package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.aws.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.aws.html#module-edge_st_sdk.aws.aws_client">edge_st_sdk.aws.aws_client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.aws.html#module-edge_st_sdk.aws.aws_greengrass">edge_st_sdk.aws.aws_greengrass module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.aws.html#module-edge_st_sdk.aws">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="edge_st_sdk.utils.html">edge_st_sdk.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.utils.html#module-edge_st_sdk.utils.edge_st_exceptions">edge_st_sdk.utils.edge_st_exceptions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="edge_st_sdk.utils.html#module-edge_st_sdk.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-edge_st_sdk.edge_client">
+<span id="edge-st-sdk-edge-client-module"></span><h2>edge_st_sdk.edge_client module<a class="headerlink" href="#module-edge_st_sdk.edge_client" title="Permalink to this headline">¶</a></h2>
+<p>edge_client</p>
+<p>The edge_client module contains an interface for creating edge client classes.</p>
+<dl class="class">
+<dt id="edge_st_sdk.edge_client.EdgeClient">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.edge_client.</code><code class="descname">EdgeClient</code><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The EdgeClient class is an interface for creating edge client classes.</p>
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.add_listener">
+<code class="descname">add_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.add_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.add_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a listener.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>listener</strong> (<a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClientListener" title="edge_st_sdk.edge_client.EdgeClientListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientListener</span></code></a>) – </li>
+<li><strong>to be added.</strong> (<em>Listener</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the core.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.delete_shadow_state">
+<code class="descname">delete_shadow_state</code><span class="sig-paren">(</span><em>callback</em>, <em>timeout_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.delete_shadow_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.delete_shadow_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the state of the shadow client.</p>
+<p>Delete the device shadow from the cloud by publishing an empty JSON
+document to the corresponding shadow topics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>callback</strong> – Function to be called when the response for a shadow</li>
+<li><strong>comes back.</strong> (<em>request</em>) – </li>
+<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect from the core.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.get_shadow_state">
+<code class="descname">get_shadow_state</code><span class="sig-paren">(</span><em>callback</em>, <em>timeout_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.get_shadow_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.get_shadow_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the state of the shadow client.</p>
+<p>Retrieve the device shadow JSON document from the cloud by publishing an
+empty JSON document to the corresponding shadow topics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>callback</strong> – Function to be called when the response for a shadow</li>
+<li><strong>comes back.</strong> (<em>request</em>) – </li>
+<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.publish">
+<code class="descname">publish</code><span class="sig-paren">(</span><em>topic</em>, <em>payload</em>, <em>qos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.publish"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.publish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish a new message to the desired topic with the given quality of
+service.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</li>
+<li><strong>payload</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Payload to publish (JSON formatted string).</li>
+<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.remove_listener">
+<code class="descname">remove_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.remove_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.remove_listener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a listener.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>listener</strong> (<a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClientListener" title="edge_st_sdk.edge_client.EdgeClientListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientListener</span></code></a>) – </li>
+<li><strong>to be removed.</strong> (<em>Listener</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.subscribe">
+<code class="descname">subscribe</code><span class="sig-paren">(</span><em>topic</em>, <em>qos</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.subscribe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.subscribe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subscribe to the desired topic with the given quality of service and
+register a callback to handle the published messages.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</li>
+<li><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</li>
+<li><strong>callback</strong> – Function to be called when a new message for the</li>
+<li><strong>topic comes in.</strong> (<em>subscribed</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.unsubscribe">
+<code class="descname">unsubscribe</code><span class="sig-paren">(</span><em>topic</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.unsubscribe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.unsubscribe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unsubscribe to the desired topic.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to unsubscribe to.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClient.update_shadow_state">
+<code class="descname">update_shadow_state</code><span class="sig-paren">(</span><em>payload</em>, <em>callback</em>, <em>timeout_s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient.update_shadow_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient.update_shadow_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the state of the shadow client.</p>
+<p>Update the device shadow JSON document string on the cloud by publishing
+the provided JSON document to the corresponding shadow topics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>payload</strong> (<em>json</em>) – JSON document string used to update the shadow JSON</li>
+<li><strong>on the cloud.</strong> (<em>document</em>) – </li>
+<li><strong>callback</strong> – Function to be called when the response for a shadow</li>
+<li><strong>comes back.</strong> (<em>request</em>) – </li>
+<li><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="edge_st_sdk.edge_client.EdgeClientListener">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.edge_client.</code><code class="descname">EdgeClientListener</code><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClientListener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientListener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Interface used by the <a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClient" title="edge_st_sdk.edge_client.EdgeClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClient</span></code></a> class
+to notify changes of a client’s status.</p>
+<dl class="method">
+<dt id="edge_st_sdk.edge_client.EdgeClientListener.on_status_change">
+<code class="descname">on_status_change</code><span class="sig-paren">(</span><em>client</em>, <em>new_status</em>, <em>old_status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClientListener.on_status_change"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientListener.on_status_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>To be called whenever a client changes its status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>client</strong> (<a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClient" title="edge_st_sdk.edge_client.EdgeClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClient</span></code></a>) – Client that</li>
+<li><strong>changed its status.</strong> (<em>has</em>) – </li>
+<li><strong>new_status</strong> (<a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClientStatus" title="edge_st_sdk.edge_client.EdgeClientStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientStatus</span></code></a>) – New</li>
+<li><strong>status.</strong> – </li>
+<li><strong>old_status</strong> (<a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClientStatus" title="edge_st_sdk.edge_client.EdgeClientStatus"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClientStatus</span></code></a>) – Old</li>
+<li><strong>status.</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> if the method has not been implemented.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus">
+<em class="property">class </em><code class="descclassname">edge_st_sdk.edge_client.</code><code class="descname">EdgeClientStatus</code><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClientStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>Status of the client.</p>
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.CONNECTED">
+<code class="descname">CONNECTED</code><em class="property"> = 'CONNECTED'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.CONNECTED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connected to the client.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.CONNECTING">
+<code class="descname">CONNECTING</code><em class="property"> = 'CONNECTING'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.CONNECTING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opening a connection with the client.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.DISCONNECTING">
+<code class="descname">DISCONNECTING</code><em class="property"> = 'DISCONNECTING'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.DISCONNECTING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closing the connection to the client.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.IDLE">
+<code class="descname">IDLE</code><em class="property"> = 'IDLE'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.IDLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waiting for a connection and sending advertising data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.INIT">
+<code class="descname">INIT</code><em class="property"> = 'INIT'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.INIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy initial status.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="edge_st_sdk.edge_client.EdgeClientStatus.UNREACHABLE">
+<code class="descname">UNREACHABLE</code><em class="property"> = 'UNREACHABLE'</em><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus.UNREACHABLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The client disappeared without first disconnecting.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-edge_st_sdk">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-edge_st_sdk" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="edge_st_sdk.aws.html" class="btn btn-neutral float-right" title="edge_st_sdk.aws package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to EdgeSTSDK’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Davide Aliprandi.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
