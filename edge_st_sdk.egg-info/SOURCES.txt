@@ -3,7 +3,6 @@ setup.cfg
 setup.py
 edge_st_sdk/__init__.py
 edge_st_sdk/edge_client.py
-edge_st_sdk/python_utils.py
 edge_st_sdk.egg-info/PKG-INFO
 edge_st_sdk.egg-info/SOURCES.txt
 edge_st_sdk.egg-info/dependency_links.txt
@@ -13,3 +12,4 @@ edge_st_sdk/aws/aws_client.py
 edge_st_sdk/aws/aws_greengrass.py
 edge_st_sdk/utils/__init__.py
 edge_st_sdk/utils/edge_st_exceptions.py
+edge_st_sdk/utils/python_utils.py
