@@ -20,13 +20,13 @@ sys.path.insert(0, '../.')
 # -- Project information -----------------------------------------------------
 
 project = u'EdgeSTSDK'
-copyright = u'2018, Davide Aliprandi'
+copyright = u'2019, Davide Aliprandi'
 author = u'Davide Aliprandi'
 
 # The short X.Y version
 version = u''
 # The full version, including alpha/beta/rc tags
-release = u'1.0.0'
+release = u'1.3.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -44,7 +44,6 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'sphinxcontrib.napoleon'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -69,7 +68,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = []
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

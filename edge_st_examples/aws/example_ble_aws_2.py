@@ -84,7 +84,7 @@ from edge_st_sdk.aws.aws_greengrass import AWSGreengrass
 from edge_st_sdk.aws.aws_greengrass import AWSGreengrassListener
 from edge_st_sdk.aws.aws_client import AWSClient
 from edge_st_sdk.edge_client import EdgeClientListener
-from edge_st_sdk.utils.edge_st_exceptions import EdgeInvalidOperationException
+from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException
 
 
 # PRECONDITIONS
@@ -785,7 +785,7 @@ def main(argv):
                 iot_device_act(iot_device_2, iot_device_2_feature_switch, iot_device_2_status, iot_device_2_client)
                 iot_device_2_act_flag = False
 
-    except (BTLEException, EdgeInvalidOperationException) as e:
+    except (BTLEException, EdgeSTInvalidOperationException) as e:
         print(e)
         print('Exiting...\n')
         sys.exit(0)

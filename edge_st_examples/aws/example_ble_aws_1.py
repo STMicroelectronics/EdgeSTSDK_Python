@@ -78,7 +78,7 @@ from edge_st_sdk.aws.aws_greengrass import AWSGreengrass
 from edge_st_sdk.aws.aws_greengrass import AWSGreengrassListener
 from edge_st_sdk.aws.aws_client import AWSClient
 from edge_st_sdk.edge_client import EdgeClientListener
-from edge_st_sdk.utils.edge_st_exceptions import EdgeInvalidOperationException
+from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException
 
 
 # PRECONDITIONS
@@ -95,19 +95,17 @@ from edge_st_sdk.utils.edge_st_exceptions import EdgeInvalidOperationException
 # Usage message.
 USAGE = """Usage:
 
-Use certificate based mutual authentication:
-python <application>.py -e <endpoint> -r <root_ca_path>
+python <application>.py [-h] -e <endpoint> -r <root_ca_path>
 
 """
 
 # Help message.
-HELP = """-e, --endpoint
-    Your AWS IoT custom endpoint
+HELP = """-h, --help
+    Shows these help information.
+-e, --endpoint
+    Your AWS IoT custom endpoint.
 -r, --rootCA
-    Root CA file path
--h, --help
-    Help information
-
+    Root Certification Authority Certificate file path.
 """
 
 # Presentation message.
@@ -568,7 +566,7 @@ def main(argv):
                 iot_device_act(iot_device_2, iot_device_2_feature_switch, iot_device_2_status, iot_device_2_client)
                 iot_device_2_act_flag = False
 
-    except (BTLEException, EdgeInvalidOperationException) as e:
+    except (BTLEException, EdgeSTInvalidOperationException) as e:
         print(e)
         print('Exiting...\n')
         sys.exit(0)
