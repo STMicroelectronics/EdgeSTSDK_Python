@@ -78,7 +78,7 @@ from blue_st_sdk.manager import ManagerListener
 from blue_st_sdk.node import NodeListener
 from blue_st_sdk.feature import FeatureListener
 from blue_st_sdk.features import *
-from blue_st_sdk.utils.blue_st_exceptions import InvalidOperationException
+from blue_st_sdk.utils.blue_st_exceptions import BlueSTInvalidOperationException
 
 from edge_st_sdk.aws.aws_greengrass import AWSGreengrass
 from edge_st_sdk.aws.aws_greengrass import AWSGreengrassListener
@@ -231,16 +231,17 @@ def read_input(argv):
 
     # Reading in command-line parameters.
     try:
-        opts, args = getopt.getopt(argv, "hwe:k:c:r:", ['help", "endpoint=", "key=","cert=","rootCA='])
+        opts, args = getopt.getopt(argv, "he:r:",
+            ['help", "endpoint=", "root_ca='])
         if len(opts) == 0:
-            raise getopt.GetoptError("No input parameters!")
+            raise getopt.GetoptError("No input parameters. Please try again.")
         for opt, arg in opts:
             if opt in ("-h", "--help"):
                 print(HELP)
                 exit(0)
             if opt in ("-e", "--endpoint"):
                 endpoint = arg
-            if opt in ("-r", "--rootCA"):
+            if opt in ("-r", "--root_ca"):
                 root_ca_path = arg
     except getopt.GetoptError:
         print(USAGE)
@@ -252,7 +253,7 @@ def read_input(argv):
         print("Missing '-e' or '--endpoint'")
         missing_configuration = True
     if not root_ca_path:
-        print("Missing '-r' or '--rootCA'")
+        print("Missing '-r' or '--root_ca'")
         missing_configuration = True
     if missing_configuration:
         exit(2)
@@ -264,7 +265,8 @@ def configure_logging():
     logger = logging.getLogger("Demo")
     logger.setLevel(logging.ERROR)
     streamHandler = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     streamHandler.setFormatter(formatter)
     logger.addHandler(streamHandler)
 
@@ -295,7 +297,7 @@ class MyManagerListener(ManagerListener):
     # @param node    New node discovered.
     #
     def on_node_discovered(self, manager, node):
-        print('New device discovered: %s.' % (node.get_name()))
+        print('New device discovered: \"%s\".' % (node.get_name()))
 
 
 #
@@ -305,15 +307,27 @@ class MyManagerListener(ManagerListener):
 class MyNodeListener(NodeListener):
 
     #
-    # To be called whenever a node changes its status.
+    # To be called whenever a node connects to a host.
     #
-    # @param node       Node that has changed its status.
-    # @param new_status New node status.
-    # @param old_status Old node status.
+    # @param node Node that has connected to a host.
     #
-    def on_status_change(self, node, new_status, old_status):
-        print('Device %s from %s to %s.' %
-            (node.get_name(), str(old_status), str(new_status)))
+    def on_connect(self, node):
+        print('Device %s connected.' % (node.get_name()))
+
+    #
+    # To be called whenever a node disconnects from a host.
+    #
+    # @param node       Node that has disconnected from a host.
+    # @param unexpected True if the disconnection is unexpected, False otherwise
+    #                   (called by the user).
+    #
+    def on_disconnect(self, node, unexpected=False):
+        print('Device %s disconnected%s.' % \
+            (node.get_name(), ' unexpectedly' if unexpected else ''))
+        if unexpected:
+            # Exiting.
+            print('\nExiting...\n')
+            sys.exit(0)
 
 
 #
@@ -379,25 +393,37 @@ class MyFeatureSensorsListener(FeatureListener):
 
         # Getting value.
         if isinstance(feature, feature_pressure.FeaturePressure):
-            self._data[FeaturesIndex.PRESSURE.value] = feature_pressure.FeaturePressure.get_pressure(sample)
+            self._data[FeaturesIndex.PRESSURE.value] = \
+                feature_pressure.FeaturePressure.get_pressure(sample)
         elif isinstance(feature, feature_humidity.FeatureHumidity):
-            self._data[FeaturesIndex.HUMIDITY.value] = feature_humidity.FeatureHumidity.get_humidity(sample)
+            self._data[FeaturesIndex.HUMIDITY.value] = \
+                feature_humidity.FeatureHumidity.get_humidity(sample)
         elif isinstance(feature, feature_temperature.FeatureTemperature):
-            self._data[FeaturesIndex.TEMPERATURE.value] = feature_temperature.FeatureTemperature.get_temperature(sample)
+            self._data[FeaturesIndex.TEMPERATURE.value] = \
+                feature_temperature.FeatureTemperature.get_temperature(sample)
         elif isinstance(feature, feature_accelerometer.FeatureAccelerometer):
-            data[AxesIndex.X.value] = feature_accelerometer.FeatureAccelerometer.get_accelerometer_x(sample)
-            data[AxesIndex.Y.value] = feature_accelerometer.FeatureAccelerometer.get_accelerometer_y(sample)
-            data[AxesIndex.Z.value] = feature_accelerometer.FeatureAccelerometer.get_accelerometer_z(sample)
+            data[AxesIndex.X.value] = \
+                feature_accelerometer.FeatureAccelerometer.get_accelerometer_x(sample)
+            data[AxesIndex.Y.value] = \
+                feature_accelerometer.FeatureAccelerometer.get_accelerometer_y(sample)
+            data[AxesIndex.Z.value] = \
+                feature_accelerometer.FeatureAccelerometer.get_accelerometer_z(sample)
             self._data[FeaturesIndex.ACCELEROMETER.value] = data
         elif isinstance(feature, feature_gyroscope.FeatureGyroscope):
-            data[AxesIndex.X.value] = feature_gyroscope.FeatureGyroscope.get_gyroscope_x(sample)
-            data[AxesIndex.Y.value] = feature_gyroscope.FeatureGyroscope.get_gyroscope_y(sample)
-            data[AxesIndex.Z.value] = feature_gyroscope.FeatureGyroscope.get_gyroscope_z(sample)
+            data[AxesIndex.X.value] = \
+                feature_gyroscope.FeatureGyroscope.get_gyroscope_x(sample)
+            data[AxesIndex.Y.value] = \
+                feature_gyroscope.FeatureGyroscope.get_gyroscope_y(sample)
+            data[AxesIndex.Z.value] = \
+                feature_gyroscope.FeatureGyroscope.get_gyroscope_z(sample)
             self._data[FeaturesIndex.GYROSCOPE.value] = data
         elif isinstance(feature, feature_magnetometer.FeatureMagnetometer):
-            data[AxesIndex.X.value] = feature_magnetometer.FeatureMagnetometer.get_magnetometer_x(sample)
-            data[AxesIndex.Y.value] = feature_magnetometer.FeatureMagnetometer.get_magnetometer_y(sample)
-            data[AxesIndex.Z.value] = feature_magnetometer.FeatureMagnetometer.get_magnetometer_z(sample)
+            data[AxesIndex.X.value] = \
+                feature_magnetometer.FeatureMagnetometer.get_magnetometer_x(sample)
+            data[AxesIndex.Y.value] = \
+                feature_magnetometer.FeatureMagnetometer.get_magnetometer_y(sample)
+            data[AxesIndex.Z.value] = \
+                feature_magnetometer.FeatureMagnetometer.get_magnetometer_z(sample)
             self._data[FeaturesIndex.MAGNETOMETER.value] = data
 
 
@@ -415,7 +441,7 @@ class MyAWSGreengrassListener(AWSGreengrassListener):
     # @param old_status     Old status.
     #
     def on_status_change(self, aws_greengrass, new_status, old_status):
-        print('AWS Greengrass service with endpoint "%s" from %s to %s.' %
+        print('AWS Greengrass service with endpoint \"%s\" from \"%s\" to \"%s\".' %
             (aws_greengrass.get_endpoint(), str(old_status), str(new_status)))
 
 
@@ -433,7 +459,7 @@ class MyClientListener(EdgeClientListener):
     # @param old_status Old status.
     #
     def on_status_change(self, client, new_status, old_status):
-        print('Client %s from %s to %s.' %
+        print('Client \"%s\" from \"%s\" to \"%s\".' %
             (client.get_name(), str(old_status), str(new_status)))
 
 
@@ -445,17 +471,19 @@ class MyClientListener(EdgeClientListener):
 def iot_device_1_callback(client, userdata, message):
     global iot_device_1_act_flag, iot_device_1_status
 
-    #print("Receiving: %s" % (message.payload))
+    payload = message.payload.decode('utf-8')
+    #print("Receiving: %s" % (payload))
 
     # Getting the client name and the switch status from the message.
     feature_name = feature_switch.FeatureSwitch.FEATURE_DATA_NAME
-    if feature_name in message.payload:
-        message_json = json.loads(message.payload)
+    if feature_name in payload:
+        message_json = json.loads(payload)
         (ts, client_id, switch_status) = message_json[feature_name].split(" ")
 
     # Set switch status.
     if client_id == IOT_DEVICE_1_NAME:
-        iot_device_1_status = SwitchStatus.ON if switch_status != "0" else SwitchStatus.OFF
+        iot_device_1_status = SwitchStatus.ON if switch_status != "0" \
+            else SwitchStatus.OFF
         iot_device_1_act_flag = True
 
 #
@@ -464,23 +492,26 @@ def iot_device_1_callback(client, userdata, message):
 def iot_device_2_callback(client, userdata, message):
     global iot_device_2_act_flag, iot_device_2_status
 
-    #print("Receiving: %s" % (message.payload))
+    payload = message.payload.decode('utf-8')
+    #print("Receiving: %s" % (payload))
 
     # Getting the client name and the switch status from the message.
     feature_name = feature_switch.FeatureSwitch.FEATURE_DATA_NAME
-    if feature_name in message.payload:
-        message_json = json.loads(message.payload)
+    if feature_name in payload:
+        message_json = json.loads(payload)
         (ts, client_id, switch_status) = message_json[feature_name].split(" ")
 
     # Set switch status.
     if client_id == IOT_DEVICE_2_NAME:
-        iot_device_2_status = SwitchStatus.ON if switch_status != "0" else SwitchStatus.OFF
+        iot_device_2_status = SwitchStatus.ON if switch_status != "0" \
+            else SwitchStatus.OFF
         iot_device_2_act_flag = True
 
 #
 # Handling actuation of devices.
 #
-def iot_device_act(iot_device, iot_device_feature, iot_device_status, iot_device_client):
+def iot_device_act(iot_device, iot_device_feature, iot_device_status, \
+    iot_device_client):
 
     # Writing switch status.
     iot_device.disable_notifications(iot_device_feature)
@@ -488,8 +519,10 @@ def iot_device_act(iot_device, iot_device_feature, iot_device_status, iot_device
     iot_device.enable_notifications(iot_device_feature)
 
     # Updating switch shadow device's state.
-    state_json_str = '{"state":{"desired":{"switch_status":' + str(iot_device_status.value) + '}}}'
-    iot_device_client.update_shadow_state(state_json_str, custom_shadow_callback_update, SHADOW_CALLBACK_TIMEOUT_s)
+    state_json_str = '{"state":{"desired":{"switch_status":' + \
+        str(iot_device_status.value) + '}}}'
+    iot_device_client.update_shadow_state(
+        state_json_str, custom_shadow_callback_update, SHADOW_CALLBACK_TIMEOUT_s)
 
 #
 # Sending aggregated sensors data.
@@ -541,7 +574,8 @@ def iot_device_send_data(iot_device_data, iot_device_client, topic):
         '"magnetometer_x":' + str(magnetometer[AxesIndex.X.value]) + ', ' + \
         '"magnetometer_y":' + str(magnetometer[AxesIndex.Y.value]) + ', ' + \
         '"magnetometer_z":' + str(magnetometer[AxesIndex.Z.value]) + '}}}'
-    iot_device_client.update_shadow_state(state_json_str, custom_shadow_callback_update, SHADOW_CALLBACK_TIMEOUT_s)
+    iot_device_client.update_shadow_state(
+        state_json_str, custom_shadow_callback_update, SHADOW_CALLBACK_TIMEOUT_s)
 
 
 # SHADOW DEVICES' CALLBACKS
@@ -602,8 +636,10 @@ class MyFeatureSensorsThread(threading.Thread):
     def run(self):
         while True:
             time.sleep(self._publishing_time)
-            iot_device_send_data(iot_device_1_data, iot_device_1_client, MQTT_IOT_DEVICE_ENV_INE_TOPIC)
-            iot_device_send_data(iot_device_2_data, iot_device_2_client, MQTT_IOT_DEVICE_ENV_INE_TOPIC)
+            iot_device_send_data(iot_device_1_data, \
+                iot_device_1_client, MQTT_IOT_DEVICE_ENV_INE_TOPIC)
+            iot_device_send_data(iot_device_2_data, \
+                iot_device_2_client, MQTT_IOT_DEVICE_ENV_INE_TOPIC)
 
 
 # MAIN APPLICATION
@@ -679,25 +715,41 @@ def main(argv):
 
         # Getting features.
         print('\nGetting features...')
-        iot_device_1_feature_switch = iot_device_1.get_feature(feature_switch.FeatureSwitch)
-        iot_device_1_feature_pressure = iot_device_1.get_feature(feature_pressure.FeaturePressure)
-        iot_device_1_feature_humidity = iot_device_1.get_feature(feature_humidity.FeatureHumidity)
-        iot_device_1_feature_temperature = iot_device_1.get_feature(feature_temperature.FeatureTemperature)
-        iot_device_1_feature_accelerometer = iot_device_1.get_feature(feature_accelerometer.FeatureAccelerometer)
-        iot_device_1_feature_gyroscope = iot_device_1.get_feature(feature_gyroscope.FeatureGyroscope)
-        iot_device_1_feature_magnetometer = iot_device_1.get_feature(feature_magnetometer.FeatureMagnetometer)
-        iot_device_2_feature_switch = iot_device_2.get_feature(feature_switch.FeatureSwitch)
-        iot_device_2_feature_pressure = iot_device_2.get_feature(feature_pressure.FeaturePressure)
-        iot_device_2_feature_humidity = iot_device_2.get_feature(feature_humidity.FeatureHumidity)
-        iot_device_2_feature_temperature = iot_device_2.get_feature(feature_temperature.FeatureTemperature)
-        iot_device_2_feature_accelerometer = iot_device_2.get_feature(feature_accelerometer.FeatureAccelerometer)
-        iot_device_2_feature_gyroscope = iot_device_2.get_feature(feature_gyroscope.FeatureGyroscope)
-        iot_device_2_feature_magnetometer = iot_device_2.get_feature(feature_magnetometer.FeatureMagnetometer)
+        iot_device_1_feature_switch = \
+            iot_device_1.get_feature(feature_switch.FeatureSwitch)
+        iot_device_1_feature_pressure = \
+            iot_device_1.get_feature(feature_pressure.FeaturePressure)
+        iot_device_1_feature_humidity = \
+            iot_device_1.get_feature(feature_humidity.FeatureHumidity)
+        iot_device_1_feature_temperature = \
+            iot_device_1.get_feature(feature_temperature.FeatureTemperature)
+        iot_device_1_feature_accelerometer = \
+            iot_device_1.get_feature(feature_accelerometer.FeatureAccelerometer)
+        iot_device_1_feature_gyroscope = \
+            iot_device_1.get_feature(feature_gyroscope.FeatureGyroscope)
+        iot_device_1_feature_magnetometer = \
+            iot_device_1.get_feature(feature_magnetometer.FeatureMagnetometer)
+        iot_device_2_feature_switch = \
+            iot_device_2.get_feature(feature_switch.FeatureSwitch)
+        iot_device_2_feature_pressure = \
+            iot_device_2.get_feature(feature_pressure.FeaturePressure)
+        iot_device_2_feature_humidity = \
+            iot_device_2.get_feature(feature_humidity.FeatureHumidity)
+        iot_device_2_feature_temperature = \
+            iot_device_2.get_feature(feature_temperature.FeatureTemperature)
+        iot_device_2_feature_accelerometer = \
+            iot_device_2.get_feature(feature_accelerometer.FeatureAccelerometer)
+        iot_device_2_feature_gyroscope = \
+            iot_device_2.get_feature(feature_gyroscope.FeatureGyroscope)
+        iot_device_2_feature_magnetometer = \
+            iot_device_2.get_feature(feature_magnetometer.FeatureMagnetometer)
 
         # Resetting switches.
         print('Resetting switches...')
-        iot_device_1_feature_switch.write_switch_status(iot_device_1_status.value)
-        iot_device_2_feature_switch.write_switch_status(iot_device_2_status.value)
+        iot_device_1_feature_switch.write_switch_status(
+            iot_device_1_status.value)
+        iot_device_2_feature_switch.write_switch_status(
+            iot_device_2_status.value)
 
         # Bluetooth setup complete.
         print('\nBluetooth setup complete.')
@@ -708,8 +760,10 @@ def main(argv):
         edge.add_listener(MyAWSGreengrassListener())
 
         # Getting AWS MQTT clients.
-        iot_device_1_client = edge.get_client(IOT_DEVICE_1_NAME, IOT_DEVICE_1_CERTIF_PATH, IOT_DEVICE_1_PRIV_K_PATH)
-        iot_device_2_client = edge.get_client(IOT_DEVICE_2_NAME, IOT_DEVICE_2_CERTIF_PATH, IOT_DEVICE_2_PRIV_K_PATH)
+        iot_device_1_client = edge.get_client(IOT_DEVICE_1_NAME, \
+            IOT_DEVICE_1_CERTIF_PATH, IOT_DEVICE_1_PRIV_K_PATH)
+        iot_device_2_client = edge.get_client(IOT_DEVICE_2_NAME, \
+            IOT_DEVICE_2_CERTIF_PATH, IOT_DEVICE_2_PRIV_K_PATH)
 
         # Connecting clients to the cloud.
         iot_device_1_client.add_listener(MyClientListener())
@@ -718,33 +772,53 @@ def main(argv):
         iot_device_2_client.connect()
 
         # Setting subscriptions.
-        iot_device_1_client.subscribe(MQTT_IOT_DEVICE_SWITCH_ACT_TOPIC, MQTT_QOS_1, iot_device_1_callback)
-        iot_device_2_client.subscribe(MQTT_IOT_DEVICE_SWITCH_ACT_TOPIC, MQTT_QOS_1, iot_device_2_callback)
+        iot_device_1_client.subscribe(MQTT_IOT_DEVICE_SWITCH_ACT_TOPIC, \
+            MQTT_QOS_1, iot_device_1_callback)
+        iot_device_2_client.subscribe(MQTT_IOT_DEVICE_SWITCH_ACT_TOPIC, \
+            MQTT_QOS_1, iot_device_2_callback)
 
         # Resetting shadow states.
-        state_json_str = '{"state":{"desired":{"switch_status":' + str(iot_device_1_status.value) + '}}}'
-        iot_device_1_client.update_shadow_state(state_json_str, custom_shadow_callback_update, SHADOW_CALLBACK_TIMEOUT_s)
-        state_json_str = '{"state":{"desired":{"switch_status":' + str(iot_device_2_status.value) + '}}}'
-        iot_device_2_client.update_shadow_state(state_json_str, custom_shadow_callback_update, SHADOW_CALLBACK_TIMEOUT_s)
+        state_json_str = '{"state":{"desired":{"switch_status":' \
+            + str(iot_device_1_status.value) + '}}}'
+        iot_device_1_client.update_shadow_state(state_json_str,
+            custom_shadow_callback_update, SHADOW_CALLBACK_TIMEOUT_s)
+        state_json_str = '{"state":{"desired":{"switch_status":' \
+            + str(iot_device_2_status.value) + '}}}'
+        iot_device_2_client.update_shadow_state(state_json_str,
+            custom_shadow_callback_update, SHADOW_CALLBACK_TIMEOUT_s)
 
         # Edge Computing Initialized.
         print('\nEdge Computing Initialized.')
 
         # Handling sensing of devices.
-        iot_device_1_feature_switch.add_listener(MyFeatureSwitchListener(iot_device_1_client, MQTT_IOT_DEVICE_SWITCH_SENSE_TOPIC))
-        iot_device_1_feature_pressure.add_listener(MyFeatureSensorsListener(iot_device_1_data))
-        iot_device_1_feature_humidity.add_listener(MyFeatureSensorsListener(iot_device_1_data))
-        iot_device_1_feature_temperature.add_listener(MyFeatureSensorsListener(iot_device_1_data))
-        iot_device_1_feature_accelerometer.add_listener(MyFeatureSensorsListener(iot_device_1_data))
-        iot_device_1_feature_gyroscope.add_listener(MyFeatureSensorsListener(iot_device_1_data))
-        iot_device_1_feature_magnetometer.add_listener(MyFeatureSensorsListener(iot_device_1_data))
-        iot_device_2_feature_switch.add_listener(MyFeatureSwitchListener(iot_device_2_client, MQTT_IOT_DEVICE_SWITCH_SENSE_TOPIC))
-        iot_device_2_feature_pressure.add_listener(MyFeatureSensorsListener(iot_device_2_data))
-        iot_device_2_feature_humidity.add_listener(MyFeatureSensorsListener(iot_device_2_data))
-        iot_device_2_feature_temperature.add_listener(MyFeatureSensorsListener(iot_device_2_data))
-        iot_device_2_feature_accelerometer.add_listener(MyFeatureSensorsListener(iot_device_2_data))
-        iot_device_2_feature_gyroscope.add_listener(MyFeatureSensorsListener(iot_device_2_data))
-        iot_device_2_feature_magnetometer.add_listener(MyFeatureSensorsListener(iot_device_2_data))
+        iot_device_1_feature_switch.add_listener(MyFeatureSwitchListener(
+            iot_device_1_client, MQTT_IOT_DEVICE_SWITCH_SENSE_TOPIC))
+        iot_device_1_feature_pressure.add_listener(MyFeatureSensorsListener(
+            iot_device_1_data))
+        iot_device_1_feature_humidity.add_listener(MyFeatureSensorsListener(
+            iot_device_1_data))
+        iot_device_1_feature_temperature.add_listener(MyFeatureSensorsListener(
+            iot_device_1_data))
+        iot_device_1_feature_accelerometer.add_listener(MyFeatureSensorsListener(
+            iot_device_1_data))
+        iot_device_1_feature_gyroscope.add_listener(MyFeatureSensorsListener(
+            iot_device_1_data))
+        iot_device_1_feature_magnetometer.add_listener(MyFeatureSensorsListener(
+            iot_device_1_data))
+        iot_device_2_feature_switch.add_listener(MyFeatureSwitchListener(
+            iot_device_2_client, MQTT_IOT_DEVICE_SWITCH_SENSE_TOPIC))
+        iot_device_2_feature_pressure.add_listener(MyFeatureSensorsListener(
+            iot_device_2_data))
+        iot_device_2_feature_humidity.add_listener(MyFeatureSensorsListener(
+            iot_device_2_data))
+        iot_device_2_feature_temperature.add_listener(MyFeatureSensorsListener(
+            iot_device_2_data))
+        iot_device_2_feature_accelerometer.add_listener(MyFeatureSensorsListener(
+            iot_device_2_data))
+        iot_device_2_feature_gyroscope.add_listener(MyFeatureSensorsListener(
+            iot_device_2_data))
+        iot_device_2_feature_magnetometer.add_listener(MyFeatureSensorsListener(
+            iot_device_2_data))
 
         # Enabling notifications.
         print('\nEnabling Bluetooth notifications...')
@@ -774,15 +848,18 @@ def main(argv):
         while True:
 
             # Getting notifications.
-            if iot_device_1.wait_for_notifications(0.05) or iot_device_2.wait_for_notifications(0.05):
+            if iot_device_1.wait_for_notifications(0.05) \
+                or iot_device_2.wait_for_notifications(0.05):
                 continue
 
             # Handling actuation of devices.
             if iot_device_1_act_flag:
-                iot_device_act(iot_device_1, iot_device_1_feature_switch, iot_device_1_status, iot_device_1_client)
+                iot_device_act(iot_device_1, iot_device_1_feature_switch, \
+                    iot_device_1_status, iot_device_1_client)
                 iot_device_1_act_flag = False
             elif iot_device_2_act_flag:
-                iot_device_act(iot_device_2, iot_device_2_feature_switch, iot_device_2_status, iot_device_2_client)
+                iot_device_act(iot_device_2, iot_device_2_feature_switch, \
+                    iot_device_2_status, iot_device_2_client)
                 iot_device_2_act_flag = False
 
     except (BTLEException, EdgeSTInvalidOperationException) as e:

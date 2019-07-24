@@ -12,19 +12,19 @@ Documentation can be found [here](https://stmicroelectronics.github.io/EdgeSTSDK
 
 
 ## Compatibility
-This version of the SDK is compatible with [Python](https://www.python.org/) 2.7 and runs on a Linux system.
+This version of the SDK is compatible with [Python](https://www.python.org/) 3.5 and runs on a Linux system.
 
 
 ## Preconditions
 The SDK relies on the Amazon AWS Greengrass SDK, so please refer to the [Amazon AWS Greengrass official documentation](https://docs.aws.amazon.com/greengrass/latest/developerguide/what-is-gg.html) to install it. At the time of writing, this implies installing the following components:
  1. Amazon AWS IoT Python SDK:
     ```Shell
-    $ sudo pip install AWSIoTPythonSDK
+    $ sudo pip3 install AWSIoTPythonSDK
     ```
  2. Amazon AWS IoT Greengrass SDK, that will be downloaded when creating a "Group" on the AWS web IoT Console on the cloud. Further actions are required to setup the environment, so please follow the abovementioned official documentation.
 Moreover, please install the [concurrent.futures](https://docs.python.org/3/library/concurrent.futures.html) module to run pools of threads in background, that serve listeners' callbacks.
   ```Shell
-  $ sudo pip install futures
+  $ sudo pip3 install futures
   ```
 Last but not least, the Python version of the [BlueST SDK](https://github.com/STMicroelectronics/EdgeSTSDK_Python#bluest-sdk) is required to run the provided application examples.
 
@@ -32,7 +32,7 @@ Last but not least, the Python version of the [BlueST SDK](https://github.com/ST
 ## Installation
 The EdgeST SDK can be installed through the Python pip package manager.
   ```Shell
-  $ sudo pip install edge-st-sdk
+  $ sudo pip3 install edge-st-sdk
   ```
 
 
@@ -65,9 +65,9 @@ To run the application examples please follow the steps below:
     ```Shell
     $ sudo /greengrass/ggc/core/greengrassd restart
     ```
- 5. Enter the "edge_st_examples" folder and run the desired script by providing the endpoint (i.e. IoT host) and the path of the root Certification Authority certificate, e.g.:
+ 5. Enter the "edge_st_examples" folder and run the desired script by providing the endpoint (i.e. IoT host) and the path of the root Certification Authority certificate. You can find these information within the "config.json" configuration file that comes from Amazon AWS when creating a Greengrass group (please refer to the [Amazon AWS Greengrass official documentation](https://docs.aws.amazon.com/greengrass/latest/developerguide/what-is-gg.html)), e.g.:
     ```Shell
-    $ sudo python example_ble_aws_x.py -e <iot_host_prefix>.iot.<region>.amazonaws.com -r /greengrass/certs/root.ca.pem
+    $ sudo python3 example_ble_aws_x.py -e <iot_host_prefix>.iot.<region>.amazonaws.com -r /greengrass/certs/root.ca.pem
     ```
 
 
