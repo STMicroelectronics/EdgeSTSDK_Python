@@ -192,7 +192,7 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         print('%d bytes out of %d sent...' % (bytes_sent, bytes_to_send))
 
 
-# This function will be called every time a method request is received
+# This function will be called every time a method request for firmware update is received
 def firmwareUpdate(method_name, payload, hubManager): 
     global firmware_update_file, update_task
     print('received method call:')
@@ -210,6 +210,19 @@ def firmwareUpdate(method_name, payload, hubManager):
     update_task = threading.Thread(target=download_update, args=(url, filename))
     update_task.start()
     print ('\ndownload and update task started')
+    return
+
+# This function will be called every time a method request for selecting AI Algo is received
+def selectAIAlgorithm(method_name, payload, hubManager):
+    global iot_device_1
+    print('received method call:')
+    print('\tmethod name:', method_name)
+    print('\tpayload:', payload)
+    json_dict = json.loads(payload)
+    print ('\nAI Algo to set:')
+    algo_name = json_dict['Name']
+    print (algo_name)    
+    # iot_device_1.setAIAlgo(algo_name)    
     return
 
 class MyFeatureListener(FeatureListener):
@@ -346,7 +359,8 @@ def main(protocol):
         # Connecting clients to the runtime.
         module_client.connect()
         module_client.set_module_twin_callback(module_twin_callback, module_client)
-        module_client.set_module_method_callback(firmwareUpdate, module_client)        
+        module_client.set_module_method_callback(firmwareUpdate, module_client)      
+        module_client.set_module_method_callback(selectAIAlgorithm, module_client)  
         module_client.subscribe(BLE1_APPMOD_INPUT, receive_ble1_message_callback, module_client)        
 
         # Initial state.
@@ -433,15 +447,18 @@ def main(protocol):
                 print('No features found.')
             print('%d) Firmware upgrade' % (i))
 
+            algos_supported = "something;something" #TBD: iot_device_1.get_AllAIAlgo()
             firmware_status = ai_fw_running
             print("firmware reported by module twin: " + firmware_status)
             reported_json = {
                 "SupportedMethods": {
-                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file"                
+                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
+                    "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
                 },
                 "AI": {
                     "firmware": firmware_status,
-                    firmware_status: firmware_desc
+                    firmware_status: firmware_desc,
+                    "algorithms": algos_supported
                 },
                 "State": {
                     "fw_update": "Not_Running"
