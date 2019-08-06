@@ -101,6 +101,17 @@ class MyManagerListener(ManagerListener):
 
 class MyNodeListener(NodeListener):
 
+    def on_connect(self, node):
+        print('Device %s connected.' % (node.get_name()))
+
+    def on_disconnect(self, node, unexpected=False):
+        print('Device %s disconnected%s.' % \
+            (node.get_name(), ' unexpectedly' if unexpected else ''))
+        if unexpected:
+            # Exiting.
+            print('\nExiting...\n')
+            sys.exit(0)
+
     def on_status_change(self, node, new_status, old_status):
         print('Device %s went from %s to %s.' %
             (node.get_name(), str(old_status), str(new_status)))
