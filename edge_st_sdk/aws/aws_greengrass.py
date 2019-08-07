@@ -49,9 +49,10 @@ from AWSIoTPythonSDK.core.greengrass.discovery.providers import DiscoveryInfoPro
 from AWSIoTPythonSDK.core.protocol.connection.cores import ProgressiveBackOffCore
 from AWSIoTPythonSDK.exception.AWSIoTExceptions import DiscoveryInvalidRequestException
 
-from edge_st_sdk.python_utils import lock
+from edge_st_sdk.utils.python_utils import lock
 import edge_st_sdk.aws.aws_client
-from edge_st_sdk.utils.edge_st_exceptions import EdgeInvalidOperationException
+from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException
+from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidDataException
 
 
 # CLASSES
@@ -61,7 +62,7 @@ class AWSGreengrass(object):
     MAX_DISCOVERY_ATTEMPTS = 3
     """Maximum number of attempts when trying to discover the core."""
 
-    _GROUP_CA_PATH  = "./aws_group_ca/"
+    _GROUP_CA_PATH  = './aws_group_ca/'
     """Group Certification Authority path.""" 
 
     _TIMEOUT_s = 10
@@ -78,9 +79,11 @@ class AWSGreengrass(object):
 
         Initializing AWS Discovery.
 
-        Args:
-            endpoint (str): AWS endpoint.
-            root_ca_path (str): Path to the root Certification Authority file. 
+        :param endpoint: AWS endpoint.
+        :type endpoint: str
+
+        :param root_ca_path: Path to the root Certification Authority file.
+        :type root_ca_path: str
         """
         self._status = AWSGreengrassStatus.INIT
         """Status."""
@@ -113,23 +116,44 @@ class AWSGreengrass(object):
         """Performing the discovery of the core belonging to the same group of
         the given client name.
 
-        Args:
-            client_id (str): Name of a client, as it is on the cloud, belonging
-                to the same group of the core.
-            device_certificate_path (str): Relative path of a device's
-                certificate stored on the core device, belonging to the same
-                group of the core.
-            device_private_key_path (str): Relative path of a device's
-                private key stored on the core device, belonging to the same
-                group of the core.
+        :param client_id: Name of a client, as it is on the cloud, belonging
+            to the same group of the core.
+        :type client_id: str
 
-        Returns:
-            str: The name of the core.
+        :param device_certificate_path: Relative path of a device's
+            certificate stored on the core device, belonging to the same group
+            of the core.
+        :type device_certificate_path: str
 
-        Raises:
-            :exc:`edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException`
-                is raised if the discovery of the core fails.
+        :param device_private_key_path: Relative path of a device's
+            private key stored on the core device, belonging to the same group
+            of the core.
+        :type device_private_key_path: str
+
+        :returns: The name of the core.
+        :rtype: str
+
+        :raises EdgeSTInvalidOperationException: is raised if the discovery of
+            the core fails.
+        :raises EdgeSTInvalidDataException: is raised a wrong configuration data
+            is provided.
         """
+
+        # Checking configuration parameters.
+        if not os.access(self._root_ca_path, os.R_OK):
+            msg = '\nRoot Certification Authority certificate path "%s" is not ' \
+                'accessible.\r\n' \
+                'Please run the application with \"sudo\".' \
+                % (device_certificate_path)
+            raise EdgeSTInvalidDataException(msg)
+        if not os.path.exists(device_certificate_path):
+            msg = '\nInvalid device certificate path: "%s"' \
+            % (device_certificate_path)
+            raise EdgeSTInvalidDataException(msg)
+        if not os.path.exists(device_private_key_path):
+            msg = '\nInvalid device private key path: "%s"' \
+            % (device_private_key_path)
+            raise EdgeSTInvalidDataException(msg)
 
         # Updating service.
         self._update_status(AWSGreengrassStatus.DISCOVERING_CORE)
@@ -160,23 +184,23 @@ class AWSGreengrass(object):
 
                 # Persisting connectivity/identity information.
                 self._group_ca_path = self._GROUP_CA_PATH + group_id + \
-                    "_CA_" + str(uuid.uuid4()) + ".crt"
+                    '_CA_' + str(uuid.uuid4()) + '.crt'
                 if not os.path.exists(self._GROUP_CA_PATH):
                     os.makedirs(self._GROUP_CA_PATH)
-                group_ca_path_file = open(self._group_ca_path, "w")
+                group_ca_path_file = open(self._group_ca_path, 'w')
                 group_ca_path_file.write(ca)
                 group_ca_path_file.close()
                 break
 
             except DiscoveryInvalidRequestException as e:
-                raise EdgeInvalidOperationException(
+                raise EdgeSTInvalidOperationException(
                     'Invalid discovery request detected: %s' % (e.message))
 
             except BaseException as e:
                 attempts -= 1
                 backOffCore.backOff()
                 if attempts == 0:
-                    raise EdgeInvalidOperationException(
+                    raise EdgeSTInvalidOperationException(
                         'Discovery of the core related to the client "%s", with ' \
                         'certificate "%s" and key "%s", failed after %d retries.' % \
                         (client_id,
@@ -194,7 +218,7 @@ class AWSGreengrass(object):
 
     def _configure_logging(self):
         """Configuring logging, required for using shadow devices."""
-        self._logger = logging.getLogger("AWSIoTPythonSDK.core")
+        self._logger = logging.getLogger('AWSIoTPythonSDK.core')
         self._logger.setLevel(logging.ERROR)
         self._streamHandler = logging.StreamHandler()
         self._formatter = logging.Formatter(
@@ -206,8 +230,8 @@ class AWSGreengrass(object):
     def discovery_completed(self):
         """Checking whether the discovery has completed.
 
-        Returns:
-            bool: True if the discovery process has completed, False otherwise.
+        :returns: True if the discovery process has completed, False otherwise.
+        :rtype: bool
         """ 
         return AWSGreengrass._discovery_completed
 
@@ -215,19 +239,24 @@ class AWSGreengrass(object):
         device_private_key_path):
         """Getting an Amazon AWS client.
 
-        Args:
-            client_id (str): Name of the client, as it is on the cloud.
-            device_certificate_path (str): Relative path of the device's
-                certificate stored on the core device.
-            device_private_key_path (str): Relative path of the device's
-                private key stored on the core device.
+        :param client_id: Name of the client, as it is on the cloud.
+        :type client_id: str
 
-        Returns:
-            :class:`edge_st_sdk.aws.aws_client.AWSClient`: Amazon AWS client.
+        :param device_certificate_path: Relative path of a device's
+            certificate stored on the core device.
+        :type device_certificate_path: str
 
-        Raises:
-            :exc:`edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException`
-                is raised if the discovery of the core fails.
+        :param device_private_key_path: Relative path of a device's
+            private key stored on the core device.
+        :type device_private_key_path: str
+
+        :returns: Amazon AWS client.
+        :rtype: :class:`edge_st_sdk.aws.aws_client.AWSClient`
+
+        :raises EdgeSTInvalidOperationException: is raised if the discovery of
+            the core fails.
+        :raises EdgeSTInvalidDataException: is raised if a wrong configuration
+            data is provided.
         """
         # Performing the discovery of the core belonging to the same group of
         # the client.
@@ -246,7 +275,8 @@ class AWSGreengrass(object):
                 self._group_ca_path,
                 self._core_info)
 
-        except EdgeInvalidOperationException as e:
+        except (EdgeSTInvalidDataException, EdgeSTInvalidOperationException) \
+            as e:
             raise e
 
     def get_endpoint(self):
@@ -256,9 +286,8 @@ class AWSGreengrass(object):
     def add_listener(self, listener):
         """Add a listener.
         
-        Args:
-            listener (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener`):
-                Listener to be added.
+        :param listener: Listener to be added.
+        :type listener: :class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener`
         """
         if listener is not None:
             with lock(self):
@@ -268,9 +297,8 @@ class AWSGreengrass(object):
     def remove_listener(self, listener):
         """Remove a listener.
 
-        Args:
-            listener (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener`):
-                Listener to be removed.
+        :param listener: Listener to be removed.
+        :type listener: :class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener`
         """
         if listener is not None:
             with lock(self):
@@ -280,9 +308,8 @@ class AWSGreengrass(object):
     def _update_status(self, new_status):
         """Update the status of the client.
 
-        Args:
-            new_status (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus`):
-                New status.
+        :param new_status: New status.
+        :type new_status: :class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus`
         """
         old_status = self._status
         self._status = new_status
@@ -322,16 +349,17 @@ class AWSGreengrassListener(object):
     def on_status_change(self, aws_greengrass, new_status, old_status):
         """To be called whenever the AWS Greengrass service changes its status.
 
-        Args:
-            aws_greengrass (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass):
-                AWS Greengrass service that has changed its status.
-            new_status (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus`):
-                New status.
-            old_status (:class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus`):
-                Old status.
+        :param aws_greengrass: AWS Greengrass service that has changed its
+            status.
+        :type aws_greengrass: :class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass`
 
-        Raises:
-            :exc:`NotImplementedError` if the method has not been implemented.
+        :param new_status: New status.
+        :type new_status: :class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus`
+
+        :param old_status: Old status.
+        :type old_status: :class:`edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus`
+
+        :raises NotImplementedError: if the method has not been implemented.
         """
         raise NotImplementedError('You must implement "on_status_change()" to '
                                   'use the "AWSGreengrassListener" class.')

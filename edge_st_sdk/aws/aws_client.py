@@ -40,11 +40,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 
-from edge_st_sdk.python_utils import lock
+from edge_st_sdk.utils.python_utils import lock
 from edge_st_sdk.edge_client import EdgeClient
 from edge_st_sdk.edge_client import EdgeClientStatus
 import edge_st_sdk.aws.aws_greengrass
-from edge_st_sdk.utils.edge_st_exceptions import EdgeInvalidOperationException
+from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException
 
 
 # CLASSES
@@ -66,24 +66,30 @@ class AWSClient(EdgeClient):
         AWSClient has to be instantiated through a call to the
         :meth:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client` method.
 
-        Args:
-            client_name (str): Name of the client, as it is on the cloud.
-            device_certificate_path (str): Relative path of the device's
-                certificate stored on the core device.
-            device_private_key_path (str): Relative path of the device's
-                private key stored on the core device.
-            group_ca_path (str): Relative path of the certification authority's
-                certificate stored on the core device.
-            core_info (list): Information related to the core of the group to
-                which the client belongs.
+        :param client_name: Name of the client, as it is on the cloud.
+        :type client_name: str
 
-        Raises:
-            :exc:`edge_st_sdk.utils.edge_st_exceptions.EdgeInvalidOperationException`
-                is raised if the discovery of the core has not been completed
-                yet, i.e. if the AWSClient has not been instantiated through a
-                call to the
-                :meth:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client`
-                method.
+        :param device_certificate_path: Relative path of the device's
+            certificate stored on the core device.
+        :type device_certificate_path: str
+
+        :param device_private_key_path: Relative path of the device's private
+            key stored on the core device.
+        :type device_private_key_path: str
+
+        :param group_ca_path: Relative path of the certification authority's
+            certificate stored on the core device.
+        :type group_ca_path: str
+
+        :param core_info: Information related to the core of the group to which
+            the client belongs.
+        :type core_info: list
+
+        :raises EdgeSTInvalidOperationException: is raised if the discovery of
+            the core has not been completed yet, i.e. if the AWSClient has not
+            been instantiated through a call to the
+            :meth:`edge_st_sdk.aws.aws_greengrass.AWSGreengrass.get_client`
+            method.
         """
         self._status = EdgeClientStatus.INIT
         """Status."""
@@ -98,7 +104,7 @@ class AWSClient(EdgeClient):
 
         # Check the client is created with the right pattern (Builder).
         if not edge_st_sdk.aws.aws_greengrass.AWSGreengrass.discovery_completed():
-            raise EdgeInvalidOperationException('Amazon AWS clients must be ' \
+            raise EdgeSTInvalidOperationException('Amazon AWS clients must be ' \
                 'obtained through a call to the \'get_client()\' method of an ' \
                 '\'AWSGreengrass\' object.')
 
@@ -129,16 +135,16 @@ class AWSClient(EdgeClient):
     def get_name(self):
         """Get the client name. 
 
-        Returns:
-            str: The client name, i.e. the name of the client.
+        :returns: The client name, i.e. the name of the client.
+        :rtype: str
         """
         return self._client_name
 
     def connect(self):
         """Connect to the core.
 
-        Returns:
-            bool: True if the connection was successful, False otherwise.
+        :returns: True if the connection was successful, False otherwise.
+        :rtype: bool
         """
         # Updating client.
         self._update_status(EdgeClientStatus.CONNECTING)
@@ -188,10 +194,14 @@ class AWSClient(EdgeClient):
         """Publish a new message to the desired topic with the given quality of
         service.
 
-        Args:
-            topic (str): Topic name to publish to.
-            payload (str): Payload to publish (JSON formatted string).
-            qos (int): Quality of Service. Could be "0" or "1".
+        :param topic: Topic name to publish to.
+        :type topic: str
+
+        :param payload: Payload to publish (JSON formatted string).
+        :type payload: str
+
+        :param qos: Quality of Service. Could be "0" or "1".
+        :type qos: int
         """
         if self._connected:
             self._client.publish(topic, payload, qos)
@@ -200,11 +210,14 @@ class AWSClient(EdgeClient):
         """Subscribe to the desired topic with the given quality of service and
         register a callback to handle the published messages.
 
-        Args:
-            topic (str): Topic name to publish to.
-            qos (int): Quality of Service. Could be "0" or "1".
-            callback: Function to be called when a new message for the
-                subscribed topic comes in.
+        :param topic: Topic name to publish to.
+        :type topic: str
+
+        :param qos: Quality of Service. Could be "0" or "1".
+        :type qos: int
+
+        :param callback: Function to be called when a new message for the
+            subscribed topic comes in.
         """
         if self._connected:
             self._client.subscribe(topic, qos, callback)
@@ -212,8 +225,8 @@ class AWSClient(EdgeClient):
     def unsubscribe(self, topic):
         """Unsubscribe to the desired topic.
 
-        Args:
-            topic (str): Topic name to unsubscribe to.
+        :param topic: Topic name to unsubscribe to.
+        :type topic: str
         """
         if self._connected:
             self._client.unsubscribe(topic)
@@ -224,10 +237,11 @@ class AWSClient(EdgeClient):
         Retrieve the device shadow JSON document from the cloud by publishing an
         empty JSON document to the corresponding shadow topics.
 
-        Args:
-            callback: Function to be called when the response for a shadow
-                request comes back.
-            timeout_s (int): Timeout in seconds to perform the request.
+        :param callback: Function to be called when the response for a shadow
+            request comes back.
+
+        :param timeout_s: Timeout in seconds to perform the request.
+        :type timeout_s: int
         """
         if self._connected:
             self._shadow_handler.shadowGet(callback, timeout_s)
@@ -238,11 +252,15 @@ class AWSClient(EdgeClient):
         Update the device shadow JSON document string on the cloud by publishing
         the provided JSON document to the corresponding shadow topics.
 
-        Args:
-            payload (json): JSON document string used to update the shadow JSON
-                document on the cloud.
-            callback: Function to be called when the response for a shadow
-                request comes back.
+        :param payload: JSON document string used to update the shadow JSON
+            document on the cloud.
+        :type payload: json
+
+        :param callback: Function to be called when the response for a shadow
+            request comes back.
+
+        :param timeout_s: Timeout in seconds to perform the request.
+        :type timeout_s: int
         """
         if self._connected:
             self._shadow_handler.shadowUpdate(payload, callback, timeout_s)
@@ -253,10 +271,11 @@ class AWSClient(EdgeClient):
         Delete the device shadow from the cloud by publishing an empty JSON
         document to the corresponding shadow topics.
 
-        Args:
-            callback: Function to be called when the response for a shadow
-                request comes back.
-            timeout_s (int): Timeout in seconds to perform the request.
+        :param callback: Function to be called when the response for a shadow
+            request comes back.
+
+        :param timeout_s: Timeout in seconds to perform the request.
+        :type timeout_s: int
         """
         if self._connected:
             self._shadow_handler.shadowDelete(callback, timeout_s)
@@ -264,9 +283,8 @@ class AWSClient(EdgeClient):
     def add_listener(self, listener):
         """Add a listener.
         
-        Args:
-            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):
-                Listener to be added.
+        :param listener: Listener to be added.
+        :type listener: :class:`edge_st_sdk.edge_client.EdgeClientListener`
         """
         if listener is not None:
             with lock(self):
@@ -276,9 +294,8 @@ class AWSClient(EdgeClient):
     def remove_listener(self, listener):
         """Remove a listener.
 
-        Args:
-            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):
-                Listener to be removed.
+        :param listener: Listener to be removed.
+        :type listener: :class:`edge_st_sdk.edge_client.EdgeClientListener`
         """
         if listener is not None:
             with lock(self):
@@ -288,9 +305,8 @@ class AWSClient(EdgeClient):
     def _update_status(self, new_status):
         """Update the status of the client.
 
-        Args:
-            new_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): New
-                status.
+        :param new_status: New status.
+        :type new_status: :class:`edge_st_sdk.edge_client.EdgeClientStatus`
         """
         old_status = self._status
         self._status = new_status
