@@ -36,14 +36,14 @@ IoT Hub and performing edge operations through the azure-iot-sdk (python).
 # IMPORT
 
 import sys
-
+from collections import defaultdict
 import iothub_client
 # pylint: disable=E0611
 from iothub_client import IoTHubClient, IoTHubModuleClient, IoTHubClientError, IoTHubTransportProvider
 from iothub_client import IoTHubMessage, IoTHubMessageDispositionResult, IoTHubError, DeviceMethodReturnValue
 
 from edge_st_sdk.edge_client import EdgeClient
-from edge_st_sdk.utils.edge_st_exceptions import WrongInstantiationException
+from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException, EdgeSTInvalidDataException
 from edge_st_sdk.azure.azure_utils import CallbackContext
 
 # CLASSES
@@ -55,6 +55,7 @@ class AzureModuleClient(EdgeClient):
     _TIMEOUT_s = 10000
     """Timeout for messages"""
     _subscribe_callback = None
+    _method_table = defaultdict(list)
 
     def __init__(self, module_name, protocol):
         self.module_name = module_name
@@ -116,7 +117,8 @@ class AzureModuleClient(EdgeClient):
     def set_module_method_callback(self, method_callback, user_context):
         if self._connected:        
             cbContext = CallbackContext(method_callback, user_context)
-            self.client.set_module_method_callback(self._method_callback, cbContext)
+            self._method_table[str(method_callback.__name__)] = cbContext
+            self.client.set_module_method_callback(self._method_callback, None)
 
     # Internal callback for message which calls user callback
     def _subscribe_callback(self, message, context):
@@ -125,9 +127,12 @@ class AzureModuleClient(EdgeClient):
         return IoTHubMessageDispositionResult.ACCEPTED
     
     # Internal callback for method which calls user callback
-    def _method_callback(self, method_name, message, context):
-        callback = context._get_callback()
-        callback(method_name, message, context._get_context())
+    def _method_callback(self, method_name, message, context):        
+        cbContext = self._method_table[str(method_name)]
+        callback = cbContext._get_callback()
+        print("function name:" + str(callback.__name__))
+        #TODO: Catch exception in the callback function and return appropriately
+        callback(method_name, message, cbContext._get_context())
         retval = DeviceMethodReturnValue()
         retval.status = 200
         retval.response = "{\"result\":\"success\"}"
