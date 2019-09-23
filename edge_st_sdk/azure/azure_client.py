@@ -129,13 +129,17 @@ class AzureModuleClient(EdgeClient):
     # Internal callback for method which calls user callback
     def _method_callback(self, method_name, message, context):        
         cbContext = self._method_table[str(method_name)]
-        callback = cbContext._get_callback()
-        print("function name:" + str(callback.__name__))
-        #TODO: Catch exception in the callback function and return appropriately
-        callback(method_name, message, cbContext._get_context())
-        retval = DeviceMethodReturnValue()
-        retval.status = 200
-        retval.response = "{\"result\":\"success\"}"
+        if cbContext:
+            callback = cbContext._get_callback()
+            #TODO: Catch exception in the callback function and return appropriately
+            callback(method_name, message, cbContext._get_context())
+            retval = DeviceMethodReturnValue()
+            retval.status = 200
+            retval.response = "{\"result\":\"success\"}"
+        else:
+            retval = DeviceMethodReturnValue()
+            retval.status = 404
+            retval.response = "{\"result\":\"failure\"}"
         return retval
 
 
