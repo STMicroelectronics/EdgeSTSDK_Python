@@ -481,14 +481,14 @@ def main(protocol):
                 if feature:
                     features.append(feature)
                     print('%d) %s' % (i, feature.get_name()))
+                    if i == 2:
+                        ai_fw_running += ';'
                     if feature.get_name() == "Activity Recognition":
                         ai_fw_running += "activity-recognition"
                         firmware_desc["activity-recognition"] = "stationary;walking;jogging;biking;driving;stairs"
                     elif feature.get_name() == "Audio Scene Classification":
                         ai_fw_running += "audio-classification"
-                        firmware_desc["audio-classification"] = "in-door;out-door;in-vehicle"
-                    if i == 1:
-                        ai_fw_running += ';'
+                        firmware_desc["audio-classification"] = "in-door;out-door;in-vehicle"                    
                     i += 1
             if not features:
                 print('No features found.')
@@ -500,18 +500,22 @@ def main(protocol):
             AI_console.getAIAlgos()
 
             # Getting notifications about firmware upgrade process.
+            timeout = time.time() + 10
             while True:
                 if iot_device_1.wait_for_notifications(0.05):
                     continue
                 elif AIAlgo_msg_completed:
                     print("Algos received:" + AI_msg)                    
                     break
+                elif time.time() > timeout:
+                    print("no response for AIAlgos cmd")
+                    break
 
             algos_supported = ''
             res = AI_msg.split(',')
             for t in range(len(res)):
                 __har = res[t].split('-')
-                if len(__har) > 1: # there should be at least 2 parts after split
+                if len(__har) > 1:
                     _algo = __har[1].strip()
                 else:
                     continue
