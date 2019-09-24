@@ -34,13 +34,24 @@ The edge_st_exceptions module defines exceptions raised by the EdgeSTSDK.
 
 # CLASSES
 
-class EdgeInvalidOperationException(Exception):
+class EdgeSTInvalidOperationException(Exception):
     """Exception raised whenever an invalid operation is performed."""
 
     def __init__(self, msg):
         """Constructor
 
-        Args:
-            msg (str): The message to raise.
+        :param msg: The message to raise.
+        :type msg: str
         """
-        super(EdgeInvalidOperationException, self).__init__(msg)
+        super(EdgeSTInvalidOperationException, self).__init__(msg)
+
+class EdgeSTInvalidDataException(Exception):
+    """Exception raised whenever invalid data are provided."""
+
+    def __init__(self, msg):
+        """Constructor
+
+        :param msg: The message to raise.
+        :type msg: str
+        """
+        super(EdgeSTInvalidDataException, self).__init__(msg)

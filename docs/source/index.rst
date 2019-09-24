@@ -1,5 +1,5 @@
 .. EdgeSTSDK documentation master file, created by
-   sphinx-quickstart on Mon Apr  2 01:04:28 2018.
+   sphinx-quickstart on Wed Jul 24 11:26:34 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 

@@ -62,10 +62,14 @@ class EdgeClient(object):
         """Publish a new message to the desired topic with the given quality of
         service.
 
-        Args:
-            topic (str): Topic name to publish to.
-            payload (str): Payload to publish (JSON formatted string).
-            qos (int): Quality of Service. Could be "0" or "1".
+        :param topic: Topic name to publish to.
+        :type topic: str
+
+        :param payload: Payload to publish (JSON formatted string).
+        :type payload: str
+
+        :param qos: Quality of Service. Could be "0" or "1".
+        :type qos: int
         """
         raise NotImplementedError('You must define "publish()" to use the '
             '"EdgeClient" class.')
@@ -75,21 +79,24 @@ class EdgeClient(object):
         """Subscribe to the desired topic with the given quality of service and
         register a callback to handle the published messages.
 
-        Args:
-            topic (str): Topic name to publish to.
-            qos (int): Quality of Service. Could be "0" or "1".
-            callback: Function to be called when a new message for the
-                subscribed topic comes in.
+        :param topic: Topic name to publish to.
+        :type topic: str
+
+        :param qos: Quality of Service. Could be "0" or "1".
+        :type qos: int
+
+        :param callback: Function to be called when a new message for the
+            subscribed topic comes in.
         """
         raise NotImplementedError('You must define "subscribe()" to use the '
             '"EdgeClient" class.')
 
     @abstractmethod
     def unsubscribe(self, topic):
-        """Unsubscribe to the desired topic.
+        """Unsubscribe from the desired topic.
 
-        Args:
-            topic (str): Topic name to unsubscribe to.
+        :param topic: Topic name to unsubscribe from.
+        :type topic: str
         """
         raise NotImplementedError('You must define "unsubscribe()" to use the '
             '"EdgeClient" class.')
@@ -101,10 +108,11 @@ class EdgeClient(object):
         Retrieve the device shadow JSON document from the cloud by publishing an
         empty JSON document to the corresponding shadow topics.
 
-        Args:
-            callback: Function to be called when the response for a shadow
-                request comes back.
-            timeout_s (int): Timeout in seconds to perform the request.
+        :param callback: Function to be called when the response for a shadow
+            request comes back.
+
+        :param timeout_s: Timeout in seconds to perform the request.
+        :type timeout_s: int
         """
         raise NotImplementedError('You must define "get_shadow()" to use the '
             '"EdgeClient" class.')
@@ -116,12 +124,15 @@ class EdgeClient(object):
         Update the device shadow JSON document string on the cloud by publishing
         the provided JSON document to the corresponding shadow topics.
 
-        Args:
-            payload (json): JSON document string used to update the shadow JSON
-                document on the cloud.
-            callback: Function to be called when the response for a shadow
-                request comes back.
-            timeout_s (int): Timeout in seconds to perform the request.
+        :param payload: JSON document string used to update the shadow JSON
+            document on the cloud.
+        :type payload: json
+
+        :param callback: Function to be called when the response for a shadow
+            request comes back.
+
+        :param timeout_s: Timeout in seconds to perform the request.
+        :type timeout_s: int
         """
         raise NotImplementedError('You must define "update_shadow()" to use the '
             '"EdgeClient" class.')
@@ -133,10 +144,11 @@ class EdgeClient(object):
         Delete the device shadow from the cloud by publishing an empty JSON
         document to the corresponding shadow topics.
 
-        Args:
-            callback: Function to be called when the response for a shadow
-                request comes back.
-            timeout_s (int): Timeout in seconds to perform the request.
+        :param callback: Function to be called when the response for a shadow
+            request comes back.
+
+        :param timeout_s: Timeout in seconds to perform the request.
+        :type timeout_s: int
         """
         raise NotImplementedError('You must define "delete_shadow()" to use the '
             '"EdgeClient" class.')
@@ -145,9 +157,8 @@ class EdgeClient(object):
     def add_listener(self, listener):
         """Add a listener.
         
-        Args:
-            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):
-                Listener to be added.
+        :param listener: Listener to be added.
+        :type listener: :class:`edge_st_sdk.edge_client.EdgeClientListener`
         """
         raise NotImplementedError('You must define "add_listener()" to use the '
             '"EdgeClient" class.')
@@ -156,9 +167,8 @@ class EdgeClient(object):
     def remove_listener(self, listener):
         """Remove a listener.
 
-        Args:
-            listener (:class:`edge_st_sdk.edge_client.EdgeClientListener`):
-                Listener to be removed.
+        :param listener: Listener to be removed.
+        :type listener: :class:`edge_st_sdk.edge_client.EdgeClientListener`
         """
         raise NotImplementedError('You must define "remove_listener()" to use '
             'the "EdgeClient" class.')
@@ -167,9 +177,8 @@ class EdgeClient(object):
     def _update_status(self, new_status):
         """Update the status of the client.
 
-        Args:
-            new_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): New
-                status.
+            :param new_status: New status.
+            :type new_status: :class:`edge_st_sdk.edge_client.EdgeClientStatus`
         """
         raise NotImplementedError('You must define "_update_client_status()" to '
             'use the "EdgeClient" class.')
@@ -209,16 +218,16 @@ class EdgeClientListener(object):
     def on_status_change(self, client, new_status, old_status):
         """To be called whenever a client changes its status.
 
-        Args:
-            client (:class:`edge_st_sdk.edge_client.EdgeClient): Client that has
-                changed its status.
-            new_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): New
-                status.
-            old_status (:class:`edge_st_sdk.edge_client.EdgeClientStatus`): Old
-                status.
+        :param client: Client that has changed its status.
+        :type client: :class:`edge_st_sdk.edge_client.EdgeClient`
 
-        Raises:
-            :exc:`NotImplementedError` if the method has not been implemented.
+        :param new_status: New status.
+        :type new_status: :class:`edge_st_sdk.edge_client.EdgeClientStatus`
+
+        :param old_status: Old status.
+        :type old_status: :class:`edge_st_sdk.edge_client.EdgeClientStatus`
+
+        :raises NotImplementedError`: if the method has not been implemented.
         """
         raise NotImplementedError('You must implement "on_status_change()" to '
                                   'use the "EdgeClientListener" class.')
