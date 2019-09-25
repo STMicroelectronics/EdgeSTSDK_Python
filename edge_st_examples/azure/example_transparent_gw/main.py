@@ -166,9 +166,11 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         print("Firmware description updated to: " + FIRMWARE_DESC_DICT[firmware_update_file])        
         reported_json = {
             "SupportedMethods": {
-                "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file"
+                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
+                    "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
             },
-            "AI": {                
+            "AI": {   
+                "firmware": firmware_status,             
                 firmware_status: FIRMWARE_DESC_DICT[firmware_update_file]
             },
             "State": {
@@ -196,8 +198,9 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         firmware_status = FIRMWARE_FILE_DICT[firmware_update_file]      
         reported_json = {
             "SupportedMethods": {
-                "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file"
-            },
+                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
+                    "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
+                },
             "AI": {
                 firmware_status: FIRMWARE_DESC_DICT[firmware_update_file]
             },
@@ -583,20 +586,24 @@ def main(protocol):
                         firmware = FirmwareFile(download_file)
                         # Now start FW update process using blue-stsdk-python interface
                         print("Starting upgrade now...")
-                        upgrade_console.upgrade_firmware(firmware)
+                        upgrade_console.upgrade_firmware(firmware)                        
 
                         reported_json = {
                                 "SupportedMethods": {
-                                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file"                
+                                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
+                                    "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
                                 },
                                 "AI": {
-                                    firmware_status: firmware_desc
+                                    "firmware": firmware_status,
+                                    "algorithms": algos_supported
                                 },
                                 "State": {
                                     "firmware-file": firmware_update_file,
                                     "fw_update": "running"
                                 }
                             }
+                        for fw, desc in firmware_desc.items():
+                            reported_json["AI"].update({fw:desc})
                         json_string = json.dumps(reported_json)
                         module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
                         print('sent reported properties...with status "running"')
