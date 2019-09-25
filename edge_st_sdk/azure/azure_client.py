@@ -43,7 +43,6 @@ from iothub_client import IoTHubClient, IoTHubModuleClient, IoTHubClientError, I
 from iothub_client import IoTHubMessage, IoTHubMessageDispositionResult, IoTHubError, DeviceMethodReturnValue
 
 from edge_st_sdk.edge_client import EdgeClient
-from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException, EdgeSTInvalidDataException
 from edge_st_sdk.azure.azure_utils import CallbackContext
 
 # CLASSES
@@ -141,6 +140,15 @@ class AzureModuleClient(EdgeClient):
             retval.status = 404
             retval.response = "{\"result\":\"failure\"}"
         return retval
+    
+    def add_listener(self, listener):
+        pass
+
+    def remove_listener(self, listener):
+        pass
+
+    def _update_status(self, new_status):
+        pass
 
 
     
@@ -258,5 +266,14 @@ class AzureDeviceClient(EdgeClient):
         retval.response = "{\"result\":\"success\"}"
         return retval
 
+    def add_listener(self, listener):
+        pass
+
+    def remove_listener(self, listener):
+        pass
+
+    def _update_status(self, new_status):
+        pass
+        
 
     
