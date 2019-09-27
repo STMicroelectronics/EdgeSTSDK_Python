@@ -161,9 +161,15 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         print('%d bytes out of %d sent...' % (bytes_sent, bytes_sent))
         print('Firmware upgrade completed. Device is rebooting...')
         # print('Firmware updated to: ' + firmware_file)
-        firmware_status = FIRMWARE_FILE_DICT[firmware_update_file]
+        if firmware_update_file.endswith('-_-_-_neural'):
+            __file = firmware_update_file.replace('_BL', '')[:-12] # Assuming '-_-_-_neural' is for partial fota files
+            print('binary file: file: ' + __file)
+            firmware_status = FIRMWARE_FILE_DICT[__file]
+        else:
+            __file = firmware_update_file
+            firmware_status = FIRMWARE_FILE_DICT[__file]
         print("Firmware status updated to: " + firmware_status)
-        print("Firmware description updated to: " + FIRMWARE_DESC_DICT[firmware_update_file])        
+        print("Firmware description updated to: " + FIRMWARE_DESC_DICT[__file])        
         reported_json = {
             "SupportedMethods": {
                     "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
@@ -171,7 +177,7 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
             },
             "AI": {   
                 "firmware": firmware_status,             
-                firmware_status: FIRMWARE_DESC_DICT[firmware_update_file]
+                firmware_status: FIRMWARE_DESC_DICT[__file]
             },
             "State": {
                 "firmware-file": firmware_update_file,
@@ -195,14 +201,19 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         global firmware_upgrade_completed
         global firmware_status, firmware_update_file
         print('Firmware upgrade error: %s.' % (str(error)))
-        firmware_status = FIRMWARE_FILE_DICT[firmware_update_file]      
+        if firmware_update_file.endswith('-_-_-_neural'):
+            __file = firmware_update_file.replace('_BL', '')[:-12] # Assuming '-_-_-_neural' is for partial fota files
+            firmware_status = FIRMWARE_FILE_DICT[__file]
+        else:
+            __file = firmware_update_file
+            firmware_status = FIRMWARE_FILE_DICT[__file]      
         reported_json = {
             "SupportedMethods": {
                     "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
                     "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
                 },
             "AI": {
-                firmware_status: FIRMWARE_DESC_DICT[firmware_update_file]
+                firmware_status: FIRMWARE_DESC_DICT[__file]
             },
             "State": {
                 "firmware-file": firmware_update_file,
