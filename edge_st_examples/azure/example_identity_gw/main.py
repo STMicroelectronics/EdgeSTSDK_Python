@@ -36,22 +36,6 @@ from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException
 # Firmware file paths.
 FIRMWARE_PATH = '/app/'
 FIRMWARE_EXTENSION = '.bin'
-FIRMWARE_FILENAMES = [
-    'SENSING1_ASC', \
-    'SENSING1_HAR_GMP', \
-    'SENSING1_HAR_IGN', \
-    'SENSING1_HAR_IGN_WSDM'
-]
-FIRMWARE_FILE_DICT = {  "SENSING1_ASC" + FIRMWARE_EXTENSION: "audio-classification",
-                        "SENSING1_HAR_GMP" + FIRMWARE_EXTENSION: "activity-recognition",
-                        "SENSING1_HAR_IGN" + FIRMWARE_EXTENSION: "activity-recognition",
-                        "SENSING1_HAR_IGN_WSDM" + FIRMWARE_EXTENSION: "activity-recognition"
-                        }
-FIRMWARE_DESC_DICT = {  "SENSING1_ASC" + FIRMWARE_EXTENSION: "in-door;out-door;in-vehicle",
-                        "SENSING1_HAR_GMP" + FIRMWARE_EXTENSION: "stationary;walking;jogging;biking;driving;stairs",
-                        "SENSING1_HAR_IGN" + FIRMWARE_EXTENSION: "stationary;walking;jogging;biking;driving;stairs",
-                        "SENSING1_HAR_IGN_WSDM" + FIRMWARE_EXTENSION: "stationary;walking;jogging;biking;driving;stairs"
-                        }
 
 BLE1_APPMOD_INPUT   = 'BLE1_App_Input'
 BLE1_APPMOD_OUTPUT  = 'BLE1_App_Output'
@@ -165,25 +149,12 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         global firmware_upgrade_completed
         global firmware_status, firmware_update_file
         print('Firmware upgrade completed. Device is rebooting...')
-        # print('Firmware updated to: ' + firmware_file)
-        if firmware_update_file.endswith('-_-_-_neural'):
-            __file = firmware_update_file.replace('_BL', '')[:-12] # Assuming '-_-_-_neural' is for partial fota files
-            print('binary file: file: ' + __file)
-            firmware_status = FIRMWARE_FILE_DICT[__file]
-        else:
-            __file = firmware_update_file
-            firmware_status = FIRMWARE_FILE_DICT[__file]
-        print("Firmware status updated to: " + firmware_status)
-        print("Firmware description updated to: " + FIRMWARE_DESC_DICT[__file])        
+                
         reported_json = {
             "SupportedMethods": {
                     "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
                     "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
-            },
-            "AI": {
-                "firmware": firmware_status,         
-                firmware_status: FIRMWARE_DESC_DICT[__file]
-            },
+            },            
             "State": {
                 "firmware-file": firmware_update_file,
                 "fw_update": "not_running",
@@ -203,23 +174,15 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
     # @param error         Error code.
     #
     def on_upgrade_firmware_error(self, debug_console, firmware_file, error):
-        global firmware_upgrade_completed
+        global firmware_upgrade_completed, fwup_error
         global firmware_status, firmware_update_file
         print('Firmware upgrade error: %s.' % (str(error)))
-        if firmware_update_file.endswith('-_-_-_neural'):
-            __file = firmware_update_file.replace('_BL', '')[:-12] # Assuming '-_-_-_neural' is for partial fota files
-            firmware_status = FIRMWARE_FILE_DICT[__file]
-        else:
-            __file = firmware_update_file
-            firmware_status = FIRMWARE_FILE_DICT[__file] 
+        
         reported_json = {
             "SupportedMethods": {
                     "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
                     "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
                 },
-            "AI": {
-                firmware_status: FIRMWARE_DESC_DICT[__file]
-            },
             "State": {
                 "firmware-file": firmware_update_file,
                 "fw_update": "not_running",
@@ -229,8 +192,12 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         json_string = json.dumps(reported_json)
         self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
         print('sent reported properties...with status "fail"')
-        time.sleep(5)
+        # time.sleep(5)
         firmware_upgrade_completed = True
+        fwup_error = True
+        # Exiting.
+        print('\nExiting...module will re-start\n')
+        sys.exit(0)
 
     #
     # To be called whenever there is an update in upgrading the firmware, i.e. a
@@ -422,7 +389,7 @@ def main(protocol):
         global firmware_update_file
         global firmware_desc
         global features, feature_listener, no_wait
-        global upgrade_console, upgrade_console_listener
+        global upgrade_console, upgrade_console_listener, fwup_error
         global AIAlgo_msg_completed, AI_msg
         global AI_AlgoNames, AI_console, setAIAlgo, algo_name, har_algo, start_algo
         
@@ -446,6 +413,7 @@ def main(protocol):
         firmware_upgrade_completed = False
         firmware_upgrade_started = False
         no_wait = False
+        fwup_error = False
         AIAlgo_msg_completed = False
         AI_msg = "None"
         AI_AlgoNames = {}
@@ -619,6 +587,18 @@ def main(protocol):
                         # Now start FW update process using blue-stsdk-python interface
                         print("Starting upgrade now...")
                         upgrade_console.upgrade_firmware(firmware)
+
+                        timeout = time.time() + 2 # wait for 2 seconds to see if there is any fwupdate error
+                        while True:
+                            if time.time() > timeout:
+                                print("no fw update error..going ahead")
+                                fwup_error = False # redundant
+                                break
+                            elif fwup_error:
+                                print("fw update error")
+                                break
+                        if fwup_error:
+                            break
 
                         reported_json = {
                                 "SupportedMethods": {
