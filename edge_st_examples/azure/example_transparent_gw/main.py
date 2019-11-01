@@ -81,9 +81,17 @@ PROTOCOL = IoTHubTransportProvider.MQTT
 class MyMessageListener(MessageListener):
     
     def on_message_send_complete(self, debug_console, msg, bytes_sent):
-        global AIAlgo_msg_completed, AI_msg        
-        AI_msg = msg
-        AIAlgo_msg_completed = True
+        global AIAlgo_msg_process, AIAlgo_msg_completed, AI_msg
+        
+        if msg == "\r\n" or msg == '\n': # ignore New Line reply
+            return
+        elif "NNconfidence" in msg: # ignore "NNconfidence = xx%" messages from the node
+            return
+        else:            
+            if AIAlgo_msg_process is True:
+                AIAlgo_msg_process = False
+                AI_msg = msg
+                AIAlgo_msg_completed = True
     
     def on_message_send_error(self, debug_console, msg, error):
         print("msg send error!")
@@ -190,6 +198,9 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         # time.sleep(5)
         firmware_upgrade_completed = True
         fwup_error = True
+        # Exiting.
+        print('\nExiting...module will re-start\n')
+        sys.exit(0)
 
     #
     # To be called whenever there is an update in upgrading the firmware, i.e. a
@@ -363,7 +374,7 @@ def main(protocol):
         # Global variables.
         global iot_device_1
         global iot_device_1_feature_switch
-        global iot_device_1_status
+        global iot_device_1_status            
         global firmware_upgrade_completed
         global firmware_upgrade_started
         global firmware_status
@@ -371,7 +382,7 @@ def main(protocol):
         global firmware_desc
         global features, feature_listener, no_wait
         global upgrade_console, upgrade_console_listener, fwup_error
-        global AIAlgo_msg_completed, AI_msg
+        global AIAlgo_msg_process, AIAlgo_msg_completed, AI_msg
         global AI_AlgoNames, AI_console, setAIAlgo, algo_name, har_algo, start_algo
         
         # initialize_client
@@ -390,9 +401,11 @@ def main(protocol):
         no_wait = False
         fwup_error = False
         AIAlgo_msg_completed = False
+        AIAlgo_msg_process = False
         AI_msg = "None"
         AI_AlgoNames = {}
         setAIAlgo = False
+        reboot = False
         iot_device_1_status = SwitchStatus.OFF
 
         print ( "Starting the FWModApp module using protocol MQTT...")
@@ -476,20 +489,22 @@ def main(protocol):
             AI_console = AIAlgos.get_console(device)
             AI_msg_listener = MyMessageListener()
             AI_console.add_listener(AI_msg_listener)
-            AI_console.getAIAlgos()
-
-            # Getting notifications about firmware upgrade process.
+            if reboot:
+                reboot = False
             timeout = time.time() + 10
+            AIAlgo_msg_process = True
+            AI_console.getAIAlgos()            
             while True:
                 if iot_device_1.wait_for_notifications(0.05):
                     continue
                 elif AIAlgo_msg_completed:
+                    AIAlgo_msg_completed=False
                     print("Algos received:" + AI_msg)                    
                     break
                 elif time.time() > timeout:
                     print("no response for AIAlgos cmd")
                     break
-
+            
             algos_supported = ''
             res = AI_msg.split(',')
             for t in range(len(res)):
@@ -549,6 +564,10 @@ def main(protocol):
                         continue
                     if no_wait:
                         no_wait = False
+
+                        print("Stopping all Algos")
+                        AI_console.stopAlgos()
+                        time.sleep(1)
 
                         iot_device_1.disable_notifications(feature)
                         feature.remove_listener(feature_listener)
@@ -616,6 +635,7 @@ def main(protocol):
                             print('Disconnection done.\n')
                             iot_device_1.remove_listener(node_listener)
                             print('waiting for device to reboot....')
+                            reboot = True
                             time.sleep(10)
                             print('after sleep...going to try to reconnect with device....')
                             break
@@ -624,6 +644,7 @@ def main(protocol):
                         # print("rcvd notification!")
                         continue
             except (OSError, ValueError) as e:
+                    print("program Exception!")
                     print(e)                           
 
     except BTLEException as e:
