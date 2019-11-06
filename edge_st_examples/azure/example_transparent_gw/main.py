@@ -116,15 +116,43 @@ class MyManagerListener(ManagerListener):
 
 class MyNodeListener(NodeListener):
 
+    def __init__(self, azureClient):
+        self.module_client = azureClient
+
     def on_connect(self, node):
         print('Device %s connected.' % (node.get_name()))
+                        
+        reported_json = {
+            "State": {
+                "ble_conn_status": "connected"
+            }
+        }
+        json_string = json.dumps(reported_json)
+        self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+        print('sent reported properties...with status "connected"')
+
 
     def on_disconnect(self, node, unexpected=False):
+        global iot_device_1
         print('Device %s disconnected%s.' % \
             (node.get_name(), ' unexpectedly' if unexpected else ''))
+
+        reported_json = {
+            "State": {
+                "ble_conn_status": "disconnected"
+            }
+        }
+        json_string = json.dumps(reported_json)
+        self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+        print('sent reported properties...with status "disconnected"')
+
         if unexpected:
+            #iot_device_1.remove_listener(node_listener)            
+            print('\nApp Disconnecting from %s...' % (iot_device_1.get_name()))
+            iot_device_1.disconnect()
+            print('Disconnection done.\n')
             # Exiting.
-            print('\nExiting...\n')
+            print('\non_disconnect Exiting...\n')
             sys.exit(0)
 
     def on_status_change(self, node, new_status, old_status):
@@ -454,7 +482,7 @@ def main(protocol):
             # Selecting a device.
             # Connecting to the devices.
             for device in devices:
-                node_listener = MyNodeListener()
+                node_listener = MyNodeListener(module_client)
                 device.add_listener(node_listener)
                 print('Connecting to %s...' % (device.get_name()))
                 device.connect()
@@ -497,14 +525,15 @@ def main(protocol):
             while True:
                 if iot_device_1.wait_for_notifications(0.05):
                     continue
-                elif AIAlgo_msg_completed:
-                    AIAlgo_msg_completed=False
+                elif AIAlgo_msg_completed:                    
                     print("Algos received:" + AI_msg)                    
                     break
-                elif time.time() > timeout:
+                elif time.time() > timeout:                    
                     print("no response for AIAlgos cmd")
                     break
-            
+            AIAlgo_msg_process = False
+            AIAlgo_msg_completed = False
+
             algos_supported = ''
             res = AI_msg.split(',')
             for t in range(len(res)):
@@ -649,7 +678,7 @@ def main(protocol):
 
     except BTLEException as e:
         print(e)
-        print('Exiting...\n')
+        print('BTLEException...Exiting...\n')
         sys.exit(0)        
     except IoTHubError as iothub_error:
         print ( "Unexpected error %s from IoTHub" % iothub_error )
