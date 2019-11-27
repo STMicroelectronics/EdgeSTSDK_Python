@@ -289,7 +289,7 @@
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Root Certification Authority certificate path &quot;</span><span class="si">%s</span><span class="s1">&quot; is not &#39;</span> \
                 <span class="s1">&#39;accessible.</span><span class="se">\r\n</span><span class="s1">&#39;</span> \
                 <span class="s1">&#39;Please run the application with </span><span class="se">\&quot;</span><span class="s1">sudo</span><span class="se">\&quot;</span><span class="s1">.&#39;</span> \
-                <span class="o">%</span> <span class="p">(</span><span class="n">device_certificate_path</span><span class="p">)</span>
+                <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_ca_path</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">EdgeSTInvalidDataException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">device_certificate_path</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Invalid device certificate path: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> \

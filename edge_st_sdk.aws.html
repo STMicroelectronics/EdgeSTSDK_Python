@@ -189,14 +189,14 @@ communication with AWS IoT.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the client, as it is on the cloud.</p></li>
-<li><p><strong>device_certificate_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the device’s
+<li><p><strong>client_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of the client, as it is on the cloud.</p></li>
+<li><p><strong>device_certificate_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Relative path of the device’s
 certificate stored on the core device.</p></li>
-<li><p><strong>device_private_key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the device’s private
+<li><p><strong>device_private_key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Relative path of the device’s private
 key stored on the core device.</p></li>
-<li><p><strong>group_ca_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of the certification authority’s
+<li><p><strong>group_ca_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Relative path of the certification authority’s
 certificate stored on the core device.</p></li>
-<li><p><strong>core_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – Information related to the core of the group to which
+<li><p><strong>core_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – Information related to the core of the group to which
 the client belongs.</p></li>
 </ul>
 </dd>
@@ -230,7 +230,7 @@ method.</p>
 <dd class="field-odd"><p>True if the connection was successful, False otherwise.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -246,7 +246,7 @@ document to the corresponding shadow topics.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</p></li>
-<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
+<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
 </ul>
 </dd>
 </dl>
@@ -267,7 +267,7 @@ request comes back.</p></li>
 <dd class="field-odd"><p>The client name, i.e. the name of the client.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -283,7 +283,7 @@ empty JSON document to the corresponding shadow topics.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</p></li>
-<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
+<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
 </ul>
 </dd>
 </dl>
@@ -297,9 +297,9 @@ service.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</p></li>
-<li><p><strong>payload</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Payload to publish (JSON formatted string).</p></li>
-<li><p><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</p></li>
+<li><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Topic name to publish to.</p></li>
+<li><p><strong>payload</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Payload to publish (JSON formatted string).</p></li>
+<li><p><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</p></li>
 </ul>
 </dd>
 </dl>
@@ -324,8 +324,8 @@ register a callback to handle the published messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</p></li>
-<li><p><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</p></li>
+<li><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Topic name to publish to.</p></li>
+<li><p><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</p></li>
 <li><p><strong>callback</strong> – Function to be called when a new message for the
 subscribed topic comes in.</p></li>
 </ul>
@@ -339,7 +339,7 @@ subscribed topic comes in.</p></li>
 <dd><p>Unsubscribe to the desired topic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to unsubscribe to.</p>
+<dd class="field-odd"><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Topic name to unsubscribe to.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -357,7 +357,7 @@ the provided JSON document to the corresponding shadow topics.</p>
 document on the cloud.</p></li>
 <li><p><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</p></li>
-<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
+<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
 </ul>
 </dd>
 </dl>
@@ -374,7 +374,7 @@ AWS devices and allocating the needed resources.</p>
 <dl class="class">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass">
 <em class="property">class </em><code class="sig-prename descclassname">edge_st_sdk.aws.aws_greengrass.</code><code class="sig-name descname">AWSGreengrass</code><span class="sig-paren">(</span><em class="sig-param">endpoint</em>, <em class="sig-param">root_ca_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="attribute">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrass.MAX_DISCOVERY_ATTEMPTS">
 <code class="sig-name descname">MAX_DISCOVERY_ATTEMPTS</code><em class="property"> = 3</em><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass.MAX_DISCOVERY_ATTEMPTS" title="Permalink to this definition">¶</a></dt>
@@ -389,8 +389,8 @@ AWS devices and allocating the needed resources.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>endpoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – AWS endpoint.</p></li>
-<li><p><strong>root_ca_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to the root Certification Authority file.</p></li>
+<li><p><strong>endpoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – AWS endpoint.</p></li>
+<li><p><strong>root_ca_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Path to the root Certification Authority file.</p></li>
 </ul>
 </dd>
 </dl>
@@ -416,7 +416,7 @@ AWS devices and allocating the needed resources.</p>
 <dd class="field-odd"><p>True if the discovery process has completed, False otherwise.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -428,10 +428,10 @@ AWS devices and allocating the needed resources.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the client, as it is on the cloud.</p></li>
-<li><p><strong>device_certificate_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of a device’s
+<li><p><strong>client_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of the client, as it is on the cloud.</p></li>
+<li><p><strong>device_certificate_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Relative path of a device’s
 certificate stored on the core device.</p></li>
-<li><p><strong>device_private_key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Relative path of a device’s
+<li><p><strong>device_private_key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Relative path of a device’s
 private key stored on the core device.</p></li>
 </ul>
 </dd>
@@ -474,7 +474,7 @@ data is provided.</p></li>
 <dl class="class">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener">
 <em class="property">class </em><code class="sig-prename descclassname">edge_st_sdk.aws.aws_greengrass.</code><code class="sig-name descname">AWSGreengrassListener</code><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrassListener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassListener" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Interface used by the
 <a class="reference internal" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrass" title="edge_st_sdk.aws.aws_greengrass.AWSGreengrass"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.aws.aws_greengrass.AWSGreengrass</span></code></a> class to notify
 changes of an AWS Greengrass service’s status.</p>
@@ -492,7 +492,7 @@ status.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.7)"><strong>NotImplementedError</strong></a> – if the method has not been implemented.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.8)"><strong>NotImplementedError</strong></a> – if the method has not been implemented.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -502,7 +502,7 @@ status.</p></li>
 <dl class="class">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus">
 <em class="property">class </em><code class="sig-prename descclassname">edge_st_sdk.aws.aws_greengrass.</code><code class="sig-name descname">AWSGreengrassStatus</code><a class="reference internal" href="_modules/edge_st_sdk/aws/aws_greengrass.html#AWSGreengrassStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
 <p>Status of the AWS Greengrass service.</p>
 <dl class="attribute">
 <dt id="edge_st_sdk.aws.aws_greengrass.AWSGreengrassStatus.CORE_DISCOVERED">

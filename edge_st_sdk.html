@@ -189,7 +189,7 @@
 <dl class="class">
 <dt id="edge_st_sdk.edge_client.EdgeClient">
 <em class="property">class </em><code class="sig-prename descclassname">edge_st_sdk.edge_client.</code><code class="sig-name descname">EdgeClient</code><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>The EdgeClient class is an interface for creating edge client classes.</p>
 <dl class="method">
 <dt id="edge_st_sdk.edge_client.EdgeClient.add_listener">
@@ -219,7 +219,7 @@ document to the corresponding shadow topics.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</p></li>
-<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
+<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
 </ul>
 </dd>
 </dl>
@@ -242,7 +242,7 @@ empty JSON document to the corresponding shadow topics.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</p></li>
-<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
+<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
 </ul>
 </dd>
 </dl>
@@ -256,9 +256,9 @@ service.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</p></li>
-<li><p><strong>payload</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Payload to publish (JSON formatted string).</p></li>
-<li><p><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</p></li>
+<li><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Topic name to publish to.</p></li>
+<li><p><strong>payload</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Payload to publish (JSON formatted string).</p></li>
+<li><p><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</p></li>
 </ul>
 </dd>
 </dl>
@@ -283,8 +283,8 @@ register a callback to handle the published messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to publish to.</p></li>
-<li><p><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</p></li>
+<li><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Topic name to publish to.</p></li>
+<li><p><strong>qos</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Quality of Service. Could be “0” or “1”.</p></li>
 <li><p><strong>callback</strong> – Function to be called when a new message for the
 subscribed topic comes in.</p></li>
 </ul>
@@ -298,7 +298,7 @@ subscribed topic comes in.</p></li>
 <dd><p>Unsubscribe from the desired topic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Topic name to unsubscribe from.</p>
+<dd class="field-odd"><p><strong>topic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Topic name to unsubscribe from.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -316,7 +316,7 @@ the provided JSON document to the corresponding shadow topics.</p>
 document on the cloud.</p></li>
 <li><p><strong>callback</strong> – Function to be called when the response for a shadow
 request comes back.</p></li>
-<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
+<li><p><strong>timeout_s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Timeout in seconds to perform the request.</p></li>
 </ul>
 </dd>
 </dl>
@@ -327,7 +327,7 @@ request comes back.</p></li>
 <dl class="class">
 <dt id="edge_st_sdk.edge_client.EdgeClientListener">
 <em class="property">class </em><code class="sig-prename descclassname">edge_st_sdk.edge_client.</code><code class="sig-name descname">EdgeClientListener</code><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClientListener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientListener" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Interface used by the <a class="reference internal" href="#edge_st_sdk.edge_client.EdgeClient" title="edge_st_sdk.edge_client.EdgeClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">edge_st_sdk.edge_client.EdgeClient</span></code></a> class
 to notify changes of a client’s status.</p>
 <dl class="method">
@@ -353,7 +353,7 @@ to notify changes of a client’s status.</p>
 <dl class="class">
 <dt id="edge_st_sdk.edge_client.EdgeClientStatus">
 <em class="property">class </em><code class="sig-prename descclassname">edge_st_sdk.edge_client.</code><code class="sig-name descname">EdgeClientStatus</code><a class="reference internal" href="_modules/edge_st_sdk/edge_client.html#EdgeClientStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#edge_st_sdk.edge_client.EdgeClientStatus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
 <p>Status of the client.</p>
 <dl class="attribute">
 <dt id="edge_st_sdk.edge_client.EdgeClientStatus.CONNECTED">
