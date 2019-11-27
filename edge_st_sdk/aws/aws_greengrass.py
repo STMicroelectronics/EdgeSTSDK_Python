@@ -144,7 +144,7 @@ class AWSGreengrass(object):
             msg = '\nRoot Certification Authority certificate path "%s" is not ' \
                 'accessible.\r\n' \
                 'Please run the application with \"sudo\".' \
-                % (device_certificate_path)
+                % (self._root_ca_path)
             raise EdgeSTInvalidDataException(msg)
         if not os.path.exists(device_certificate_path):
             msg = '\nInvalid device certificate path: "%s"' \
