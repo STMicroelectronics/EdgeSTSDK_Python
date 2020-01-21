@@ -489,7 +489,7 @@ def main(protocol):
                 print('Connection done.')
 
             # Getting features.
-            print('\nFeatures:')
+            print('\nAvailable Features on connected node:')
             i = 1
             features = []
             ai_fw_running = ""
@@ -521,12 +521,12 @@ def main(protocol):
                 reboot = False
             timeout = time.time() + 10
             AIAlgo_msg_process = True
-            AI_console.getAIAlgos()            
+            AI_console.getAIAllAlgoDetails()
             while True:
                 if iot_device_1.wait_for_notifications(0.05):
                     continue
                 elif AIAlgo_msg_completed:                    
-                    print("Algos received:" + AI_msg)                    
+                    print("Algos received:" + AI_msg)
                     break
                 elif time.time() > timeout:                    
                     print("no response for AIAlgos cmd")
@@ -535,17 +535,17 @@ def main(protocol):
             AIAlgo_msg_completed = False
 
             algos_supported = ''
-            res = AI_msg.split(',')
+            res = AI_msg.split('\n')
             for t in range(len(res)):
+                if res[t] == '':
+                    continue
+                algos_supported += res[t]
+                algos_supported += ';'
+
                 __har = res[t].split('-')
                 if len(__har) > 1:
-                    _algo = __har[1].strip()
-                else:
-                    continue
-                AI_AlgoNames[_algo] = t+1
-                algos_supported+=_algo
-                if t != (len(res) - 1):
-                    algos_supported+=';'
+                    _algo = __har[0].strip()
+                    AI_AlgoNames[_algo] = t+1
 
             firmware_status = ai_fw_running
             print("firmware reported by module twin: " + firmware_status)
