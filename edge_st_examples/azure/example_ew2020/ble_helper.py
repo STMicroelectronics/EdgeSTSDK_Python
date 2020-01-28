@@ -11,6 +11,9 @@ from blue_st_sdk.firmware_upgrade.utils.firmware_file import FirmwareFile
 from blue_st_sdk.features.feature_activity_recognition import ActivityType as act
 from blue_st_sdk.features.feature_audio_scene_classification import SceneType as scene
 
+def extract_algo_details(node, _timeout = 10):
+    return algos_supported, AI_AlgoNames
+
 def extract_ai_features_from_node(node):
     i = 1
     features = []

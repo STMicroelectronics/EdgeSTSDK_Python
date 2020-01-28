@@ -32,12 +32,16 @@ from blue_st_sdk.ai_algos.ai_algos import AIAlgos, AIAlgosDebugConsoleListener
 from blue_st_sdk.utils.message_listener import MessageListener
 from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException, EdgeSTInvalidDataException
 
+from ble_helper import *
+
 # Firmware file paths.
 FIRMWARE_PATH = '/app/'
 FIRMWARE_EXTENSION = '.bin'
 
 BLE1_APPMOD_INPUT   = 'BLE1_App_Input'
 BLE1_APPMOD_OUTPUT  = 'BLE1_App_Output'
+BLE2_APPMOD_INPUT   = 'BLE2_App_Input'
+BLE2_APPMOD_OUTPUT  = 'BLE2_App_Output'
 
 class simple_utc(tzinfo):
     def tzname(self,**kwargs):
@@ -54,7 +58,8 @@ class SwitchStatus(Enum):
 SCANNING_TIME_s = 5
 
 # Read BLE devices' MAC address from env var with default given
-IOT_DEVICE_1_MAC = os.getenv('MAC_ADDR','e3:60:e4:79:91:94')
+IOT_DEVICE_1_MAC = os.getenv('MAC_ADDR1','e3:60:e4:79:91:94')
+IOT_DEVICE_2_MAC = os.getenv('MAC_ADDR2','ce:61:6b:61:53:c9')
 
 MODULE_NAME = os.getenv('MODULE_NAME','modaievtapp')
 DEVICEID = os.environ["IOTEDGE_DEVICEID"]
@@ -78,11 +83,11 @@ PROTOCOL = IoTHubTransportProvider.MQTT
 # Implementation of the interface used by the MessageListener class to notify
 # message rcv and send completion.
 #
-class MyMessageListener(MessageListener):
+class MyMessageListener1(MessageListener):
     
     def on_message_send_complete(self, debug_console, msg, bytes_sent):
         global AIAlgo_msg_process, AIAlgo_msg_completed, AI_msg
-        
+        #print("\nmsg listener 1\n")
         if msg == "\r\n" or msg == '\n': # ignore New Line reply
             return
         elif "NNconfidence" in msg: # ignore "NNconfidence = xx%" messages from the node
@@ -102,6 +107,33 @@ class MyMessageListener(MessageListener):
     def on_message_rcv_error(self, debug_console, msg, error):
         print("msg rcv error!")
 
+#
+# Implementation of the interface used by the MessageListener class to notify
+# message rcv and send completion.
+#
+class MyMessageListener2(MessageListener):
+    
+    def on_message_send_complete(self, debug_console, msg, bytes_sent):
+        global AIAlgo_msg_process, AIAlgo_msg_completed, AI_msg
+        #print("\nmsg listener 2\n")
+        if msg == "\r\n" or msg == '\n': # ignore New Line reply
+            return
+        elif "NNconfidence" in msg: # ignore "NNconfidence = xx%" messages from the node
+            return
+        else:            
+            if AIAlgo_msg_process is True:
+                AIAlgo_msg_process = False
+                AI_msg = msg
+                AIAlgo_msg_completed = True
+    
+    def on_message_send_error(self, debug_console, msg, error):
+        print("msg send error!")
+
+    def on_message_rcv_complete(self, debug_console, msg, bytes_sent):
+        print("msg rcv complete!")
+    
+    def on_message_rcv_error(self, debug_console, msg, error):
+        print("msg rcv error!")
 
 class MyManagerListener(ManagerListener):
 
@@ -148,8 +180,8 @@ class MyNodeListener(NodeListener):
 
         if unexpected:
             #iot_device_1.remove_listener(node_listener)            
-            print('\nApp Disconnecting from %s...' % (iot_device_1.get_name()))
-            iot_device_1.disconnect()
+            print('\nApp Disconnecting from %s...' % (node.get_name()))
+            node.disconnect()
             print('Disconnection done.\n')
             # Exiting.
             print('\non_disconnect Exiting...\n')
@@ -166,8 +198,9 @@ class MyNodeListener(NodeListener):
 #
 class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
 
-    def __init__(self, azureClient):
+    def __init__(self, azureClient, node):
         self.module_client = azureClient
+        self.device = node
 
     #
     # To be called whenever the firmware has been upgraded correctly.
@@ -178,6 +211,7 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
     def on_upgrade_firmware_complete(self, debug_console, firmware_file, bytes_sent):
         global firmware_upgrade_completed
         global firmware_status, firmware_update_file
+        print('Device %s FW Upgrade complete.' % (self.device.get_name()))
         print('%d bytes out of %d sent...' % (bytes_sent, bytes_sent))
         print('Firmware upgrade completed. Device is rebooting...')
                 
@@ -245,15 +279,17 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
 
 
 # This function will be called every time a method request for firmware update is received
-def firmwareUpdate(method_name, payload, hubManager): 
-    global firmware_update_file, update_task
+def firmwareUpdate(method_name, payload, hubManager):
+    global firmware_update_file, update_task, update_node
     print('received method call:')
     print('\tmethod name:', method_name)
     print('\tpayload:', payload)
     json_dict = json.loads(payload)
     print ('\nURL to download from:')
     url = json_dict['FwPackageUri']
+    update_node = json_dict['node']
     print (url)
+    print ('update_node: ' + str(update_node))
     filename = url[url.rfind("/")+1:]
     firmware_update_file = filename
     print (filename)
@@ -287,8 +323,9 @@ class MyFeatureListener(FeatureListener):
 
     num = 0
     
-    def __init__(self, azureClient):
+    def __init__(self, azureClient, node):
         self.module_client = azureClient
+        self.device = node
 
     def on_update(self, feature, sample):        
         print("feature listener: onUpdate")        
@@ -333,13 +370,17 @@ class MyFeatureListener(FeatureListener):
         event_json = {
             "deviceId": DEVICEID,
             "moduleId": MODULEID,
+            "nodeId": self.device.get_name(),
             "aiEventType": aiEventType,
             "aiEvent": aiEvent,
             "ts": event_timestamp.replace(tzinfo=simple_utc()).isoformat().replace('+00:00', 'Z')
         }
         json_string = json.dumps(event_json)
         print(json_string)
-        self.module_client.publish(BLE1_APPMOD_OUTPUT, json_string, send_confirmation_callback, 0)
+        if self.device.get_tag() == IOT_DEVICE_1_MAC:
+            self.module_client.publish(BLE1_APPMOD_OUTPUT, json_string, send_confirmation_callback, 0)
+        elif self.device.get_tag() == IOT_DEVICE_2_MAC:
+            self.module_client.publish(BLE2_APPMOD_OUTPUT, json_string, send_confirmation_callback, 0)
         self.num += 1
 
 def download_update(url, filename):
@@ -377,9 +418,17 @@ def receive_ble1_message_callback(message, context):
     message_buffer = message.get_bytearray()
     size = len(message_buffer)
     message_text = message_buffer[:size].decode('utf-8')
-    data = message_text.split()[3]
-    print('\nble1 receive msg cb << message: \n')
+    #data = message_text.split()[3]
+    print('\nble1 receive msg cb << message: \n' + message_text)
 
+def receive_ble2_message_callback(message, context):
+    global RECEIVE_CALLBACKS
+    # Getting value.
+    message_buffer = message.get_bytearray()
+    size = len(message_buffer)
+    message_text = message_buffer[:size].decode('utf-8')
+    #data = message_text.split()[3]
+    print('\nble2 receive msg cb << message: \n' + message_text)
 
 # module_twin_callback is invoked when the module twin's desired properties are updated.
 def module_twin_callback(update_state, payload, context):
@@ -397,19 +446,18 @@ def send_reported_state_callback(status_code, context):
 def main(protocol):   
 
     try:
+        print ( "\nSTM32MP1 module EW2020\n")
         print ( "\nPython %s\n" % sys.version )
 
         # Global variables.
-        global iot_device_1
-        global iot_device_1_feature_switch
-        global iot_device_1_status            
+        global iot_device_1, iot_device_2        
         global firmware_upgrade_completed
         global firmware_upgrade_started
         global firmware_status
         global firmware_update_file
         global firmware_desc
-        global features, feature_listener, no_wait
-        global upgrade_console, upgrade_console_listener, fwup_error
+        global features1, features2, feature_listener1, feature_listener2, feature_listeners1, feature_listeners2, no_wait
+        global upgrade_console, upgrade_console_listener, fwup_error, update_node
         global AIAlgo_msg_process, AIAlgo_msg_completed, AI_msg
         global AI_AlgoNames, AI_console, setAIAlgo, algo_name, har_algo, start_algo
         
@@ -422,6 +470,7 @@ def main(protocol):
         module_client.set_module_method_callback(firmwareUpdate, module_client)      
         module_client.set_module_method_callback(selectAIAlgorithm, module_client)  
         module_client.subscribe(BLE1_APPMOD_INPUT, receive_ble1_message_callback, module_client)        
+        module_client.subscribe(BLE2_APPMOD_INPUT, receive_ble2_message_callback, module_client)
 
         # Initial state.
         firmware_upgrade_completed = False
@@ -434,7 +483,9 @@ def main(protocol):
         AI_AlgoNames = {}
         setAIAlgo = False
         reboot = False
-        iot_device_1_status = SwitchStatus.OFF
+        update_node = None
+        feature_listeners1 = []
+        feature_listeners2 = []
 
         print ( "Starting the FWModApp module using protocol MQTT...")
         print ( "This module implements a direct method to be invoked from backend or other modules as required")
@@ -465,63 +516,59 @@ def main(protocol):
                     # Checking discovered devices.
                     devices = []
                     dev_found = False
-                    i = 1
+                    i = 1 # this is just to print the number of the devices discovered
                     for discovered in discovered_devices:
-                        device_name = discovered.get_name()
                         print('%d) %s: [%s]' % (i, discovered.get_name(), discovered.get_tag()))
                         if discovered.get_tag() == IOT_DEVICE_1_MAC:
                             iot_device_1 = discovered
                             devices.append(iot_device_1)
-                            print("IOT_DEVICE device found!")
+                            print("IOT_DEVICE 1 device found!")
+                        elif discovered.get_tag() == IOT_DEVICE_2_MAC:
+                            iot_device_2 = discovered
+                            devices.append(iot_device_2)
+                            print("IOT_DEVICE 2 device found!")
+                        if len(devices) == 2:
                             dev_found = True
                             break
                         i += 1
                     if dev_found is True:
                         break
 
+            connected_nodes = ''
+            node_listeners = []
             # Selecting a device.
             # Connecting to the devices.
             for device in devices:
                 node_listener = MyNodeListener(module_client)
                 device.add_listener(node_listener)
+                node_listeners.append(node_listener)
                 print('Connecting to %s...' % (device.get_name()))
                 device.connect()
                 print('Connection done.')
+                connected_nodes += device.get_name()
+                connected_nodes += ';'
 
             # Getting features.
-            print('\nAvailable Features on connected node:')
+            print('\nAvailable Features on connected node 1:')
             i = 1
-            features = []
-            ai_fw_running = ""
-            firmware_desc = {}
-            for desired_feature in [
-                feature_audio_scene_classification.FeatureAudioSceneClassification,
-                feature_activity_recognition.FeatureActivityRecognition]:
-                feature = iot_device_1.get_feature(desired_feature)
-                if feature:
-                    features.append(feature)
-                    print('%d) %s' % (i, feature.get_name()))
-                    if i == 2:
-                        ai_fw_running += ';'
-                    if feature.get_name() == "Activity Recognition":
-                        ai_fw_running += "activity-recognition"
-                        firmware_desc["activity-recognition"] = "stationary;walking;jogging;biking;driving;stairs"
-                    elif feature.get_name() == "Audio Scene Classification":
-                        ai_fw_running += "audio-classification"
-                        firmware_desc["audio-classification"] = "in-door;out-door;in-vehicle"                    
-                    i += 1
-            if not features:
-                print('No features found.')
-            print('%d) Firmware upgrade' % (i))
+            features1, ai_fw_running1, firmware_desc1 = extract_ai_features_from_node(iot_device_1)            
+            print('\nAvailable Features on connected node 2:')
+            features2, ai_fw_running2, firmware_desc2 = extract_ai_features_from_node(iot_device_2)
+            
+            AI_console1 = AIAlgos.get_console(iot_device_1)
+            AI_msg_listener1 = MyMessageListener1()
+            AI_console1.add_listener(AI_msg_listener1)
 
-            AI_console = AIAlgos.get_console(device)
-            AI_msg_listener = MyMessageListener()
-            AI_console.add_listener(AI_msg_listener)
+            AI_console2 = AIAlgos.get_console(iot_device_2)
+            AI_msg_listener2 = MyMessageListener2()
+            AI_console2.add_listener(AI_msg_listener2)
+
             if reboot:
                 reboot = False
+            
             timeout = time.time() + 10
             AIAlgo_msg_process = True
-            AI_console.getAIAllAlgoDetails()
+            AI_console1.getAIAllAlgoDetails()
             while True:
                 if iot_device_1.wait_for_notifications(0.05):
                     continue
@@ -547,7 +594,7 @@ def main(protocol):
                     _algo = __har[0].strip()
                     AI_AlgoNames[_algo] = t+1
 
-            firmware_status = ai_fw_running
+            firmware_status = ai_fw_running1
             print("firmware reported by module twin: " + firmware_status)
             reported_json = {
                 "SupportedMethods": {
@@ -556,31 +603,44 @@ def main(protocol):
                 },
                 "AI": {
                     "firmware": firmware_status,
-                    "algorithms": algos_supported
+                    "algorithms": algos_supported,
+                    "nodes": connected_nodes
                 },
                 "State": {
                     "fw_update": "Not_Running"
                 }
             }
-            for fw, desc in firmware_desc.items():
+            for fw, desc in firmware_desc1.items():
                 reported_json["AI"].update({fw:desc})
             json_string = json.dumps(reported_json)
             module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
-            print('sent reported properties...')                
+            print('sent reported properties...')
 
             # Getting notifications about firmware events
             print('\nWaiting for event notifications...\n')        
             # feature = features[0]
 
-            # Enabling notifications.
-            upgrade_console = FirmwareUpgradeNucleo.get_console(iot_device_1)
-            upgrade_console_listener = MyFirmwareUpgradeListener(module_client)
-            upgrade_console.add_listener(upgrade_console_listener)
+            # Enabling firmware upgrade notifications for device 1.
+            upgrade_console1 = FirmwareUpgradeNucleo.get_console(iot_device_1)
+            upgrade_console_listener1 = MyFirmwareUpgradeListener(module_client, iot_device_1)
+            upgrade_console1.add_listener(upgrade_console_listener1)
 
-            for feature in features:
-                feature_listener = MyFeatureListener(module_client)
+            # Enabling firmware upgrade notifications for device 2.
+            upgrade_console2 = FirmwareUpgradeNucleo.get_console(iot_device_2)
+            upgrade_console_listener2 = MyFirmwareUpgradeListener(module_client, iot_device_2)
+            upgrade_console2.add_listener(upgrade_console_listener2)
+
+            for feature in features1:
+                feature_listener = MyFeatureListener(module_client, iot_device_1)
                 feature.add_listener(feature_listener)
+                feature_listeners1.append(feature_listener)
                 iot_device_1.enable_notifications(feature)
+
+            for feature in features2:
+                feature_listener = MyFeatureListener(module_client, iot_device_2)
+                feature.add_listener(feature_listener)
+                feature_listeners2.append(feature_listener)
+                iot_device_2.enable_notifications(feature)
 
             # Demo running.
             print('\nDemo running (\"CTRL+C\" to quit)...\n')        
@@ -589,40 +649,32 @@ def main(protocol):
                 while True:
                     if setAIAlgo:
                         setAIAlgo = False
-                        AI_console.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
+                        AI_console1.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
                         continue
                     if no_wait:
                         no_wait = False
+                        # print('update node:' + update_node)
+                        if update_node and update_node == iot_device_1.get_name():
+                            print("prep'ing device 1")
+                            prepare_listeners_for_fwupdate(iot_device_1, features1, feature_listeners1, AI_console1, 
+                                                        upgrade_console_listener1, upgrade_console1)
+                        elif update_node and update_node == iot_device_2.get_name():
+                            print("prep'ing device 2")
+                            prepare_listeners_for_fwupdate(iot_device_2, features2, feature_listeners2, AI_console2, 
+                                                        upgrade_console_listener2, upgrade_console2)
 
-                        print("Stopping all Algos")
-                        AI_console.stopAlgos()
-                        time.sleep(1)
-
-                        iot_device_1.disable_notifications(feature)
-                        feature.remove_listener(feature_listener)
-                        upgrade_console.add_listener(upgrade_console_listener)
-
-                        download_file = "/app/" + firmware_update_file
-                        print('\nStarting process to upgrade firmware...File: ' + download_file)
                         firmware_upgrade_completed = False
                         firmware_upgrade_started = True
 
-                        firmware = FirmwareFile(download_file)
-                        # Now start FW update process using blue-stsdk-python interface
-                        print("Starting upgrade now...")
-                        upgrade_console.upgrade_firmware(firmware)                        
+                        if update_node and update_node == iot_device_1.get_name():
+                            print("updating device 1")
+                            if not start_device_fwupdate(upgrade_console1, firmware_update_file, fwup_error):
+                                break
+                        elif update_node and update_node == iot_device_2.get_name():
+                            print("updating device 2")
+                            if not start_device_fwupdate(upgrade_console2, firmware_update_file, fwup_error):
+                                break
 
-                        timeout = time.time() + 2 # wait for 2 seconds to see if there is any fwupdate error
-                        while True:
-                            if time.time() > timeout:
-                                print("no fw update error..going ahead")
-                                fwup_error = False # redundant
-                                break
-                            elif fwup_error:
-                                print("fw update error")
-                                break
-                        if fwup_error:
-                            break
 
                         reported_json = {
                                 "SupportedMethods": {
@@ -638,37 +690,47 @@ def main(protocol):
                                     "fw_update": "running"
                                 }
                             }
-                        for fw, desc in firmware_desc.items():
+                        for fw, desc in firmware_desc1.items():
                             reported_json["AI"].update({fw:desc})
                         json_string = json.dumps(reported_json)
                         module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
                         print('sent reported properties...with status "running"')
 
                         while not firmware_upgrade_completed:
-                            if iot_device_1.wait_for_notifications(0.05):
+                            if iot_device_1.wait_for_notifications(0.05) or iot_device_2.wait_for_notifications(0.05):
                                 continue
-                        print('firmware upgrade completed...going to re-add feature listener and disconnect from device...')
+                        print('firmware upgrade completed...going to disconnect from device...')
                         continue
 
                     if firmware_upgrade_started:
                         if firmware_upgrade_completed:
-                            upgrade_console.remove_listener(upgrade_console_listener)
-                            feature.add_listener(feature_listener)
-                            iot_device_1.enable_notifications(feature)                    
+                            upgrade_console1.remove_listener(upgrade_console_listener1)
+                            upgrade_console2.remove_listener(upgrade_console_listener2)
+
+                            for idx, feature in enumerate(features1):
+                                feature_listener = feature_listeners1[idx]
+                                feature.remove_listener(feature_listener)
+                                iot_device_1.disable_notifications(feature)
+                            for idx, feature in enumerate(features2):
+                                feature_listener = feature_listeners2[idx]
+                                feature.remove_listener(feature_listener)
+                                iot_device_2.disable_notifications(feature)
+                                              
                             firmware_upgrade_completed = False
                             firmware_upgrade_started = False
 
                             # Disconnecting from the device.                            
-                            print('\nApp Disconnecting from %s...' % (iot_device_1.get_name()))
-                            iot_device_1.disconnect()
+                            for idx, device in enumerate(devices):
+                                print('\nApp Disconnecting from %s...' % (device.get_name()))                           
+                                device.remove_listener(node_listeners[idx])
+                                device.disconnect()
                             print('Disconnection done.\n')
-                            iot_device_1.remove_listener(node_listener)
                             print('waiting for device to reboot....')
                             reboot = True
                             time.sleep(10)
                             print('after sleep...going to try to reconnect with device....')
                             break
-                    if iot_device_1.wait_for_notifications(0.05):
+                    if iot_device_1.wait_for_notifications(0.05) or iot_device_2.wait_for_notifications(0.05):
                         # time.sleep(2) # workaround for Unexpected Response Issue
                         # print("rcvd notification!")
                         continue
