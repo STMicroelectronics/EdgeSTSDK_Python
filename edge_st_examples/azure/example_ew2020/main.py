@@ -155,10 +155,15 @@ class MyNodeListener(NodeListener):
         print('Device %s connected.' % (node.get_name()))
                         
         reported_json = {
-            "State": {
-                "ble_conn_status": "connected"
+                "devices": {
+                    node.get_name(): {
+                        "State": {
+                            "ble_conn_status": "connected"
+                        }
+                }
             }
         }
+
         json_string = json.dumps(reported_json)
         self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
         print('sent reported properties...with status "connected"')
@@ -170,8 +175,12 @@ class MyNodeListener(NodeListener):
             (node.get_name(), ' unexpectedly' if unexpected else ''))
 
         reported_json = {
-            "State": {
-                "ble_conn_status": "disconnected"
+                "devices": {
+                    node.get_name(): {
+                        "State": {
+                            "ble_conn_status": "disconnected"
+                        }
+                }
             }
         }
         json_string = json.dumps(reported_json)
@@ -214,18 +223,19 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         print('Device %s FW Upgrade complete.' % (self.device.get_name()))
         print('%d bytes out of %d sent...' % (bytes_sent, bytes_sent))
         print('Firmware upgrade completed. Device is rebooting...')
-                
+        
         reported_json = {
-            "SupportedMethods": {
-                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
-                    "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
-            },
-            "State": {
-                "firmware-file": firmware_update_file,
-                "fw_update": "not_running",
-                "last_fw_update": "success"
+                "devices": {
+                    self.device.get_name(): {
+                        "State": {
+                            "firmware-file": firmware_update_file,
+                            "fw_update": "not_running",
+                            "last_fw_update": "success"
+                        }
+                }
             }
         }
+        
         json_string = json.dumps(reported_json)
         self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
         print('sent reported properties...with status "success"')
@@ -244,16 +254,17 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         print('Firmware upgrade error: %s.' % (str(error)))
         
         reported_json = {
-            "SupportedMethods": {
-                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
-                    "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
-                },
-            "State": {
-                "firmware-file": firmware_update_file,
-                "fw_update": "not_running",
-                "last_fw_update": "failed"
+                "devices": {
+                    self.device.get_name(): {
+                        "State": {
+                            "firmware-file": firmware_update_file,
+                            "fw_update": "not_running",
+                            "last_fw_update": "failed"
+                        }
+                }
             }
         }
+
         json_string = json.dumps(reported_json)
         self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
         print('sent reported properties...with status "fail"')
@@ -581,37 +592,15 @@ def main(protocol):
             AIAlgo_msg_process = False
             AIAlgo_msg_completed = False
 
-            algos_supported = ''
-            res = AI_msg.split('\n')
-            for t in range(len(res)):
-                if res[t] == '':
-                    continue
-                algos_supported += res[t]
-                algos_supported += ';'
-
-                __har = res[t].split('-')
-                if len(__har) > 1:
-                    _algo = __har[0].strip()
-                    AI_AlgoNames[_algo] = t+1
+            algos_supported, AI_AlgoNames = extract_algo_details(AI_msg)
 
             firmware_status = ai_fw_running1
-            print("firmware reported by module twin: " + firmware_status)
-            reported_json = {
-                "SupportedMethods": {
-                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
-                    "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
-                },
-                "AI": {
-                    "firmware": firmware_status,
-                    "algorithms": algos_supported,
-                    "nodes": connected_nodes
-                },
-                "State": {
-                    "fw_update": "Not_Running"
-                }
-            }
-            for fw, desc in firmware_desc1.items():
-                reported_json["AI"].update({fw:desc})
+            print("firmware reported by node: " + ai_fw_running1)
+            reported_json = compile_reported_props_from_node(devices[0].get_name(), ai_fw_running1, firmware_desc1, algos_supported)
+            # FIXME we are using the same algos_supported of device 1 for device 2.
+            _reported_json = compile_reported_props_from_node(devices[1].get_name(), ai_fw_running2, firmware_desc2, algos_supported)
+            reported_json["devices"].update(_reported_json["devices"])
+
             json_string = json.dumps(reported_json)
             module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
             print('sent reported properties...')
@@ -675,23 +664,17 @@ def main(protocol):
                             if not start_device_fwupdate(upgrade_console2, firmware_update_file, fwup_error):
                                 break
 
-
                         reported_json = {
-                                "SupportedMethods": {
-                                    "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
-                                    "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
-                                },
-                                "AI": {
-                                    "firmware": firmware_status,
-                                    "algorithms": algos_supported
-                                },
-                                "State": {
-                                    "firmware-file": firmware_update_file,
-                                    "fw_update": "running"
+                                "devices": {
+                                    update_node: {
+                                        "State": {
+                                            "firmware-file": firmware_update_file,
+                                            "fw_update": "running"
+                                        }
                                 }
                             }
-                        for fw, desc in firmware_desc1.items():
-                            reported_json["AI"].update({fw:desc})
+                        }
+
                         json_string = json.dumps(reported_json)
                         module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
                         print('sent reported properties...with status "running"')

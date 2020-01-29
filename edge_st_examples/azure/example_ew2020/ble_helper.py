@@ -11,8 +11,44 @@ from blue_st_sdk.firmware_upgrade.utils.firmware_file import FirmwareFile
 from blue_st_sdk.features.feature_activity_recognition import ActivityType as act
 from blue_st_sdk.features.feature_audio_scene_classification import SceneType as scene
 
-def extract_algo_details(node, _timeout = 10):
+
+def extract_algo_details(AI_algo_details=''):
+    algos_supported=''
+    AI_AlgoNames = []
+    res = AI_algo_details.split('\n')
+    for t in range(len(res)):
+        if res[t] == '':
+            continue
+        algos_supported += res[t]
+        algos_supported += ';'
+
+        __har = res[t].split('-')
+        if len(__har) > 1:
+            _algo = __har[0].strip()
+            AI_AlgoNames[_algo] = t+1
     return algos_supported, AI_AlgoNames
+
+def compile_reported_props_from_node(node, ai_fw_running, firmware_desc, algos_supported):
+    reported_json = {
+                "devices": {
+                    node: {
+                        "SupportedMethods": {
+                            "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
+                            "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
+                        },
+                        "AI": {
+                            "firmware": ai_fw_running,
+                            "algorithms": algos_supported
+                        },
+                        "State": {
+                            "fw_update": "Not_Running"
+                        }
+                    }
+                }
+            }
+    for fw, desc in firmware_desc.items():
+        reported_json["devices"][node]["AI"].update({fw:desc})
+    return reported_json
 
 def extract_ai_features_from_node(node):
     i = 1
