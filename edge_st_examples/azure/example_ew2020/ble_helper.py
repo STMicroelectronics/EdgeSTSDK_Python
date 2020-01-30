@@ -14,7 +14,7 @@ from blue_st_sdk.features.feature_audio_scene_classification import SceneType as
 
 def extract_algo_details(AI_algo_details=''):
     algos_supported=''
-    AI_AlgoNames = []
+    AI_AlgoNames = {}
     res = AI_algo_details.split('\n')
     for t in range(len(res)):
         if res[t] == '':
