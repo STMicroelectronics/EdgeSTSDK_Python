@@ -219,7 +219,7 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
     #
     def on_upgrade_firmware_complete(self, debug_console, firmware_file, bytes_sent):
         global firmware_upgrade_completed
-        global firmware_status, firmware_update_file
+        global firmware_update_file
         print('Device %s FW Upgrade complete.' % (self.device.get_name()))
         print('%d bytes out of %d sent...' % (bytes_sent, bytes_sent))
         print('Firmware upgrade completed. Device is rebooting...')
@@ -250,7 +250,7 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
     #
     def on_upgrade_firmware_error(self, debug_console, firmware_file, error):
         global firmware_upgrade_completed, fwup_error
-        global firmware_status, firmware_update_file
+        global firmware_update_file
         print('Firmware upgrade error: %s.' % (str(error)))
         
         reported_json = {
@@ -339,7 +339,7 @@ class MyFeatureListener(FeatureListener):
         self.device = node
 
     def on_update(self, feature, sample):        
-        print("feature listener: onUpdate")        
+        print("\nfeature listener: onUpdate")
         feature_str = str(feature)
         print(feature_str)
         print(sample)
@@ -443,7 +443,6 @@ def receive_ble2_message_callback(message, context):
 
 # module_twin_callback is invoked when the module twin's desired properties are updated.
 def module_twin_callback(update_state, payload, context):
-    global firmware_status
     print ( "\nModule twin callback >> call confirmed\n")
     print('\tpayload:', payload)
 
@@ -464,7 +463,6 @@ def main(protocol):
         global iot_device_1, iot_device_2        
         global firmware_upgrade_completed
         global firmware_upgrade_started
-        global firmware_status
         global firmware_update_file
         global firmware_desc
         global features1, features2, feature_listener1, feature_listener2, feature_listeners1, feature_listeners2, no_wait
@@ -594,8 +592,9 @@ def main(protocol):
 
             algos_supported, AI_AlgoNames = extract_algo_details(AI_msg)
 
-            firmware_status = ai_fw_running1
-            print("firmware reported by node: " + ai_fw_running1)
+            print("firmware reported by node1: " + ai_fw_running1)
+            print("firmware reported by node2: " + ai_fw_running2)
+
             reported_json = compile_reported_props_from_node(devices[0].get_name(), ai_fw_running1, firmware_desc1, algos_supported)
             # FIXME we are using the same algos_supported of device 1 for device 2.
             _reported_json = compile_reported_props_from_node(devices[1].get_name(), ai_fw_running2, firmware_desc2, algos_supported)
@@ -651,6 +650,28 @@ def main(protocol):
                             print("prep'ing device 2")
                             prepare_listeners_for_fwupdate(iot_device_2, features2, feature_listeners2, AI_console2, 
                                                         upgrade_console_listener2, upgrade_console2)
+                        else:
+                            print("invalid device request")
+                            firmware_upgrade_completed = True
+                            firmware_upgrade_started = False
+                            #FIXME send reported properties as error and set 
+                            # reported_json = {
+                            # "devices": {
+                            #     self.device.get_name(): {
+                            #         "State": {
+                            #             "firmware-file": firmware_update_file,
+                            #             "fw_update": "not_running",
+                            #             "last_fw_update": "failed"
+                            #         }
+                            #         }
+                            #     }
+                            # }
+
+                            # json_string = json.dumps(reported_json)
+                            # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+                            # print('sent reported properties...with status "fail"')
+                            # fwup_error = True # TODO Is this needed?
+                            continue
 
                         firmware_upgrade_completed = False
                         firmware_upgrade_started = True
