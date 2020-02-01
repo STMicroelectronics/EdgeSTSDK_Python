@@ -170,7 +170,8 @@ class MyNodeListener(NodeListener):
 
 
     def on_disconnect(self, node, unexpected=False):
-        global iot_device_1
+        global iot_device_1, iot_device_2
+        global do_disconnect
         print('Device %s disconnected%s.' % \
             (node.get_name(), ' unexpectedly' if unexpected else ''))
 
@@ -189,12 +190,14 @@ class MyNodeListener(NodeListener):
 
         if unexpected:
             #iot_device_1.remove_listener(node_listener)            
-            print('\nApp Disconnecting from %s...' % (node.get_name()))
-            node.disconnect()
-            print('Disconnection done.\n')
+            print('\nStart to disconnect from all devices')
+            # iot_device_1.disconnect()
+            # iot_device_2.disconnect()
+            # print('Disconnection done.\n')
             # Exiting.
-            print('\non_disconnect Exiting...\n')
-            sys.exit(0)
+            # print('\non_disconnect Exiting...\n')
+            # sys.exit(0)
+            do_disconnect=True
 
     def on_status_change(self, node, new_status, old_status):
         print('Device %s went from %s to %s.' %
@@ -466,7 +469,7 @@ def main(protocol):
         global firmware_update_file
         global firmware_desc
         global features1, features2, feature_listener1, feature_listener2, feature_listeners1, feature_listeners2, no_wait
-        global upgrade_console, upgrade_console_listener, fwup_error, update_node
+        global upgrade_console, upgrade_console_listener, fwup_error, update_node, do_disconnect
         global AIAlgo_msg_process, AIAlgo_msg_completed, AI_msg
         global AI_AlgoNames, AI_console, setAIAlgo, algo_name, har_algo, start_algo
         
@@ -493,6 +496,7 @@ def main(protocol):
         setAIAlgo = False
         reboot = False
         update_node = None
+        do_disconnect = False
         feature_listeners1 = []
         feature_listeners2 = []
 
@@ -575,9 +579,10 @@ def main(protocol):
             if reboot:
                 reboot = False
             
-            timeout = time.time() + 10
-            AIAlgo_msg_process = True
+            timeout = time.time() + 5 # 5 secs timeout
+            AIAlgo_msg_process = True            
             AI_console1.getAIAllAlgoDetails()
+            print("Waiting for AI Algo Details from node")
             while True:
                 if iot_device_1.wait_for_notifications(0.05):
                     continue
@@ -592,7 +597,7 @@ def main(protocol):
 
             algos_supported, AI_AlgoNames = extract_algo_details(AI_msg)
 
-            print("firmware reported by node1: " + ai_fw_running1)
+            print("\nfirmware reported by node1: " + ai_fw_running1)
             print("firmware reported by node2: " + ai_fw_running2)
 
             reported_json = compile_reported_props_from_node(devices[0].get_name(), ai_fw_running1, firmware_desc1, algos_supported)
@@ -606,7 +611,6 @@ def main(protocol):
 
             # Getting notifications about firmware events
             print('\nWaiting for event notifications...\n')        
-            # feature = features[0]
 
             # Enabling firmware upgrade notifications for device 1.
             upgrade_console1 = FirmwareUpgradeNucleo.get_console(iot_device_1)
@@ -635,13 +639,37 @@ def main(protocol):
 
             try:
                 while True:
+                    if do_disconnect:
+                        do_disconnect = False
+                        upgrade_console1.remove_listener(upgrade_console_listener1)
+                        upgrade_console2.remove_listener(upgrade_console_listener2)
+
+                        for idx, feature in enumerate(features1):
+                            feature_listener = feature_listeners1[idx]
+                            feature.remove_listener(feature_listener)
+                            iot_device_1.disable_notifications(feature)
+                        for idx, feature in enumerate(features2):
+                            feature_listener = feature_listeners2[idx]
+                            feature.remove_listener(feature_listener)
+                            iot_device_2.disable_notifications(feature)
+
+                        # Disconnecting from the device.                            
+                        for idx, device in enumerate(devices):
+                            print('\nApp Disconnecting from %s...' % (device.get_name()))                           
+                            device.remove_listener(node_listeners[idx])
+                            device.disconnect()
+                        print('Disconnection done.\n')
+                        print('waiting to reconnect....')
+                        time.sleep(2)
+                        print('after 2 sec sleep...going to try to reconnect with device....')
+                        break
                     if setAIAlgo:
                         setAIAlgo = False
                         AI_console1.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
                         continue
                     if no_wait:
                         no_wait = False
-                        # print('update node:' + update_node)
+                        print('update node:' + update_node)
                         if update_node and update_node == iot_device_1.get_name():
                             print("prep'ing device 1")
                             prepare_listeners_for_fwupdate(iot_device_1, features1, feature_listeners1, AI_console1, 
@@ -654,23 +682,7 @@ def main(protocol):
                             print("invalid device request")
                             firmware_upgrade_completed = True
                             firmware_upgrade_started = False
-                            #FIXME send reported properties as error and set 
-                            # reported_json = {
-                            # "devices": {
-                            #     self.device.get_name(): {
-                            #         "State": {
-                            #             "firmware-file": firmware_update_file,
-                            #             "fw_update": "not_running",
-                            #             "last_fw_update": "failed"
-                            #         }
-                            #         }
-                            #     }
-                            # }
-
-                            # json_string = json.dumps(reported_json)
-                            # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
-                            # print('sent reported properties...with status "fail"')
-                            # fwup_error = True # TODO Is this needed?
+                            #TODO send reported properties as error and set                             
                             continue
 
                         firmware_upgrade_completed = False
