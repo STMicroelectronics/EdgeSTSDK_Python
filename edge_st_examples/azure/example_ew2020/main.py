@@ -316,17 +316,17 @@ def firmwareUpdate(method_name, payload, hubManager):
 
 # This function will be called every time a method request for selecting AI Algo is received
 def selectAIAlgorithm(method_name, payload, hubManager):
-    global iot_device_1
-    global AI_AlgoNames, AI_console, setAIAlgo, algo_name, har_algo, start_algo
+    global setAIAlgo, algo_name, har_algo, start_algo, update_node
     print('received method call:')
     print('method name:', method_name)
     print('payload:', payload)
     json_dict = json.loads(payload)
     print ('AI Algo to set:')
-    algo_name = json_dict['Name']
+    algo_name = json_dict['Name'] # e.g. asc+har_gmp, asc+har_ign, asc+har_ign_wsdm
+    update_node = json_dict['node']
     start_algo = 'har' #MPD: TBD use : json_dict['start_algo']
-    # Assumption: Algo name is in format "ASC+HAR", hence HAR algo is always split('+')[1]
-    har_algo = algo_name.split('+')[1].lower()
+    # Assumption: Algo name is in format "asc+har_gmp", hence HAR algo is always split('+')[1]
+    har_algo = algo_name.split('+')[1].lower()[4:] #e.g. gmp from 'har_gmp'
     print ('algo name: ' + algo_name)
     print ('har algo: ' + har_algo)
     print ('start algo: ' + start_algo)
@@ -590,12 +590,15 @@ def main(protocol):
                     print("Algos received:" + AI_msg)
                     break
                 elif time.time() > timeout:                    
-                    print("no response for AIAlgos cmd")
+                    print("no response for AIAlgos cmd...setting default...")
                     break
+            AI_msg="har_gmp-6976-5058a32f06e267401e79ad81d951e9c5\nhar_ign-1728-03bd25e15ee5dc9b8dbcb8c850dcba01\nhar_ign_wsdm-1728-156fec2c9716d991c6dcbe5ac8b0053f\nasc-5152-637c147537def27e0f4c918395f2d760"
             AIAlgo_msg_process = False
             AIAlgo_msg_completed = False
 
             algos_supported, AI_AlgoNames = extract_algo_details(AI_msg)
+            print(algos_supported)
+            print(AI_AlgoNames)
 
             print("\nfirmware reported by node1: " + ai_fw_running1)
             print("firmware reported by node2: " + ai_fw_running2)
@@ -665,7 +668,11 @@ def main(protocol):
                         break
                     if setAIAlgo:
                         setAIAlgo = False
-                        AI_console1.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
+                        print('update node:' + update_node)
+                        if update_node and update_node == iot_device_1.get_name():
+                            AI_console1.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
+                        elif update_node and update_node == iot_device_2.get_name():
+                            AI_console2.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
                         continue
                     if no_wait:
                         no_wait = False

@@ -25,7 +25,10 @@ def extract_algo_details(AI_algo_details=''):
         __har = res[t].split('-')
         if len(__har) > 1:
             _algo = __har[0].strip()
-            AI_AlgoNames[_algo] = t+1
+            if _algo == 'asc':
+                continue
+            else:
+                AI_AlgoNames['asc+'+_algo] = t+1
     return algos_supported, AI_AlgoNames
 
 def compile_reported_props_from_node(node, ai_fw_running, firmware_desc, algos_supported):
