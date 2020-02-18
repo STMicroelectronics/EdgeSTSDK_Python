@@ -4,7 +4,7 @@ import time
 from blue_st_sdk.manager import Manager, ManagerListener
 from blue_st_sdk.node import NodeListener
 from blue_st_sdk.feature import FeatureListener
-from blue_st_sdk.features import *
+from blue_st_sdk.features import feature_audio_scene_classification, feature_activity_recognition
 from blue_st_sdk.firmware_upgrade.firmware_upgrade_nucleo import FirmwareUpgradeNucleo
 from blue_st_sdk.firmware_upgrade.firmware_upgrade import FirmwareUpgradeListener
 from blue_st_sdk.firmware_upgrade.utils.firmware_file import FirmwareFile
@@ -81,9 +81,10 @@ def extract_ai_features_from_node(node):
 
 
 def prepare_listeners_for_fwupdate(node, features, feature_listeners, ai_console, fw_listener, fw_console):
-    print("Stopping all Algos")
-    ai_console.stopAlgos()
-    time.sleep(1)
+    if check_ai_feature_in_node(node):
+        print("Stopping all Algos")
+        ai_console.stopAlgos()
+        time.sleep(1)
 
     for idx, feature in enumerate(features):
         node.disable_notifications(feature)
@@ -91,6 +92,15 @@ def prepare_listeners_for_fwupdate(node, features, feature_listeners, ai_console
         feature.remove_listener(feature_listener)
 
     fw_console.add_listener(fw_listener)
+    return
+
+
+def check_ai_feature_in_node(node):
+    for desired_feature in [
+                feature_audio_scene_classification.FeatureAudioSceneClassification,
+                feature_activity_recognition.FeatureActivityRecognition]:
+                feature = node.get_feature(desired_feature)
+                return True if feature else False
     return
 
 

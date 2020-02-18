@@ -581,17 +581,17 @@ def main(protocol):
             
             timeout = time.time() + 5 # 5 secs timeout
             AIAlgo_msg_process = True            
-            AI_console1.getAIAllAlgoDetails()
-            print("Waiting for AI Algo Details from node")
-            while True:
-                if iot_device_1.wait_for_notifications(0.05):
-                    continue
-                elif AIAlgo_msg_completed:                    
-                    print("Algos received:" + AI_msg)
-                    break
-                elif time.time() > timeout:                    
-                    print("no response for AIAlgos cmd...setting default...")
-                    break
+            # AI_console1.getAIAllAlgoDetails()
+            # print("Waiting for AI Algo Details from node")
+            # while True:
+            #     if iot_device_1.wait_for_notifications(0.05):
+            #         continue
+            #     elif AIAlgo_msg_completed:                    
+            #         print("Algos received:" + AI_msg)
+            #         break
+            #     elif time.time() > timeout:                    
+            #         print("no response for AIAlgos cmd...setting default...")
+            #         break
             AI_msg="har_gmp-6976-5058a32f06e267401e79ad81d951e9c5\nhar_ign-1728-03bd25e15ee5dc9b8dbcb8c850dcba01\nhar_ign_wsdm-1728-156fec2c9716d991c6dcbe5ac8b0053f\nasc-5152-637c147537def27e0f4c918395f2d760"
             AIAlgo_msg_process = False
             AIAlgo_msg_completed = False
@@ -670,9 +670,15 @@ def main(protocol):
                         setAIAlgo = False
                         print('update node:' + update_node)
                         if update_node and update_node == iot_device_1.get_name():
-                            AI_console1.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
+                            if check_ai_feature_in_node(iot_device_1):                                
+                                AI_console1.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
+                            else:
+                                print("Device does not support AI")                            
                         elif update_node and update_node == iot_device_2.get_name():
-                            AI_console2.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
+                            if check_ai_feature_in_node(iot_device_1):                                
+                                AI_console2.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
+                            else:
+                                print("Device does not support AI")                            
                         continue
                     if no_wait:
                         no_wait = False
@@ -680,7 +686,7 @@ def main(protocol):
                         if update_node and update_node == iot_device_1.get_name():
                             print("prep'ing device 1")
                             prepare_listeners_for_fwupdate(iot_device_1, features1, feature_listeners1, AI_console1, 
-                                                        upgrade_console_listener1, upgrade_console1)
+                                                       upgrade_console_listener1, upgrade_console1)
                         elif update_node and update_node == iot_device_2.get_name():
                             print("prep'ing device 2")
                             prepare_listeners_for_fwupdate(iot_device_2, features2, feature_listeners2, AI_console2, 
@@ -696,9 +702,9 @@ def main(protocol):
                         firmware_upgrade_started = True
 
                         if update_node and update_node == iot_device_1.get_name():
-                            print("updating device 1")
+                            print("updating device 1")                            
                             if not start_device_fwupdate(upgrade_console1, firmware_update_file, fwup_error):
-                                break
+                               break
                         elif update_node and update_node == iot_device_2.get_name():
                             print("updating device 2")
                             if not start_device_fwupdate(upgrade_console2, firmware_update_file, fwup_error):
