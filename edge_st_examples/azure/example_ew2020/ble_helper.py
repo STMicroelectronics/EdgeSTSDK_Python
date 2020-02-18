@@ -31,13 +31,15 @@ def extract_algo_details(AI_algo_details=''):
                 AI_AlgoNames['asc+'+_algo] = t+1
     return algos_supported, AI_AlgoNames
 
+
 def compile_reported_props_from_node(node, ai_fw_running, firmware_desc, algos_supported):
+    dev_name = node.get_name()
     reported_json = {
                 "devices": {
-                    node: {
+                    dev_name: {
                         "SupportedMethods": {
-                            "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file",
-                            "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
+                            "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file"
+                            # "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
                         },
                         "AI": {
                             "firmware": ai_fw_running,
@@ -49,9 +51,13 @@ def compile_reported_props_from_node(node, ai_fw_running, firmware_desc, algos_s
                     }
                 }
             }
-    for fw, desc in firmware_desc.items():
-        reported_json["devices"][node]["AI"].update({fw:desc})
+
+    if check_ai_feature_in_node(node):
+        reported_json["devices"][dev_name]["SupportedMethods"]["selectAIAlgorithm--Name-string"] = "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
+        for fw, desc in firmware_desc.items():
+            reported_json["devices"][dev_name]["AI"].update({fw:desc})
     return reported_json
+
 
 def extract_ai_features_from_node(node):
     i = 1

@@ -189,14 +189,7 @@ class MyNodeListener(NodeListener):
         print('sent reported properties...with status "disconnected"')
 
         if unexpected:
-            #iot_device_1.remove_listener(node_listener)            
             print('\nStart to disconnect from all devices')
-            # iot_device_1.disconnect()
-            # iot_device_2.disconnect()
-            # print('Disconnection done.\n')
-            # Exiting.
-            # print('\non_disconnect Exiting...\n')
-            # sys.exit(0)
             do_disconnect=True
 
     def on_status_change(self, node, new_status, old_status):
@@ -332,6 +325,25 @@ def selectAIAlgorithm(method_name, payload, hubManager):
     print ('start algo: ' + start_algo)
     setAIAlgo = True
     return
+
+
+def getAIAlgoDetails(node, console, _timeout = 5):
+    global AI_msg, AIAlgo_msg_completed
+    if check_ai_feature_in_node(node):
+        console.getAIAllAlgoDetails()
+        print("Waiting for AI Algo Details from node")
+        while True:
+            if node.wait_for_notifications(0.05):
+                continue
+            elif AIAlgo_msg_completed:                    
+                print("Algos received:" + AI_msg)
+                return AI_msg
+            elif time.time() > _timeout:
+                print("no response for AIAlgos cmd...setting default...")
+                return "har_gmp-6976-5058a32f06e267401e79ad81d951e9c5\nhar_ign-1728-03bd25e15ee5dc9b8dbcb8c850dcba01\nhar_ign_wsdm-1728-156fec2c9716d991c6dcbe5ac8b0053f\nasc-5152-637c147537def27e0f4c918395f2d760"
+    else:
+        print("Node doesn't support AI")
+        return ""
 
 class MyFeatureListener(FeatureListener):
 
@@ -471,7 +483,7 @@ def main(protocol):
         global features1, features2, feature_listener1, feature_listener2, feature_listeners1, feature_listeners2, no_wait
         global upgrade_console, upgrade_console_listener, fwup_error, update_node, do_disconnect
         global AIAlgo_msg_process, AIAlgo_msg_completed, AI_msg
-        global AI_AlgoNames, AI_console, setAIAlgo, algo_name, har_algo, start_algo
+        global setAIAlgo, algo_name, har_algo, start_algo
         
         # initialize_client
         module_client = AzureModuleClient(MODULE_NAME, PROTOCOL)
@@ -492,7 +504,6 @@ def main(protocol):
         AIAlgo_msg_completed = False
         AIAlgo_msg_process = False
         AI_msg = "None"
-        AI_AlgoNames = {}
         setAIAlgo = False
         reboot = False
         update_node = None
@@ -579,33 +590,23 @@ def main(protocol):
             if reboot:
                 reboot = False
             
-            timeout = time.time() + 5 # 5 secs timeout
-            AIAlgo_msg_process = True            
-            # AI_console1.getAIAllAlgoDetails()
-            # print("Waiting for AI Algo Details from node")
-            # while True:
-            #     if iot_device_1.wait_for_notifications(0.05):
-            #         continue
-            #     elif AIAlgo_msg_completed:                    
-            #         print("Algos received:" + AI_msg)
-            #         break
-            #     elif time.time() > timeout:                    
-            #         print("no response for AIAlgos cmd...setting default...")
-            #         break
-            AI_msg="har_gmp-6976-5058a32f06e267401e79ad81d951e9c5\nhar_ign-1728-03bd25e15ee5dc9b8dbcb8c850dcba01\nhar_ign_wsdm-1728-156fec2c9716d991c6dcbe5ac8b0053f\nasc-5152-637c147537def27e0f4c918395f2d760"
+            AIAlgo_msg_process = True 
+            AI_msg = getAIAlgoDetails(iot_device_1, AI_console1)
             AIAlgo_msg_process = False
             AIAlgo_msg_completed = False
-
-            algos_supported, AI_AlgoNames = extract_algo_details(AI_msg)
-            print(algos_supported)
-            print(AI_AlgoNames)
-
+            algos_supported1, AI_AlgoNames1 = extract_algo_details(AI_msg)
             print("\nfirmware reported by node1: " + ai_fw_running1)
+
+            AIAlgo_msg_completed = True
+            AIAlgo_msg_process = True 
+            AI_msg = getAIAlgoDetails(iot_device_2, AI_console2)
+            AIAlgo_msg_process = False
+            AIAlgo_msg_completed = False
+            algos_supported2, AI_AlgoNames2 = extract_algo_details(AI_msg)
             print("firmware reported by node2: " + ai_fw_running2)
 
-            reported_json = compile_reported_props_from_node(devices[0].get_name(), ai_fw_running1, firmware_desc1, algos_supported)
-            # FIXME we are using the same algos_supported of device 1 for device 2.
-            _reported_json = compile_reported_props_from_node(devices[1].get_name(), ai_fw_running2, firmware_desc2, algos_supported)
+            reported_json = compile_reported_props_from_node(iot_device_1, ai_fw_running1, firmware_desc1, algos_supported1)
+            _reported_json = compile_reported_props_from_node(iot_device_2, ai_fw_running2, firmware_desc2, algos_supported2)
             reported_json["devices"].update(_reported_json["devices"])
 
             json_string = json.dumps(reported_json)
@@ -671,12 +672,12 @@ def main(protocol):
                         print('update node:' + update_node)
                         if update_node and update_node == iot_device_1.get_name():
                             if check_ai_feature_in_node(iot_device_1):                                
-                                AI_console1.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
+                                AI_console1.setAIAlgo(AI_AlgoNames1[algo_name], har_algo, start_algo)
                             else:
                                 print("Device does not support AI")                            
                         elif update_node and update_node == iot_device_2.get_name():
                             if check_ai_feature_in_node(iot_device_1):                                
-                                AI_console2.setAIAlgo(AI_AlgoNames[algo_name], har_algo, start_algo)
+                                AI_console2.setAIAlgo(AI_AlgoNames2[algo_name], har_algo, start_algo)
                             else:
                                 print("Device does not support AI")                            
                         continue
