@@ -173,24 +173,13 @@ class MyNodeListener(NodeListener):
         global iot_device_1, iot_device_2
         global do_disconnect
         print('Device %s disconnected%s.' % \
-            (node.get_name(), ' unexpectedly' if unexpected else ''))
-
-        reported_json = {
-                "devices": {
-                    node.get_name(): {
-                        "State": {
-                            "ble_conn_status": "disconnected"
-                        }
-                }
-            }
-        }
-        json_string = json.dumps(reported_json)
-        self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
-        print('sent reported properties...with status "disconnected"')
+            (node.get_name(), ' unexpectedly' if unexpected else ''))       
 
         if unexpected:
             print('\nStart to disconnect from all devices')
             do_disconnect=True
+        else:
+            send_disconnect_status(node, self.module_client)
 
     def on_status_change(self, node, new_status, old_status):
         print('Device %s went from %s to %s.' %
@@ -468,6 +457,21 @@ def send_reported_state_callback(status_code, context):
     pass
 
 
+def send_disconnect_status(node, module_client):
+    reported_json = {
+                "devices": {
+                    node.get_name(): {
+                        "State": {
+                            "ble_conn_status": "disconnected"
+                        }
+                }
+            }
+        }
+    json_string = json.dumps(reported_json)
+    module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
+    print('sent reported properties for [%s]...with status "disconnected"' % (node.get_name()))
+
+
 def main(protocol):   
 
     try:
@@ -662,7 +666,9 @@ def main(protocol):
                             print('\nApp Disconnecting from %s...' % (device.get_name()))                           
                             device.remove_listener(node_listeners[idx])
                             device.disconnect()
-                        print('Disconnection done.\n')
+                            send_disconnect_status(device, module_client)
+
+                        print('Disconnection done.\n')                                            
                         print('waiting to reconnect....')
                         time.sleep(2)
                         print('after 2 sec sleep...going to try to reconnect with device....')
@@ -685,11 +691,9 @@ def main(protocol):
                         no_wait = False
                         print('update node:' + update_node)
                         if update_node and update_node == iot_device_1.get_name():
-                            print("prep'ing device 1")
                             prepare_listeners_for_fwupdate(iot_device_1, features1, feature_listeners1, AI_console1, 
                                                        upgrade_console_listener1, upgrade_console1)
                         elif update_node and update_node == iot_device_2.get_name():
-                            print("prep'ing device 2")
                             prepare_listeners_for_fwupdate(iot_device_2, features2, feature_listeners2, AI_console2, 
                                                         upgrade_console_listener2, upgrade_console2)
                         else:
@@ -703,11 +707,9 @@ def main(protocol):
                         firmware_upgrade_started = True
 
                         if update_node and update_node == iot_device_1.get_name():
-                            print("updating device 1")                            
                             if not start_device_fwupdate(upgrade_console1, firmware_update_file, fwup_error):
                                break
                         elif update_node and update_node == iot_device_2.get_name():
-                            print("updating device 2")
                             if not start_device_fwupdate(upgrade_console2, firmware_update_file, fwup_error):
                                 break
 
@@ -754,6 +756,8 @@ def main(protocol):
                                 print('\nApp Disconnecting from %s...' % (device.get_name()))                           
                                 device.remove_listener(node_listeners[idx])
                                 device.disconnect()
+                                send_disconnect_status(device, module_client)
+
                             print('Disconnection done.\n')
                             print('waiting for device to reboot....')
                             reboot = True

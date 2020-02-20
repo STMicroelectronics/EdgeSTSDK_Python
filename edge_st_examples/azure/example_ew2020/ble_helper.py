@@ -39,7 +39,6 @@ def compile_reported_props_from_node(node, ai_fw_running, firmware_desc, algos_s
                     dev_name: {
                         "SupportedMethods": {
                             "firmwareUpdate--FwPackageUri-string": "Updates device firmware. Use parameter FwPackageUri to specify the URL of the firmware file"
-                            # "selectAIAlgorithm--Name-string": "Select AI algorithm to run on device. Use parameter Name to specify AI algo to set on device"
                         },
                         "AI": {
                             "firmware": ai_fw_running,
