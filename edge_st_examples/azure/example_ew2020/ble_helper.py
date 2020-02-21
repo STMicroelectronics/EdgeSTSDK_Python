@@ -107,31 +107,7 @@ def check_ai_feature_in_node(node):
                 feature = node.get_feature(desired_feature)
                 return True if feature else False
     return
-
-
-def start_device_fwupdate(fw_console, file, fwup_error, _timeout = 2):
     
-    download_file = "/app/" +file
-    print('\nStarting process to upgrade firmware...File: ' + download_file)   
-
-    firmware = FirmwareFile(download_file)
-    # Now start FW update process using blue-stsdk-python interface
-    print("Starting upgrade now...")
-    fw_console.upgrade_firmware(firmware)                        
-
-    timeout = time.time() + _timeout # wait for 2 seconds to see if there is any fwupdate error
-    while True:
-        if time.time() > timeout:
-            print("no fw update error..going ahead")
-            fwup_error = False # redundant
-            break
-        elif fwup_error:
-            print("fw update error")
-            break
-    if fwup_error:
-        return False
-    return True
-
 
 def update_reported_properties():
     return

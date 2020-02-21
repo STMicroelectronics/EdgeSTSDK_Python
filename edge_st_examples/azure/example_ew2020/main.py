@@ -171,7 +171,7 @@ class MyNodeListener(NodeListener):
 
     def on_disconnect(self, node, unexpected=False):
         global iot_device_1, iot_device_2
-        global do_disconnect
+        global do_disconnect, fwup_error, firmware_upgrade_completed, firmware_upgrade_started, update_node, firmware_update_file, no_wait
         print('Device %s disconnected%s.' % \
             (node.get_name(), ' unexpectedly' if unexpected else ''))       
 
@@ -180,6 +180,27 @@ class MyNodeListener(NodeListener):
             do_disconnect=True
         else:
             send_disconnect_status(node, self.module_client)
+
+        if firmware_upgrade_started or no_wait:
+            no_wait = False
+            firmware_upgrade_started = False            
+            firmware_upgrade_completed = True
+            reported_json = {
+                "devices": {
+                    update_node: {
+                        "State": {
+                            "firmware-file": firmware_update_file,
+                            "fw_update": "not_running",
+                            "last_fw_update": "failed"
+                        }
+                    }
+                }
+            }
+
+            json_string = json.dumps(reported_json)
+            self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+            print('sent reported properties for %s...with status "fail"' % update_node)
+            fwup_error = True        
 
     def on_status_change(self, node, new_status, old_status):
         print('Device %s went from %s to %s.' %
@@ -234,7 +255,7 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
     # @param error         Error code.
     #
     def on_upgrade_firmware_error(self, debug_console, firmware_file, error):
-        global firmware_upgrade_completed, fwup_error
+        global firmware_upgrade_completed, fwup_error, do_disconnect
         global firmware_update_file
         print('Firmware upgrade error: %s.' % (str(error)))
         
@@ -257,8 +278,11 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
         firmware_upgrade_completed = True
         fwup_error = True
         # Exiting.
-        print('\nExiting...module will re-start\n')
-        sys.exit(0)
+        # print('\nExiting...module will re-start\n')
+        # sys.exit(0)
+        print('\nStart to disconnect from all devices')
+        do_disconnect=True
+
 
     #
     # To be called whenever there is an update in upgrading the firmware, i.e. a
@@ -472,6 +496,31 @@ def send_disconnect_status(node, module_client):
     print('sent reported properties for [%s]...with status "disconnected"' % (node.get_name()))
 
 
+def start_device_fwupdate(fw_console, file, _timeout = 2):
+    global fwup_error
+    
+    download_file = "/app/" +file
+    print('\nStarting process to upgrade firmware...File: ' + download_file)   
+
+    firmware = FirmwareFile(download_file)
+    # Now start FW update process using blue-stsdk-python interface
+    print("Starting upgrade now...")
+    fw_console.upgrade_firmware(firmware)                        
+
+    timeout = time.time() + _timeout # wait for 2 seconds to see if there is any fwupdate error
+    while True:
+        if time.time() > timeout:
+            print("no fw update error..going ahead")
+            fwup_error = False # redundant
+            break
+        elif fwup_error:
+            print("fw update error")
+            break
+    if fwup_error:
+        return False
+    return True
+
+
 def main(protocol):   
 
     try:
@@ -649,6 +698,12 @@ def main(protocol):
                 while True:
                     if do_disconnect:
                         do_disconnect = False
+                        time.sleep(1)
+                        
+                        no_wait = False
+                        firmware_upgrade_started = False            
+                        firmware_upgrade_completed = True
+
                         upgrade_console1.remove_listener(upgrade_console_listener1)
                         upgrade_console2.remove_listener(upgrade_console_listener2)
 
@@ -700,18 +755,22 @@ def main(protocol):
                             print("invalid device request")
                             firmware_upgrade_completed = True
                             firmware_upgrade_started = False
-                            #TODO send reported properties as error and set                             
+                            #TODO send reported properties as error and set         
                             continue
 
                         firmware_upgrade_completed = False
                         firmware_upgrade_started = True
 
                         if update_node and update_node == iot_device_1.get_name():
-                            if not start_device_fwupdate(upgrade_console1, firmware_update_file, fwup_error):
-                               break
+                            if not start_device_fwupdate(upgrade_console1, firmware_update_file):
+                                firmware_upgrade_completed = True
+                                firmware_upgrade_started = False
+                                continue
                         elif update_node and update_node == iot_device_2.get_name():
-                            if not start_device_fwupdate(upgrade_console2, firmware_update_file, fwup_error):
-                                break
+                            if not start_device_fwupdate(upgrade_console2, firmware_update_file):
+                                firmware_upgrade_completed = True
+                                firmware_upgrade_started = False
+                                continue
 
                         reported_json = {
                                 "devices": {
@@ -729,6 +788,8 @@ def main(protocol):
                         print('sent reported properties...with status "running"')
 
                         while not firmware_upgrade_completed:
+                            if fwup_error:
+                                break
                             if iot_device_1.wait_for_notifications(0.05) or iot_device_2.wait_for_notifications(0.05):
                                 continue
                         print('firmware upgrade completed...going to disconnect from device...')
