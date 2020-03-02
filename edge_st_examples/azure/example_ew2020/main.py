@@ -43,6 +43,8 @@ BLE1_APPMOD_OUTPUT  = 'BLE1_App_Output'
 BLE2_APPMOD_INPUT   = 'BLE2_App_Input'
 BLE2_APPMOD_OUTPUT  = 'BLE2_App_Output'
 
+_lock = threading.Lock()
+
 class simple_utc(tzinfo):
     def tzname(self,**kwargs):
         return "UTC"
@@ -181,7 +183,9 @@ class MyNodeListener(NodeListener):
         else:
             send_disconnect_status(node, self.module_client)
 
+        #if disconnect happened AFTER firmware upgrade was started from the main thread
         if firmware_upgrade_started or no_wait:
+            print("disconnect after fw upgrade/no_wait was registered!!")
             no_wait = False
             firmware_upgrade_started = False            
             firmware_upgrade_completed = True
@@ -198,8 +202,10 @@ class MyNodeListener(NodeListener):
             }
 
             json_string = json.dumps(reported_json)
+            _lock.acquire()
             self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
             print('sent reported properties for %s...with status "fail"' % update_node)
+            _lock.release()
             fwup_error = True        
 
     def on_status_change(self, node, new_status, old_status):
@@ -299,7 +305,7 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
 
 
 # This function will be called every time a method request for firmware update is received
-def firmwareUpdate(method_name, payload, hubManager):
+def firmwareUpdate(method_name, payload, module_client):
     global firmware_update_file, update_task, update_node
     print('received method call:')
     print('\tmethod name:', method_name)
@@ -315,7 +321,7 @@ def firmwareUpdate(method_name, payload, hubManager):
     print (filename)
 
     # Start thread to download and update
-    update_task = threading.Thread(target=download_update, args=(url, filename))
+    update_task = threading.Thread(target=download_update, args=(url, filename, module_client))
     update_task.start()
     print ('\ndownload and update task started')
     return
@@ -422,8 +428,9 @@ class MyFeatureListener(FeatureListener):
             self.module_client.publish(BLE2_APPMOD_OUTPUT, json_string, send_confirmation_callback, 0)
         self.num += 1
 
-def download_update(url, filename):
-    global no_wait
+def download_update(url, filename, module_client):
+    global no_wait, update_node, iot_device_1, iot_device_2
+    global firmware_upgrade_completed, firmware_upgrade_started, firmware_update_file
 
     print('\n>> Download and Update Task')
     print('downloading file...')
@@ -439,9 +446,35 @@ def download_update(url, filename):
     else:
         print('download failure')
         return
+    
+    if update_node and update_node == iot_device_1.get_name():
+        update_dev = iot_device_1
+    elif update_node and update_node == iot_device_2.get_name():
+        update_dev = iot_device_2
 
-    no_wait = True       
-    print('\nWaiting to start fw upgrade process....')    
+    if update_dev.is_connected():
+        no_wait = True       
+        print('\nWaiting to start fw upgrade process....')    
+    else:
+        print("Device is not connected...aborting fw update....")
+        no_wait = False
+        firmware_upgrade_started = False            
+        firmware_upgrade_completed = True
+        reported_json = {
+            "devices": {
+                update_node: {
+                    "State": {
+                        "firmware-file": firmware_update_file,
+                        "fw_update": "not_running",
+                        "last_fw_update": "failed"
+                    }
+                }
+            }
+        }
+
+        json_string = json.dumps(reported_json)
+        module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
+        print('sent reported properties for %s...with status "fail"' % update_node)
     return
 
 def send_confirmation_callback(message, result, user_context):
@@ -698,7 +731,6 @@ def main(protocol):
                 while True:
                     if do_disconnect:
                         do_disconnect = False
-                        time.sleep(1)
                         
                         no_wait = False
                         firmware_upgrade_started = False            
@@ -742,8 +774,7 @@ def main(protocol):
                             else:
                                 print("Device does not support AI")                            
                         continue
-                    if no_wait:
-                        no_wait = False
+                    if no_wait:                        
                         print('update node:' + update_node)
                         if update_node and update_node == iot_device_1.get_name():
                             prepare_listeners_for_fwupdate(iot_device_1, features1, feature_listeners1, AI_console1, 
@@ -759,15 +790,17 @@ def main(protocol):
                             continue
 
                         firmware_upgrade_completed = False
-                        firmware_upgrade_started = True
-
+                        firmware_upgrade_started = True                        
+                        
                         if update_node and update_node == iot_device_1.get_name():
-                            if not start_device_fwupdate(upgrade_console1, firmware_update_file):
+                            update_dev = iot_device_1
+                            if not start_device_fwupdate(upgrade_console1, firmware_update_file, 5):
                                 firmware_upgrade_completed = True
                                 firmware_upgrade_started = False
                                 continue
                         elif update_node and update_node == iot_device_2.get_name():
-                            if not start_device_fwupdate(upgrade_console2, firmware_update_file):
+                            update_dev = iot_device_2
+                            if not start_device_fwupdate(upgrade_console2, firmware_update_file,5):
                                 firmware_upgrade_completed = True
                                 firmware_upgrade_started = False
                                 continue
@@ -784,8 +817,14 @@ def main(protocol):
                         }
 
                         json_string = json.dumps(reported_json)
-                        module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
-                        print('sent reported properties...with status "running"')
+                        # Acquire lock so that updating shadow state does not get pre-empted
+                        # by the disconnection thread to be specific
+                        _lock.acquire()
+                        if update_dev.is_connected():
+                            module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
+                            print('sent reported properties...with status "running"')
+                        _lock.release()
+                        no_wait = False
 
                         while not firmware_upgrade_completed:
                             if fwup_error:

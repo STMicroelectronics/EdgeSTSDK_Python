@@ -9,5 +9,5 @@
 
 #docker build  --rm -f ./Dockerfile.arm32v7 -t stm32containerregistry.azurecr.io/modaievt_tpgw:0.0.3-arm32v7 . && docker push stm32containerregistry.azurecr.io/modaievt_tpgw:0.0.3-arm32v7
 # Container for EW2020
-docker build  --rm -f ./Dockerfile.arm32v7 -t stm32containerregistry.azurecr.io/mod_ew2020:0.3.2 . && docker push stm32containerregistry.azurecr.io/mod_ew2020:0.3.2
+docker build  --rm -f ./Dockerfile.arm32v7 -t stm32containerregistry.azurecr.io/modaievt_tpgw:0.0.4 . && docker push stm32containerregistry.azurecr.io/modaievt_tpgw:0.0.4
 

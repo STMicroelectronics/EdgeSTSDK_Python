@@ -45,7 +45,7 @@ def compile_reported_props_from_node(node, ai_fw_running, firmware_desc, algos_s
                             "algorithms": algos_supported
                         },
                         "State": {
-                            "fw_update": "Not_Running"
+                            "fw_update": "not_running"
                         }
                     }
                 }
