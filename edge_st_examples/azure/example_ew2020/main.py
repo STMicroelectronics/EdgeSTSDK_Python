@@ -9,11 +9,11 @@ import os
 import json
 import requests
 import threading
+import asyncio
 from datetime import datetime, tzinfo, timedelta
 import blue_st_sdk
-import iothub_client
+
 # pylint: disable=E0611
-from iothub_client import IoTHubTransportProvider, IoTHubError
 
 from blue_st_sdk.manager import Manager, ManagerListener
 from blue_st_sdk.node import NodeListener
@@ -75,7 +75,7 @@ RECEIVE_CALLBACKS = 0
 SEND_CALLBACKS = 0
 
 # Choose HTTP, AMQP or MQTT as transport protocol.  Currently only MQTT is supported.
-PROTOCOL = IoTHubTransportProvider.MQTT
+# PROTOCOL = IoTHubTransportProvider.MQTT
 
 # INTERFACES
 
@@ -152,6 +152,7 @@ class MyNodeListener(NodeListener):
         self.module_client = azureClient
 
     def on_connect(self, node):
+        global shadow_dict1, do_shadow_update1, shadow_dict2, do_shadow_update2
         print('Device %s connected.' % (node.get_name()))
                         
         reported_json = {
@@ -164,24 +165,29 @@ class MyNodeListener(NodeListener):
             }
         }
 
-        json_string = json.dumps(reported_json)
-        self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+        #TODO acquire lock to make sure there is no overwrite from other process
+        if node.get_tag() == IOT_DEVICE_1_MAC:
+            shadow_dict1 = reported_json
+            do_shadow_update1 = True
+        elif node.get_tag() == IOT_DEVICE_2_MAC:
+            shadow_dict2 = reported_json
+            do_shadow_update2 = True       
+        
+        # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
         print('sent reported properties...with status "connected"')
 
 
     def on_disconnect(self, node, unexpected=False):
         global iot_device_1, iot_device_2
         global do_disconnect, fwup_error, firmware_upgrade_completed, firmware_upgrade_started, update_node, firmware_update_file, no_wait
+        global do_shadow_update1, shadow_dict1, do_shadow_update2, shadow_dict2
         print('Device %s disconnected%s.' % \
             (node.get_name(), ' unexpectedly' if unexpected else ''))       
 
         if unexpected:
             print('\nStart to disconnect from all devices')
             do_disconnect=True
-        else:
-            send_disconnect_status(node, self.module_client)
-
-        if firmware_upgrade_started or no_wait:
+        elif firmware_upgrade_started or no_wait:
             no_wait = False
             firmware_upgrade_started = False            
             firmware_upgrade_completed = True
@@ -191,16 +197,41 @@ class MyNodeListener(NodeListener):
                         "State": {
                             "firmware-file": firmware_update_file,
                             "fw_update": "not_running",
-                            "last_fw_update": "failed"
+                            "last_fw_update": "failed",
+                            "ble_conn_status": "disconnected"
                         }
                     }
                 }
             }
 
-            json_string = json.dumps(reported_json)
-            self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+            #TODO acquire lock to make sure there is no overwrite from other process
+            if node.get_tag() == IOT_DEVICE_1_MAC:
+                shadow_dict1 = reported_json
+                do_shadow_update1 = True
+            elif node.get_tag() == IOT_DEVICE_2_MAC:
+                shadow_dict2 = reported_json
+                do_shadow_update2 = True 
+            
+            # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
             print('sent reported properties for %s...with status "fail"' % update_node)
-            fwup_error = True        
+            fwup_error = True
+        else:
+            reported_json = {
+                "devices": {
+                    node.get_name(): {
+                        "State": {
+                            "ble_conn_status": "disconnected"
+                        }
+                    }
+                }
+            }
+            #TODO acquire lock to make sure there is no overwrite from other process
+            if node.get_tag() == IOT_DEVICE_1_MAC:
+                shadow_dict1 = reported_json
+                do_shadow_update1 = True
+            elif node.get_tag() == IOT_DEVICE_2_MAC:
+                shadow_dict2 = reported_json
+                do_shadow_update2 = True 
 
     def on_status_change(self, node, new_status, old_status):
         print('Device %s went from %s to %s.' %
@@ -226,6 +257,7 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
     def on_upgrade_firmware_complete(self, debug_console, firmware_file, bytes_sent):
         global firmware_upgrade_completed
         global firmware_update_file
+        global do_shadow_update1, shadow_dict1, do_shadow_update2, shadow_dict2
         print('Device %s FW Upgrade complete.' % (self.device.get_name()))
         print('%d bytes out of %d sent...' % (bytes_sent, bytes_sent))
         print('Firmware upgrade completed. Device is rebooting...')
@@ -242,8 +274,14 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
             }
         }
         
-        json_string = json.dumps(reported_json)
-        self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+        #TODO acquire lock to make sure there is no overwrite from other process
+        if self.device.get_tag() == IOT_DEVICE_1_MAC:
+            shadow_dict1 = reported_json
+            do_shadow_update1 = True
+        elif self.device.get_tag() == IOT_DEVICE_2_MAC:
+            shadow_dict2 = reported_json
+            do_shadow_update2 = True
+        # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
         print('sent reported properties...with status "success"')
         firmware_upgrade_completed = True
 
@@ -257,6 +295,7 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
     def on_upgrade_firmware_error(self, debug_console, firmware_file, error):
         global firmware_upgrade_completed, fwup_error, do_disconnect
         global firmware_update_file
+        global do_shadow_update1, shadow_dict1, do_shadow_update2, shadow_dict2
         print('Firmware upgrade error: %s.' % (str(error)))
         
         reported_json = {
@@ -271,8 +310,14 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
             }
         }
 
-        json_string = json.dumps(reported_json)
-        self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+        #TODO acquire lock to make sure there is no overwrite from other process
+        if self.device.get_tag() == IOT_DEVICE_1_MAC:
+            shadow_dict1 = reported_json
+            do_shadow_update1 = True
+        elif self.device.get_tag() == IOT_DEVICE_2_MAC:
+            shadow_dict2 = reported_json
+            do_shadow_update2 = True
+        # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
         print('sent reported properties...with status "fail"')
         # time.sleep(5)
         firmware_upgrade_completed = True
@@ -366,7 +411,8 @@ class MyFeatureListener(FeatureListener):
         self.module_client = azureClient
         self.device = node
 
-    def on_update(self, feature, sample):        
+    def on_update(self, feature, sample):
+        global pub_dev1, pub_dev2, pub_string
         print("\nfeature listener: onUpdate")
         feature_str = str(feature)
         print(feature_str)
@@ -414,12 +460,12 @@ class MyFeatureListener(FeatureListener):
             "aiEvent": aiEvent,
             "ts": event_timestamp.replace(tzinfo=simple_utc()).isoformat().replace('+00:00', 'Z')
         }
-        json_string = json.dumps(event_json)
-        print(json_string)
+        pub_string = json.dumps(event_json)
+        print(pub_string)
         if self.device.get_tag() == IOT_DEVICE_1_MAC:
-            self.module_client.publish(BLE1_APPMOD_OUTPUT, json_string, send_confirmation_callback, 0)
+            pub_dev1 = True
         elif self.device.get_tag() == IOT_DEVICE_2_MAC:
-            self.module_client.publish(BLE2_APPMOD_OUTPUT, json_string, send_confirmation_callback, 0)
+            pub_dev2 = True
         self.num += 1
 
 def download_update(url, filename):
@@ -481,7 +527,7 @@ def send_reported_state_callback(status_code, context):
     pass
 
 
-def send_disconnect_status(node, module_client):
+async def send_disconnect_status_async(node, module_client):
     reported_json = {
                 "devices": {
                     node.get_name(): {
@@ -491,8 +537,8 @@ def send_disconnect_status(node, module_client):
                 }
             }
         }
-    json_string = json.dumps(reported_json)
-    module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
+    # json_string = json.dumps(reported_json)
+    await module_client.update_shadow_state(reported_json, None, 0)
     print('sent reported properties for [%s]...with status "disconnected"' % (node.get_name()))
 
 
@@ -521,7 +567,7 @@ def start_device_fwupdate(fw_console, file, _timeout = 2):
     return True
 
 
-def main(protocol):   
+async def main():   
 
     try:
         print ( "\nSTM32MP1 module EW2020\n")
@@ -537,17 +583,21 @@ def main(protocol):
         global upgrade_console, upgrade_console_listener, fwup_error, update_node, do_disconnect
         global AIAlgo_msg_process, AIAlgo_msg_completed, AI_msg
         global setAIAlgo, algo_name, har_algo, start_algo
+        global pub_dev1, pub_dev2, pub_string
+        global shadow_dict1, do_shadow_update1, shadow_dict2, do_shadow_update2
         
         # initialize_client
-        module_client = AzureModuleClient(MODULE_NAME, PROTOCOL)
+        module_client = AzureModuleClient(MODULE_NAME)
 
         # Connecting clients to the runtime.
-        module_client.connect()
-        module_client.set_module_twin_callback(module_twin_callback, module_client)
-        module_client.set_module_method_callback(firmwareUpdate, module_client)      
-        module_client.set_module_method_callback(selectAIAlgorithm, module_client)  
-        module_client.subscribe(BLE1_APPMOD_INPUT, receive_ble1_message_callback, module_client)        
-        module_client.subscribe(BLE2_APPMOD_INPUT, receive_ble2_message_callback, module_client)
+        print("going to connect to ModuleClient....")
+        await module_client.connect()
+        print("module connected to [%s]: [%s]..."% (MODULE_NAME, MODULEID))
+        # module_client.set_module_twin_callback(module_twin_callback, module_client)
+        # module_client.set_module_method_callback(firmwareUpdate, module_client)      
+        # module_client.set_module_method_callback(selectAIAlgorithm, module_client)  
+        # module_client.subscribe(BLE1_APPMOD_INPUT, receive_ble1_message_callback, module_client)        
+        # module_client.subscribe(BLE2_APPMOD_INPUT, receive_ble2_message_callback, module_client)
 
         # Initial state.
         firmware_upgrade_completed = False
@@ -561,8 +611,15 @@ def main(protocol):
         reboot = False
         update_node = None
         do_disconnect = False
+        pub_dev1 = False
+        pub_dev2 = False
+        pub_string = ''
         feature_listeners1 = []
         feature_listeners2 = []
+        do_shadow_update1 = False
+        shadow_dict1 = {}
+        do_shadow_update2 = False
+        shadow_dict2 = {}
 
         print ( "Starting the FWModApp module using protocol MQTT...")
         print ( "This module implements a direct method to be invoked from backend or other modules as required")
@@ -662,8 +719,8 @@ def main(protocol):
             _reported_json = compile_reported_props_from_node(iot_device_2, ai_fw_running2, firmware_desc2, algos_supported2)
             reported_json["devices"].update(_reported_json["devices"])
 
-            json_string = json.dumps(reported_json)
-            module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
+            # json_string = json.dumps(reported_json)
+            await module_client.update_shadow_state(reported_json, None, 0)
             print('sent reported properties...')
 
             # Getting notifications about firmware events
@@ -696,6 +753,29 @@ def main(protocol):
 
             try:
                 while True:
+                    ###### Code for Async stuff
+                    if do_shadow_update1:
+                        do_shadow_update1 = False
+                        await module_client.update_shadow_state(shadow_dict1, None, 0)
+                        print('main async>> sent reported properties...')
+                    if do_shadow_update2:
+                        do_shadow_update2 = False
+                        await module_client.update_shadow_state(shadow_dict2, None, 0)
+                        print('main async>> sent reported properties...')
+
+                    if pub_dev1:
+                        pub_dev1 = False
+                        print("going to publish device1 data....")
+                        await module_client.publish(BLE1_APPMOD_OUTPUT, pub_string, 0)
+                        print("main async>> dev1 data published....")
+                    if pub_dev2:
+                        pub_dev2 = False
+                        print("going to publish device2 data....")
+                        await module_client.publish(BLE2_APPMOD_OUTPUT, pub_string, 0)
+                        print("main async>> dev2 data published....")
+
+                    ###### Code for Async stuff
+
                     if do_disconnect:
                         do_disconnect = False
                         time.sleep(1)
@@ -721,7 +801,7 @@ def main(protocol):
                             print('\nApp Disconnecting from %s...' % (device.get_name()))                           
                             device.remove_listener(node_listeners[idx])
                             device.disconnect()
-                            send_disconnect_status(device, module_client)
+                            await send_disconnect_status_async(device, module_client)
 
                         print('Disconnection done.\n')                                            
                         print('waiting to reconnect....')
@@ -783,8 +863,8 @@ def main(protocol):
                             }
                         }
 
-                        json_string = json.dumps(reported_json)
-                        module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
+                        # json_string = json.dumps(reported_json)
+                        await module_client.update_shadow_state(reported_json, None, 0)
                         print('sent reported properties...with status "running"')
 
                         while not firmware_upgrade_completed:
@@ -817,7 +897,7 @@ def main(protocol):
                                 print('\nApp Disconnecting from %s...' % (device.get_name()))                           
                                 device.remove_listener(node_listeners[idx])
                                 device.disconnect()
-                                send_disconnect_status(device, module_client)
+                                await send_disconnect_status_async(device, module_client)
 
                             print('Disconnection done.\n')
                             print('waiting for device to reboot....')
@@ -836,12 +916,9 @@ def main(protocol):
     except BTLEException as e:
         print(e)
         print('BTLEException...Exiting...\n')
-        sys.exit(0)        
-    except IoTHubError as iothub_error:
-        print ( "Unexpected error %s from IoTHub" % iothub_error )
-        return
+        sys.exit(0)
     except KeyboardInterrupt:
         print ( "IoTHubModuleClient sample stopped" )
 
 if __name__ == '__main__':
-    main(PROTOCOL)
+    asyncio.run(main())

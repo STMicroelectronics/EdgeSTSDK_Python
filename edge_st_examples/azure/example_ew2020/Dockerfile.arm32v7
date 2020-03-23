@@ -1,13 +1,14 @@
-FROM resin/raspberrypi3-python:3.6.2
+FROM arm32v7/python:3.7-slim-buster
 
 WORKDIR /app
 
 RUN apt-get update && \
-    apt-get install libgtk2.0-dev && \
-    apt-get install -y --no-install-recommends libboost-python1.55.0 python3-dev && \
+    apt-get install -y --no-install-recommends build-essential libgtk2.0-dev && \
+    apt-get install -y --no-install-recommends libboost-python1.67.0 python3-dev && \
     rm -rf /var/lib/apt/lists/* 
 
 RUN pip install --upgrade setuptools pip
+
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
