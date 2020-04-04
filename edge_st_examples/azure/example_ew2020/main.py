@@ -88,6 +88,8 @@ do_shadow_update1 = False
 shadow_dict1 = {}
 do_shadow_update2 = False
 shadow_dict2 = {}
+do_shadow_update = False
+shadow_dict = {}
 count = 0
 reboot = False
 ready = False
@@ -197,7 +199,7 @@ class MyNodeListener(NodeListener):
         self.module_client = azureClient
 
     def on_connect(self, node):
-        global shadow_dict1, do_shadow_update1, shadow_dict2, do_shadow_update2
+        global shadow_dict1, do_shadow_update1, shadow_dict2, do_shadow_update2, do_shadow_update, shadow_dict
         print('Device %s connected.' % (node.get_name()))
                         
         reported_json = {
@@ -211,21 +213,27 @@ class MyNodeListener(NodeListener):
         }
 
         #TODO acquire lock to make sure there is no overwrite from other process
-        if node.get_tag() == IOT_DEVICE_1_MAC:
-            shadow_dict1 = reported_json
-            do_shadow_update1 = True
-        elif node.get_tag() == IOT_DEVICE_2_MAC:
-            shadow_dict2 = reported_json
-            do_shadow_update2 = True       
+        shadow_dict = reported_json
+        do_shadow_update = True
+        while True:
+            if do_shadow_update is False:
+                break
+
+        # if node.get_tag() == IOT_DEVICE_1_MAC:
+        #     shadow_dict1 = reported_json
+        #     do_shadow_update1 = True
+        # elif node.get_tag() == IOT_DEVICE_2_MAC:
+        #     shadow_dict2 = reported_json
+        #     do_shadow_update2 = True       
         
         # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
-        print('sent reported properties...with status "connected"')
+        # print('sent reported properties...with status "connected"')
 
 
     def on_disconnect(self, node, unexpected=False):
         global iot_device_1, iot_device_2
         global do_disconnect, fwup_error, firmware_upgrade_completed, firmware_upgrade_started, update_node, firmware_update_file, no_wait
-        global do_shadow_update1, shadow_dict1, do_shadow_update2, shadow_dict2
+        global do_shadow_update1, shadow_dict1, do_shadow_update2, shadow_dict2, do_shadow_update, shadow_dict
         print('Device %s disconnected%s.' % \
             (node.get_name(), ' unexpectedly' if unexpected else ''))       
 
@@ -250,12 +258,12 @@ class MyNodeListener(NodeListener):
             }
 
             #TODO acquire lock to make sure there is no overwrite from other process
-            if node.get_tag() == IOT_DEVICE_1_MAC:
-                shadow_dict1 = reported_json
-                do_shadow_update1 = True
-            elif node.get_tag() == IOT_DEVICE_2_MAC:
-                shadow_dict2 = reported_json
-                do_shadow_update2 = True 
+            shadow_dict = reported_json
+            do_shadow_update = True
+            # No need to wait for async operation to complete?
+            while True:
+                if do_shadow_update is False:
+                    break
             
             # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
             print('sent reported properties for %s...with status "fail"' % update_node)
@@ -271,12 +279,12 @@ class MyNodeListener(NodeListener):
                 }
             }
             #TODO acquire lock to make sure there is no overwrite from other process
-            if node.get_tag() == IOT_DEVICE_1_MAC:
-                shadow_dict1 = reported_json
-                do_shadow_update1 = True
-            elif node.get_tag() == IOT_DEVICE_2_MAC:
-                shadow_dict2 = reported_json
-                do_shadow_update2 = True 
+            shadow_dict = reported_json
+            do_shadow_update = True
+            # No need to wait for async operation to complete?
+            while True:
+                if do_shadow_update is False:
+                    break
 
     def on_status_change(self, node, new_status, old_status):
         print('Device %s went from %s to %s.' %
@@ -574,7 +582,8 @@ def send_reported_state_callback(status_code, context):
     pass
 
 
-async def send_disconnect_status_async(node, module_client):
+def send_disconnect_status(node, module_client):
+    global iot_device_1, iot_device_2, do_shadow_update1, do_shadow_update2, shadow_dict1, shadow_dict2, do_shadow_update, shadow_dict
     reported_json = {
                 "devices": {
                     node.get_name(): {
@@ -584,8 +593,19 @@ async def send_disconnect_status_async(node, module_client):
                 }
             }
         }
-    # json_string = json.dumps(reported_json)
-    # await module_client.update_shadow_state(reported_json, None, 0)
+    # if node.get_name() == iot_device_1.get_name():
+    do_shadow_update = True
+    shadow_dict = reported_json
+    while True:
+        if do_shadow_update is False:
+            break
+    # elif node.get_name() == iot_device_2.get_name():
+    #     do_shadow_update2 = True
+    #     shadow_dict2 = reported_json
+    #     while True:
+    #         if do_shadow_update2 is False:
+    #             break
+    
     print('sent reported properties for [%s]...with status "disconnected"' % (node.get_name()))
 
 
@@ -618,8 +638,8 @@ def ble_main_handler_sync(manager, module_client):
     global iot_device_1, iot_device_2, features1, features2, feature_listener1, feature_listener2, feature_listeners1, feature_listeners2
     global upgrade_console, upgrade_console_listener, AIAlgo_msg_completed, AIAlgo_msg_process, AI_msg, reboot, ready
     global do_disconnect, setAIAlgo, no_wait, firmware_desc, firmware_update_file, firmware_upgrade_completed, firmware_upgrade_started
-    global update_node, fwup_error, reboot
-    global algo, har_algo, start_algo, pub_dev1, pub_dev2, pub_string, do_shadow_update1, do_shadow_update2, shadow_dict1, shadow_dict2
+    global update_node, fwup_error, reboot, algo_name, har_algo, start_algo
+    global pub_dev1, pub_dev2, pub_string, do_shadow_update1, do_shadow_update2, shadow_dict1, shadow_dict2, do_shadow_update, shadow_dict
 
     # Forever loop
     while True:
@@ -691,9 +711,6 @@ def ble_main_handler_sync(manager, module_client):
         AI_msg_listener2 = MyMessageListener2()
         AI_console2.add_listener(AI_msg_listener2)
 
-        # if reboot:
-        #     reboot = False
-        
         AIAlgo_msg_process = True 
         AI_msg = getAIAlgoDetails(iot_device_1, AI_console1)
         AIAlgo_msg_process = False
@@ -712,10 +729,12 @@ def ble_main_handler_sync(manager, module_client):
         reported_json = compile_reported_props_from_node(iot_device_1, ai_fw_running1, firmware_desc1, algos_supported1)
         _reported_json = compile_reported_props_from_node(iot_device_2, ai_fw_running2, firmware_desc2, algos_supported2)
         reported_json["devices"].update(_reported_json["devices"])
-
-        json_string = json.dumps(reported_json)
-        # TODO module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
-        print('sent reported properties...')
+        do_shadow_update = True
+        shadow_dict = reported_json
+        while True:
+            if do_shadow_update is False:
+                print("False set....sent properties..")
+                break
 
         # Getting notifications about firmware events
         print('\nWaiting for event notifications...\n')        
@@ -772,7 +791,7 @@ def ble_main_handler_sync(manager, module_client):
                         print('\nApp Disconnecting from %s...' % (device.get_name()))                           
                         device.remove_listener(node_listeners[idx])
                         device.disconnect()
-                        # TODO send_disconnect_status(device, module_client)
+                        send_disconnect_status(device, module_client)
 
                     print('Disconnection done.\n')                                            
                     print('waiting to reconnect....')
@@ -834,8 +853,11 @@ def ble_main_handler_sync(manager, module_client):
                         }
                     }
 
-                    json_string = json.dumps(reported_json)
-                    # TODO module_client.update_shadow_state(json_string, send_reported_state_callback, module_client)
+                    do_shadow_update = True
+                    shadow_dict = reported_json
+                    while True:
+                        if do_shadow_update is False:
+                            break
                     print('sent reported properties...with status "running"')
 
                     while not firmware_upgrade_completed:
@@ -868,7 +890,7 @@ def ble_main_handler_sync(manager, module_client):
                             print('\nApp Disconnecting from %s...' % (device.get_name()))                           
                             device.remove_listener(node_listeners[idx])
                             device.disconnect()
-                            # TODO send_disconnect_status(device, module_client)
+                            send_disconnect_status(device, module_client)
 
                         print('Disconnection done.\n')
                         print('waiting for device to reboot....')
@@ -883,20 +905,20 @@ def ble_main_handler_sync(manager, module_client):
         except (OSError, ValueError) as e:
                 print("program Exception!")
                 print(e)
-    
 
+
+# All Async operations
 async def async_handler(module_client):
-    # while True:
-        # ###### Code for Async stuff
-        # if do_shadow_update1:
-        #     do_shadow_update1 = False
-        #     await module_client.patch_twin_reported_properties(shadow_dict1) # module_client.update_shadow_state(shadow_dict1, None, 0)
-        #     print('main async>> sent reported properties...')
-        # if do_shadow_update2:
-        #     do_shadow_update2 = False
-        #     await module_client.patch_twin_reported_properties(shadow_dict2) # module_client.update_shadow_state(shadow_dict2, None, 0)
-        #     print('main async>> sent reported properties...')
-
+    global do_shadow_update, shadow_dict
+    print("Async Handler....")
+    while True:
+        # print("$")        
+        if do_shadow_update:
+            print('async handler>> going to send reported properties...')
+            await module_client.patch_twin_reported_properties(shadow_dict)
+            print('async handler>> sent reported properties...')
+            do_shadow_update = False
+        
         # if pub_dev1:
         #     pub_dev1 = False
         #     print("going to publish device1 data....")
@@ -907,10 +929,7 @@ async def async_handler(module_client):
         #     print("going to publish device2 data....")
         #     #await module_client.publish(BLE2_APPMOD_OUTPUT, pub_string, 0)
         #     print("main async>> dev2 data published....")
-
-        # ###### Code for Async stuff
-    pass
-
+        await asyncio.sleep(0.05)
 
 # define behavior for receiving direct method requests
 async def method_request_listener(module_client):
@@ -979,7 +998,7 @@ def wait_for_dev_notifications():
     print("Thread: Wait for notifications...")
     while True:
         print(">>>>>")
-        time.sleep(5)
+        time.sleep(10)
 
 
 async def main():   
@@ -1020,8 +1039,7 @@ async def main():
         # await loop.run_in_executor(executor, main_method_sync, manager, module_client)        
 
         # Schedule task for listeners
-        listeners = asyncio.gather(method_request_listener(module_client), \
-                                    twin_patch_listener(module_client))
+        listeners = asyncio.gather(method_request_listener(module_client), async_handler(module_client))
         
         # Start thread to handle notifications
         notifications_task = threading.Thread(target=wait_for_dev_notifications)
