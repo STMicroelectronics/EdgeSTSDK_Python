@@ -49,6 +49,7 @@ from azure.iot.device import Message, MethodResponse
 FIRMWARE_PATH = '/app/'
 FIRMWARE_EXTENSION = '.bin'
 
+BLE_APPMOD_OUTPUT   = 'BLE_Output'
 BLE1_APPMOD_INPUT   = 'BLE1_App_Input'
 BLE1_APPMOD_OUTPUT  = 'BLE1_App_Output'
 BLE2_APPMOD_INPUT   = 'BLE2_App_Input'
@@ -83,6 +84,7 @@ har_algo = ''
 start_algo = ''
 pub_dev1 = False
 pub_dev2 = False
+pub_dev = False
 pub_string = ''
 do_shadow_update = False
 shadow_dict = {}
@@ -408,7 +410,6 @@ class MyFeatureListener(FeatureListener):
         self.device = node
 
     def on_update(self, feature, sample):
-        global pub_dev1, pub_dev2, pub_string
         print("\nfeature listener: onUpdate")
         feature_str = str(feature)
         print(feature_str)
@@ -458,10 +459,7 @@ class MyFeatureListener(FeatureListener):
         }
         pub_string = json.dumps(event_json)
         print(pub_string)
-        if self.device.get_tag() == IOT_DEVICE_1_MAC:
-            pub_dev1 = True
-        elif self.device.get_tag() == IOT_DEVICE_2_MAC:
-            pub_dev2 = True
+        send_device_message(pub_string)
         self.num += 1
 
 def download_update(url, filename):
@@ -508,6 +506,16 @@ def send_twin_update(reported_json):
     do_shadow_update = True
     while True:
         if do_shadow_update is False:
+            break
+
+
+def send_device_message(pub_msg):
+    global pub_dev, pub_string
+    #TODO acquire lock to make sure there is no overwrite from other process
+    pub_string = pub_msg
+    pub_dev = True
+    while True:
+        if pub_dev is False:
             break
 
 
@@ -801,7 +809,7 @@ def ble_main_handler_sync(manager, module_client):
 
 # All Async operations
 async def async_handler(module_client):
-    global do_shadow_update, shadow_dict
+    global do_shadow_update, shadow_dict, pub_string, pub_dev
     print("Async Handler....")
     while True:
         # print("$")        
@@ -810,7 +818,12 @@ async def async_handler(module_client):
             await module_client.patch_twin_reported_properties(shadow_dict)
             print('async handler>> sent reported properties...')
             do_shadow_update = False
-        
+        if pub_dev:
+            _msg = Message(pub_string)
+            await module_client.send_message_to_output(_msg, BLE_APPMOD_OUTPUT)
+            print('async handler>> published device message...')
+            pub_dev = False
+
         # if pub_dev1:
         #     pub_dev1 = False
         #     print("going to publish device1 data....")
@@ -834,6 +847,7 @@ async def method_request_listener(module_client):
             print("received method request name: ")
             print(method_request.name)
             # TODO: Call appropriate method (E.g. firmwareUpdate, selectAIAlgorithm)
+            # TODO check if callable(method_request.name)
             status = 200
             payload = "{\"result\":\"success\"}"
             _response = MethodResponse.create_from_method_request(method_request, status, payload)
