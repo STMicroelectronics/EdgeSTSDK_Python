@@ -84,10 +84,6 @@ start_algo = ''
 pub_dev1 = False
 pub_dev2 = False
 pub_string = ''
-do_shadow_update1 = False
-shadow_dict1 = {}
-do_shadow_update2 = False
-shadow_dict2 = {}
 do_shadow_update = False
 shadow_dict = {}
 count = 0
@@ -199,9 +195,7 @@ class MyNodeListener(NodeListener):
         self.module_client = azureClient
 
     def on_connect(self, node):
-        global shadow_dict1, do_shadow_update1, shadow_dict2, do_shadow_update2, do_shadow_update, shadow_dict
-        print('Device %s connected.' % (node.get_name()))
-                        
+        print('Device %s connected.' % (node.get_name()))                        
         reported_json = {
                 "devices": {
                     node.get_name(): {
@@ -211,29 +205,12 @@ class MyNodeListener(NodeListener):
                 }
             }
         }
-
-        #TODO acquire lock to make sure there is no overwrite from other process
-        shadow_dict = reported_json
-        do_shadow_update = True
-        while True:
-            if do_shadow_update is False:
-                break
-
-        # if node.get_tag() == IOT_DEVICE_1_MAC:
-        #     shadow_dict1 = reported_json
-        #     do_shadow_update1 = True
-        # elif node.get_tag() == IOT_DEVICE_2_MAC:
-        #     shadow_dict2 = reported_json
-        #     do_shadow_update2 = True       
-        
-        # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
-        # print('sent reported properties...with status "connected"')
+        send_twin_update(reported_json)
+        print('sent reported properties...with status "connected"')
 
 
     def on_disconnect(self, node, unexpected=False):
-        global iot_device_1, iot_device_2
         global do_disconnect, fwup_error, firmware_upgrade_completed, firmware_upgrade_started, update_node, firmware_update_file, no_wait
-        global do_shadow_update1, shadow_dict1, do_shadow_update2, shadow_dict2, do_shadow_update, shadow_dict
         print('Device %s disconnected%s.' % \
             (node.get_name(), ' unexpectedly' if unexpected else ''))       
 
@@ -256,16 +233,7 @@ class MyNodeListener(NodeListener):
                     }
                 }
             }
-
-            #TODO acquire lock to make sure there is no overwrite from other process
-            shadow_dict = reported_json
-            do_shadow_update = True
-            # No need to wait for async operation to complete?
-            while True:
-                if do_shadow_update is False:
-                    break
-            
-            # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+            send_twin_update(reported_json)            
             print('sent reported properties for %s...with status "fail"' % update_node)
             fwup_error = True
         else:
@@ -278,13 +246,7 @@ class MyNodeListener(NodeListener):
                     }
                 }
             }
-            #TODO acquire lock to make sure there is no overwrite from other process
-            shadow_dict = reported_json
-            do_shadow_update = True
-            # No need to wait for async operation to complete?
-            while True:
-                if do_shadow_update is False:
-                    break
+            send_twin_update(reported_json)
 
     def on_status_change(self, node, new_status, old_status):
         print('Device %s went from %s to %s.' %
@@ -310,7 +272,6 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
     def on_upgrade_firmware_complete(self, debug_console, firmware_file, bytes_sent):
         global firmware_upgrade_completed
         global firmware_update_file
-        global do_shadow_update1, shadow_dict1, do_shadow_update2, shadow_dict2
         print('Device %s FW Upgrade complete.' % (self.device.get_name()))
         print('%d bytes out of %d sent...' % (bytes_sent, bytes_sent))
         print('Firmware upgrade completed. Device is rebooting...')
@@ -325,16 +286,8 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
                         }
                 }
             }
-        }
-        
-        #TODO acquire lock to make sure there is no overwrite from other process
-        if self.device.get_tag() == IOT_DEVICE_1_MAC:
-            shadow_dict1 = reported_json
-            do_shadow_update1 = True
-        elif self.device.get_tag() == IOT_DEVICE_2_MAC:
-            shadow_dict2 = reported_json
-            do_shadow_update2 = True
-        # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+        }        
+        send_twin_update(reported_json)
         print('sent reported properties...with status "success"')
         firmware_upgrade_completed = True
 
@@ -348,7 +301,6 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
     def on_upgrade_firmware_error(self, debug_console, firmware_file, error):
         global firmware_upgrade_completed, fwup_error, do_disconnect
         global firmware_update_file
-        global do_shadow_update1, shadow_dict1, do_shadow_update2, shadow_dict2
         print('Firmware upgrade error: %s.' % (str(error)))
         
         reported_json = {
@@ -363,21 +315,10 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
             }
         }
 
-        #TODO acquire lock to make sure there is no overwrite from other process
-        if self.device.get_tag() == IOT_DEVICE_1_MAC:
-            shadow_dict1 = reported_json
-            do_shadow_update1 = True
-        elif self.device.get_tag() == IOT_DEVICE_2_MAC:
-            shadow_dict2 = reported_json
-            do_shadow_update2 = True
-        # self.module_client.update_shadow_state(json_string, send_reported_state_callback, self.module_client)
+        send_twin_update(reported_json)
         print('sent reported properties...with status "fail"')
-        # time.sleep(5)
         firmware_upgrade_completed = True
         fwup_error = True
-        # Exiting.
-        # print('\nExiting...module will re-start\n')
-        # sys.exit(0)
         print('\nStart to disconnect from all devices')
         do_disconnect=True
 
@@ -453,10 +394,10 @@ def getAIAlgoDetails(node, console, _timeout = 5):
             elif time.time() > timeout:
                 print("no response for AIAlgos cmd...setting default...")
                 return "har_gmp-6976-5058a32f06e267401e79ad81d951e9c5\nhar_ign-1728-03bd25e15ee5dc9b8dbcb8c850dcba01\nhar_ign_wsdm-1728-156fec2c9716d991c6dcbe5ac8b0053f\nasc-5152-637c147537def27e0f4c918395f2d760"
-        # return "har_gmp-6976-5058a32f06e267401e79ad81d951e9c5\nhar_ign-1728-03bd25e15ee5dc9b8dbcb8c850dcba01\nhar_ign_wsdm-1728-156fec2c9716d991c6dcbe5ac8b0053f\nasc-5152-637c147537def27e0f4c918395f2d760"
     else:
         print("Node doesn't support AI")
         return ""
+
 
 class MyFeatureListener(FeatureListener):
 
@@ -545,45 +486,8 @@ def download_update(url, filename):
     print('\nWaiting to start fw upgrade process....')    
     return
 
-def send_confirmation_callback(message, result, user_context):
-    global SEND_CALLBACKS
-    print ( "\nConfirmation[%d] received for message with result = %s" % (user_context, result) )
-    SEND_CALLBACKS += 1
-    print ( "Total calls confirmed: %d" % SEND_CALLBACKS )
-
-
-def receive_ble1_message_callback(message, context):
-    global RECEIVE_CALLBACKS    
-    # Getting value.
-    message_buffer = message.get_bytearray()
-    size = len(message_buffer)
-    message_text = message_buffer[:size].decode('utf-8')
-    #data = message_text.split()[3]
-    print('\nble1 receive msg cb << message: \n' + message_text)
-
-def receive_ble2_message_callback(message, context):
-    global RECEIVE_CALLBACKS
-    # Getting value.
-    message_buffer = message.get_bytearray()
-    size = len(message_buffer)
-    message_text = message_buffer[:size].decode('utf-8')
-    #data = message_text.split()[3]
-    print('\nble2 receive msg cb << message: \n' + message_text)
-
-# module_twin_callback is invoked when the module twin's desired properties are updated.
-def module_twin_callback(update_state, payload, context):
-    print ( "\nModule twin callback >> call confirmed\n")
-    print('\tpayload:', payload)
-
-
-def send_reported_state_callback(status_code, context):
-    print ( "\nSend reported state callback >> call confirmed\n")
-    print ('status code: ', status_code)
-    pass
-
 
 def send_disconnect_status(node, module_client):
-    global iot_device_1, iot_device_2, do_shadow_update1, do_shadow_update2, shadow_dict1, shadow_dict2, do_shadow_update, shadow_dict
     reported_json = {
                 "devices": {
                     node.get_name(): {
@@ -593,20 +497,18 @@ def send_disconnect_status(node, module_client):
                 }
             }
         }
-    # if node.get_name() == iot_device_1.get_name():
-    do_shadow_update = True
+    send_twin_update(reported_json)    
+    print('sent reported properties for [%s]...with status "disconnected"' % (node.get_name()))
+
+
+def send_twin_update(reported_json):
+    global do_shadow_update, shadow_dict
+    #TODO acquire lock to make sure there is no overwrite from other process
     shadow_dict = reported_json
+    do_shadow_update = True
     while True:
         if do_shadow_update is False:
             break
-    # elif node.get_name() == iot_device_2.get_name():
-    #     do_shadow_update2 = True
-    #     shadow_dict2 = reported_json
-    #     while True:
-    #         if do_shadow_update2 is False:
-    #             break
-    
-    print('sent reported properties for [%s]...with status "disconnected"' % (node.get_name()))
 
 
 def start_device_fwupdate(fw_console, file, _timeout = 2):
@@ -639,7 +541,7 @@ def ble_main_handler_sync(manager, module_client):
     global upgrade_console, upgrade_console_listener, AIAlgo_msg_completed, AIAlgo_msg_process, AI_msg, reboot, ready
     global do_disconnect, setAIAlgo, no_wait, firmware_desc, firmware_update_file, firmware_upgrade_completed, firmware_upgrade_started
     global update_node, fwup_error, reboot, algo_name, har_algo, start_algo
-    global pub_dev1, pub_dev2, pub_string, do_shadow_update1, do_shadow_update2, shadow_dict1, shadow_dict2, do_shadow_update, shadow_dict
+    global pub_dev1, pub_dev2, pub_string, do_shadow_update, shadow_dict
 
     # Forever loop
     while True:
@@ -729,12 +631,7 @@ def ble_main_handler_sync(manager, module_client):
         reported_json = compile_reported_props_from_node(iot_device_1, ai_fw_running1, firmware_desc1, algos_supported1)
         _reported_json = compile_reported_props_from_node(iot_device_2, ai_fw_running2, firmware_desc2, algos_supported2)
         reported_json["devices"].update(_reported_json["devices"])
-        do_shadow_update = True
-        shadow_dict = reported_json
-        while True:
-            if do_shadow_update is False:
-                print("False set....sent properties..")
-                break
+        send_twin_update(reported_json)
 
         # Getting notifications about firmware events
         print('\nWaiting for event notifications...\n')        
@@ -852,12 +749,7 @@ def ble_main_handler_sync(manager, module_client):
                             }
                         }
                     }
-
-                    do_shadow_update = True
-                    shadow_dict = reported_json
-                    while True:
-                        if do_shadow_update is False:
-                            break
+                    send_twin_update(reported_json)
                     print('sent reported properties...with status "running"')
 
                     while not firmware_upgrade_completed:
