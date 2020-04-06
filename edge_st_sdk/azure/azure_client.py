@@ -58,7 +58,6 @@ class AzureModuleClient(EdgeClient):
 
     def __init__(self, module_name, protocol="MQTT"):
         self.module_name = module_name
-        #self.client_protocol = protocol
         self.client = IoTHubModuleClient.create_from_edge_environment()
         self._connected = False       
 
@@ -67,8 +66,6 @@ class AzureModuleClient(EdgeClient):
 
     async def connect(self):
         await self.client.connect()
-         # set the time until a message times out
-        #self.client.set_option("messageTimeout", self._TIMEOUT_s)
         self._connected = True
         return True
 
@@ -118,12 +115,6 @@ class AzureModuleClient(EdgeClient):
             _response = MethodResponse.create_from_method_request(method_request, status, payload)
             return await self.client.send_method_response(_response)
 
-    # # Sets the callback when a module twin's desired properties are updated.
-    # def set_module_twin_callback(self, twin_callback, user_context):
-    #     if self._connected:
-    #           ** self.client.receive_twin_desired_properties_patch()    
-    #         self.client.set_module_twin_callback(twin_callback, user_context)
-    
     def add_listener(self, listener):
         pass
 

@@ -16,12 +16,6 @@ from datetime import datetime, tzinfo, timedelta
 import concurrent
 import blue_st_sdk
 
-
-import azure.iot.device.aio
-# pylint: disable=E0611
-from azure.iot.device.aio import IoTHubModuleClient
-from azure.iot.device import Message, MethodResponse
-
 # pylint: disable=E0611
 
 from blue_st_sdk.manager import Manager, ManagerListener
@@ -42,8 +36,6 @@ from blue_st_sdk.utils.message_listener import MessageListener
 from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException, EdgeSTInvalidDataException
 
 from ble_helper import *
-
-from azure.iot.device import Message, MethodResponse
 
 # Firmware file paths.
 FIRMWARE_PATH = '/app/'
@@ -813,12 +805,13 @@ async def async_handler(module_client):
     while True:
         # print("$")        
         if do_shadow_update:
-            await module_client.patch_twin_reported_properties(shadow_dict)
+            await module_client.update_shadow_state(shadow_dict, None, 0)
             print('async handler>> sent reported properties...')
             do_shadow_update = False
         if pub_dev:
-            _msg = Message(pub_string)
-            await module_client.send_message_to_output(_msg, BLE_APPMOD_OUTPUT)
+            # _msg = Message(pub_string)
+            # await module_client.send_message_to_output(_msg, BLE_APPMOD_OUTPUT)
+            await module_client.publish(BLE_APPMOD_OUTPUT, pub_string, 0)
             print('async handler>> published device message...')
             pub_dev = False
         await asyncio.sleep(0.05)
@@ -826,7 +819,7 @@ async def async_handler(module_client):
 # define behavior for receiving direct method requests
 async def method_request_listener(module_client):
     while True:
-        method_request = await module_client.receive_method_request(None)
+        method_request = await module_client.get_module_method_request(None)
         print(method_request) 
         print(method_request.payload) #type: dict
         if method_request:
@@ -841,8 +834,9 @@ async def method_request_listener(module_client):
                 payload = "{\"result\":\"illegal method call\"}"
             # status = 200
             # payload = "{\"result\":\"success\"}"
-            _response = MethodResponse.create_from_method_request(method_request, status, payload)
-            await module_client.send_method_response(_response)
+            # _response = MethodResponse.create_from_method_request(method_request, status, payload)
+            # await module_client.send_method_response(_response)
+            await module_client.send_method_response(method_request, payload, status)
             print("sent method response")
         else:
             print("error in method request reception")
@@ -853,7 +847,7 @@ async def method_request_listener(module_client):
 async def input1_listener(module_client):
     while True:
         try:
-            input_message = await module_client.receive_message_on_input("input1")  # blocking call
+            input_message = await module_client.subscribe("input1")  # blocking call
             message = input_message.data
             size = len(message)
             message_text = message.decode('utf-8')
@@ -868,25 +862,10 @@ async def input1_listener(module_client):
 async def twin_patch_listener(module_client):
     while True:
         try:
-            data = await module_client.receive_twin_desired_properties_patch()  # blocking call
+            data = await module_client.get_shadow_state(None, 0)  # blocking call
             print( "The data in the desired properties patch was: %s" % data)
         except Exception as ex:
             print ( "Unexpected error in twin_patch_listener: %s" % ex )
-
-
-async def send_test_message(module_client):
-    global count
-    while True:
-        await asyncio.sleep(5)
-        count = count + 1
-        print("sending message #" + str(count))
-        # msg = "test wind speed " + str(count)
-        msg = Message("test wind speed " + str(count))
-        msg.message_id = uuid.uuid4()
-        msg.correlation_id = "correlation-1234"
-        msg.custom_properties["tornado-warning"] = "yes"
-        await module_client.send_message_to_output(msg, BLE1_APPMOD_OUTPUT)
-        print("done sending message #" + str(count))
 
 
 def wait_for_dev_notifications():
@@ -907,8 +886,7 @@ async def main():
         print ( "\nPython %s\n" % sys.version )
         
         # initialize_client
-        # module_client = AzureModuleClient(MODULE_NAME)
-        module_client = IoTHubModuleClient.create_from_edge_environment()
+        module_client = AzureModuleClient(MODULE_NAME)
 
         # Connecting clients to the runtime.
         print("going to connect to ModuleClient....")
