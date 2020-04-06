@@ -340,12 +340,11 @@ class MyFirmwareUpgradeListener(FirmwareUpgradeListener):
 
 
 # This function will be called every time a method request for firmware update is received
-def firmwareUpdate(method_name, payload, hubManager):
+def firmwareUpdate(payload: dict) -> None:
     global firmware_update_file, update_task, update_node
-    print('received method call:')
-    print('\tmethod name:', method_name)
+    print('firmwareUpdate method call:')
     print('\tpayload:', payload)
-    json_dict = json.loads(payload)
+    json_dict = payload
     print ('\nURL to download from:')
     url = json_dict['FwPackageUri']
     update_node = json_dict['node']
@@ -814,7 +813,6 @@ async def async_handler(module_client):
     while True:
         # print("$")        
         if do_shadow_update:
-            print('async handler>> going to send reported properties...')
             await module_client.patch_twin_reported_properties(shadow_dict)
             print('async handler>> sent reported properties...')
             do_shadow_update = False
@@ -823,33 +821,26 @@ async def async_handler(module_client):
             await module_client.send_message_to_output(_msg, BLE_APPMOD_OUTPUT)
             print('async handler>> published device message...')
             pub_dev = False
-
-        # if pub_dev1:
-        #     pub_dev1 = False
-        #     print("going to publish device1 data....")
-        #     #await module_client.publish(BLE1_APPMOD_OUTPUT, pub_string, 0)
-        #     print("main async>> dev1 data published....")
-        # if pub_dev2:
-        #     pub_dev2 = False
-        #     print("going to publish device2 data....")
-        #     #await module_client.publish(BLE2_APPMOD_OUTPUT, pub_string, 0)
-        #     print("main async>> dev2 data published....")
         await asyncio.sleep(0.05)
 
 # define behavior for receiving direct method requests
 async def method_request_listener(module_client):
     while True:
-        print("awaiting method request listener")
         method_request = await module_client.receive_method_request(None)
-        print("received method request")
-        print(method_request)
+        print(method_request) 
+        print(method_request.payload) #type: dict
         if method_request:
-            print("received method request name: ")
-            print(method_request.name)
             # TODO: Call appropriate method (E.g. firmwareUpdate, selectAIAlgorithm)
-            # TODO check if callable(method_request.name)
-            status = 200
-            payload = "{\"result\":\"success\"}"
+            if str(method_request.name) == "firmwareUpdate":  
+                firmwareUpdate(method_request.payload)
+                status = 200
+                payload = "{\"result\":\"success\"}"
+            else:
+                print("illegal method request call!")
+                status = 404
+                payload = "{\"result\":\"illegal method call\"}"
+            # status = 200
+            # payload = "{\"result\":\"success\"}"
             _response = MethodResponse.create_from_method_request(method_request, status, payload)
             await module_client.send_method_response(_response)
             print("sent method response")
