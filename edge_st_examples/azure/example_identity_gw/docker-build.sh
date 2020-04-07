@@ -1,1 +1,1 @@
-docker build  --rm -f ./Dockerfile.arm32v7 -t stmedge.azurecr.io/modaievt_idgw:0.0.2-arm32v7 . && docker push stmedge.azurecr.io/modaievt_idgw:0.0.2-arm32v7
+docker build  --rm -f ./Dockerfile.arm32v7 -t stm32containerregistry.azurecr.io/dev_idn:1 . && docker push stm32containerregistry.azurecr.io/dev_idn:1

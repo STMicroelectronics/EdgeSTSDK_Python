@@ -1,0 +1,3 @@
+"routes": {
+	    "BLE1ModAIEvtAppToIoTHub": "FROM /messages/modules/<module_name>/outputs/BLE1_App_Output INTO $upstream"
+	  }
