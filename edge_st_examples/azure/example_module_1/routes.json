@@ -1,3 +1,0 @@
-"routes": {
-	    "azureedgedemoble": "FROM /messages/modules/<module_name>/outputs/BLE1_App_Output INTO BrokeredEndpoint(\"/modules/<module-name>/inputs/BLE1_App_Input\")"
-	  }

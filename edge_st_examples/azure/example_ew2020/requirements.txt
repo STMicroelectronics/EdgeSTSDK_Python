@@ -1,9 +1,10 @@
 #Make sure we have azure-iothub-device-client with version 1.4.0 for libboost-python1.55.0
-azure-iothub-device-client==1.4.0
+azure-iot-device~=2.0.0
 bluepy==1.1.4
 futures
 enum34==1.1.6
 blue-st-sdk-temp==1.1.38
-edge-st-sdk-package==1.0.16
+edge-st-sdk-package==1.0.28
 requests
 pytz
+six
