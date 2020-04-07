@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: edge-st-sdk
-Version: 1.3.3
+Version: 1.3.4
 Summary: IoT edge computing abstraction library package.
 Home-page: https://github.com/STMicroelectronics/EdgeSTSDK_Python
 Author: Davide Aliprandi
