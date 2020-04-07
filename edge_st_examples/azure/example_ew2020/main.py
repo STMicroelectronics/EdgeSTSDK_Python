@@ -1,6 +1,30 @@
-# Copyright (c) Microsoft. All rights reserved.
-# Licensed under the MIT license. See LICENSE file in the project root for
-# full license information.
+################################################################################
+# COPYRIGHT(c) 2020 STMicroelectronics                                         #
+#                                                                              #
+# Redistribution and use in source and binary forms, with or without           #
+# modification, are permitted provided that the following conditions are met:  #
+#   1. Redistributions of source code must retain the above copyright notice,  #
+#      this list of conditions and the following disclaimer.                   #
+#   2. Redistributions in binary form must reproduce the above copyright       #
+#      notice, this list of conditions and the following disclaimer in the     #
+#      documentation and/or other materials provided with the distribution.    #
+#   3. Neither the name of STMicroelectronics nor the names of its             #
+#      contributors may be used to endorse or promote products derived from    #
+#      this software without specific prior written permission.                #
+#                                                                              #
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"  #
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE    #
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE   #
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE    #
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR          #
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF         #
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS     #
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN      #
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)      #
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE   #
+# POSSIBILITY OF SUCH DAMAGE.                                                  #
+################################################################################
+
 
 import random
 import time
@@ -30,7 +54,7 @@ from blue_st_sdk.features.feature_audio_scene_classification import SceneType as
 from bluepy.btle import BTLEException
 
 from enum import Enum
-from edge_st_sdk.azure.azure_client import AzureModuleClient
+from edge_st_sdk.azure.azure_client import AzureClient
 from blue_st_sdk.ai_algos.ai_algos import AIAlgos, AIAlgosDebugConsoleListener
 from blue_st_sdk.utils.message_listener import MessageListener
 from edge_st_sdk.utils.edge_st_exceptions import EdgeSTInvalidOperationException, EdgeSTInvalidDataException
@@ -811,7 +835,7 @@ async def async_handler(module_client):
         if pub_dev:
             # _msg = Message(pub_string)
             # await module_client.send_message_to_output(_msg, BLE_APPMOD_OUTPUT)
-            await module_client.publish(BLE_APPMOD_OUTPUT, pub_string, 0)
+            await module_client.publish(BLE_APPMOD_OUTPUT, pub_string)
             print('async handler>> published device message...')
             pub_dev = False
         await asyncio.sleep(0.05)
@@ -819,7 +843,7 @@ async def async_handler(module_client):
 # define behavior for receiving direct method requests
 async def method_request_listener(module_client):
     while True:
-        method_request = await module_client.get_module_method_request(None)
+        method_request = await module_client.get_method_request(None)
         print(method_request) 
         print(method_request.payload) #type: dict
         if method_request:
@@ -886,7 +910,7 @@ async def main():
         print ( "\nPython %s\n" % sys.version )
         
         # initialize_client
-        module_client = AzureModuleClient(MODULE_NAME)
+        module_client = AzureClient(MODULE_NAME)
 
         # Connecting clients to the runtime.
         print("going to connect to ModuleClient....")
